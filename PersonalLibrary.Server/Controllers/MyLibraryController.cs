@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PersonalLibrary.Server.Models;
 using PersonalLibrary.Shared;
 
 namespace PersonalLibrary.Server.Controllers
@@ -12,22 +13,26 @@ namespace PersonalLibrary.Server.Controllers
     [ApiController]
     public class MyLibraryController : ControllerBase
     {
+
+        BookModel book = new BookModel();
+        AuthorModel author = new AuthorModel();
+
+
         [HttpGet("[action]")]
-        public IEnumerable<Book> Books()
+        public IEnumerable<Author> GetAuthors()
         {
-            var rng = new Random();
-            return Enumerable.Range(1, 8).Select(index => new Book
-            {
-                Name = "Name of book " + rng.ToString(),
-                Author = new Author
-                {
-                    Name = " Author Name " + rng.ToString(),
-                    About = ""
-                },
-                About = "",
-                Place = "Place " + rng.ToString()
-                //Summary = Summaries[rng.Next(Summaries.Length)]
-            });
+            return author.GetAllAuthors();
         }
+
+        /*
+        [HttpGet]
+        [Route("api/MyLibrary/GetBooks")]*/
+        [HttpGet("[action]")]
+        public IEnumerable<Book> GetBooks()
+        {
+            return book.GetAllBooks();
+        }
+
+
     }
 }

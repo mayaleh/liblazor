@@ -4,42 +4,90 @@
 @inject HttpClient Http
 
 <h1>My Library List</h1>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
 
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Filtr
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" onclick="@OnInitAsync">List knih</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" onclick="@GetBooksByAuthor">Podle autora</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
 @if (books == null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Book Name</th>
-                <th>Author</th>
-                <th>Place</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var book in books)
-            {
-                <tr>
-                    <td><a href="#">@book.Name</a></td>
-                    <td><a href="#">@book.Author.Name</a></td>
-                    <td>@book.Place</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    @switch (FiltrType)
+    {
+        case "listBooks":
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Book Name</th>
+                        <th>Author</th>
+                        <th>Place</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var book in books)
+                    {
+                        <tr>
+                            <td><a href="#">@book.Name</a></td>
+                            <td><a href="#"></a></td>
+                            <td>@book.Place</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            break;
+        case "getByAuthors":
+            break;
+        default:
+            <h2><em>Filtr doesnt exist</em></h2>
+            break;
+    }
 }
 
 @functions {
-    Book[] books;
+/* ukazka, jak nastavit componente parametr: */
+/*
+[Parameter]
+private string Title { get; set; }
+*/
 
-    protected override async Task OnInitAsync()
-    {
+Book[] books;
 
-        //books = await Http.GetJsonAsync<Book[]>("sample-data/books.json");
-        
-        books = await Http.GetJsonAsync<Book[]>("api/MyLibrary/Books");
-    }
+string FiltrType = "listBooks";
+
+/*
+ * Volani api server
+ */
+protected override async Task OnInitAsync()
+{
+
+    //books = await Http.GetJsonAsync<Book[]>("sample-data/books.json");
+
+    books = await Http.GetJsonAsync<Book[]>("api/mylibrary/getBooks");
+}
+
+
+protected async Task GetBooksByAuthor()
+{
+
+    //books = await Http.GetJsonAsync<Book[]>("sample-data/books.json");
+    FiltrType = "getByAuthors";
+    books = await Http.GetJsonAsync<Book[]>("api/mylibrary/getBooksByAuthor");
+}
+
+
 }

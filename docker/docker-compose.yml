@@ -1,0 +1,22 @@
+version: '3.5'
+
+services:
+
+  db-liblaz:
+    build: ./postgresql/postgres/
+    image: postgres-liblaz
+    environment:
+      POSTGRES_DB: liblazor
+      POSTGRES_USER: appuser
+      POSTGRES_PASSWORD: libraryUser1997
+    ports:
+    - 4112:5432
+    volumes:
+#    - postgres_db_new:/var/lib/postgresql/data/docker
+    - liblazData:/var/lib/postgresql/data
+    - ./postgresql/postgres/db_backup/:/db_backup01/
+
+
+volumes:
+#  postgres_db_new:
+  liblazData:

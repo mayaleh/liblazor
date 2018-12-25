@@ -16,6 +16,7 @@ namespace PersonalLibrary.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddEntityFrameworkNpgsql();
 
             services.AddResponseCompression(options =>
             {

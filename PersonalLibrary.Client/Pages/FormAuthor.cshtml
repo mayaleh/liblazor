@@ -1,0 +1,32 @@
+﻿@page "/form-author"
+@using PersonalLibrary.Shared
+
+@inject HttpClient Http
+
+
+
+<div class="row">
+    <div class="col">
+        <div class="form-group">
+            <label for="nameAuthor">Author Name</label>
+            <input bind="@Name" type="text" class="form-control" id="nameAuthor" aria-describedby="nameHelp" placeholder="name" />
+            <small id="nameHelp" class="form-text text-muted">Everyone has at least name.</small>
+        </div>
+    </div>
+
+    <div class="col">
+
+        <div class="form-group">
+            <label for="aboutAuthor">Example textarea</label>
+            <textarea bind="@About" class="form-control" id="aboutAuthor" aria-describedby="aboutHelp" placeholder="about" rows="3"></textarea>
+            <small id="aboutHelp" class="form-text text-muted">Everyone has at least name.</small>
+        </div>
+    </div>
+</div>
+
+<button type="submit" class="btn btn-primary">Add Author</button>
+
+@functions {
+    private string Name { get; set; }
+    private string About { get; set; }
+}

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace PersonalLibrary.Shared
+namespace PersonalLibrary.Server
 {
-
     public partial class Author
     {
         public Author()
