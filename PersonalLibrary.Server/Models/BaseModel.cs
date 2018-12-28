@@ -26,7 +26,7 @@ namespace PersonalLibrary.Server.Models
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             //optionsBuilder.UseNpgsql("Host=localhost:4112;Database=liblazor;Username=appuser;Password=libraryUser1997");
-
+            
             if (!optionsBuilder.IsConfigured)
             {
                 optionsBuilder.UseNpgsql("User ID=appuser;Password=libraryUser1997;Server=localhost;Port=4112;Database=liblazor");

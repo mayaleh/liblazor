@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,23 +16,47 @@ namespace PersonalLibrary.Server.Controllers
     public class MyLibraryController : ControllerBase
     {
 
-        BookModel book = new BookModel();
-        AuthorModel author = new AuthorModel();
+        BookModel _book = new BookModel();
+        AuthorModel _author = new AuthorModel();
 
 
         [HttpGet("[action]")]
         public IEnumerable<Author> GetAuthors()
         {
-            return author.GetAllAuthors();
+            return _author.GetAllAuthors();
         }
 
         /*
         [HttpGet]
-        [Route("api/MyLibrary/GetBooks")]*/
+        [Route("api/MyLibrary/GetBooks")]
+        */
         [HttpGet("[action]")]
-        public IEnumerable<Book> GetBooks()
+        public List<Book> GetBooks()
         {
-            return book.GetAllBooks();
+            var data = _book.GetAllBooks(); //new HttpResponseException
+            return data;
+        }
+
+        [HttpGet("[action]")]
+        public List<Author> GetBooksByAuthor()
+        {
+            return _book.GetAllBooksByAuthor();
+        }
+        
+
+        [HttpPost("[action]")]
+        public void AddAuthor([FromBody] Author author)
+        {
+            if (ModelState.IsValid)
+                _author.AddAuthor(author);
+        }
+
+
+        [HttpPost("[action]")]
+        public void AddBook([FromBody] Book book)
+        {
+            if (ModelState.IsValid)
+                _book.AddBook(book);
         }
 
 

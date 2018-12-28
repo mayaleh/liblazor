@@ -16,13 +16,34 @@ namespace PersonalLibrary.Server.Models
         {
             try
             {
-                return db.Author.ToList();
+                return db.Author
+                    //.Include(d => d.Book)
+                    .ToList();
             }
             catch
             {
                 throw;
             }
         }
+
+
+        //To Get all Authors
+        public IEnumerable<Author> GetAllAuthorsBooks()
+        {
+            try
+            {
+                return db.Author
+                    .Include(Book => Book)
+                    .ToList();
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        //To Get all Authors
+
 
         //To Add new Author     
         public void AddAuthor(Author author)

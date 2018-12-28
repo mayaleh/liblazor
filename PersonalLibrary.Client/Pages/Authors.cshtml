@@ -3,28 +3,38 @@
 
 @inject HttpClient Http
 
+<SurveyPrompt Title="All Authors" />
+
 <h1>All Authors</h1>
-<p></p>
 
 <p>
-    <button class="btn btn-primary">
-        <NavLink class="nav-link" href="form-author" Match=NavLinkMatch.All>
+    <NavLink href="form-author" Match=NavLinkMatch.All>
+        <button class="btn btn-primary">
+            <span class="oi oi-plus"></span>
             Add Author
-        </NavLink>
-    </button>
+        </button>
+    </NavLink>
 </p>
 
 @if (authors == null)
 {
-    <p><em>Loading...</em></p>
+    <div class="text-center">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
 }
 else
 {
+    <div class="row">
+
+    </div>
     <table class="table">
         <thead>
             <tr>
                 <th>Author Name</th>
                 <th>About Author</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -33,6 +43,7 @@ else
                 <tr>
                     <td><a href="#">@author.Name</a></td>
                     <td><a href="#">@author.About</a></td>
+                    <td><a class="btn btn-success" href="/edit-author/@author.Authorid">Edit</a> | <a class="btn btn-danger" href="/delete-author/@author.Authorid">Delete</a></td>
                 </tr>
             }
         </tbody>

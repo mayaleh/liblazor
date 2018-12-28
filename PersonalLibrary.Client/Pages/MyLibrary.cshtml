@@ -3,7 +3,19 @@
 
 @inject HttpClient Http
 
+<SurveyPrompt Title="My Books" />
+
 <h1>My Library List</h1>
+
+<p>
+    <NavLink href="/form-book" Match=NavLinkMatch.All>
+        <button class="btn btn-primary">
+            <span class="oi oi-plus"></span>
+            Add Book
+        </button>
+    </NavLink>
+</p>
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
@@ -21,9 +33,13 @@
         </ul>
     </div>
 </nav>
-@if (books == null)
+@if (!books.Any() && !authorsBook.Any())
 {
-    <p><em>Loading...</em></p>
+    <div class="text-center">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
 }
 else
 {
@@ -36,21 +52,44 @@ else
                         <th>Book Name</th>
                         <th>Author</th>
                         <th>Place</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var book in books)
                     {
-                        <tr>
-                            <td><a href="#">@book.Name</a></td>
-                            <td><a href="#"></a></td>
-                            <td>@book.Place</td>
-                        </tr>
+                    <tr>
+                        <td><a href="#">@book.Name</a></td>
+                        <td>
+                            @if (book.Authorid != null)
+                            {
+                                <NavLink href="/author/detail" Match=NavLinkMatch.All>
+                                    @book.Author.Name
+                                </NavLink>
+                            }
+                        </td>
+                        <td></td>
+                        <td>@book.Place</td>
+                        <td>
+                            <a class="btn btn-success" href="/my-library/@book.Bookid">Edit</a> | <a class="btn btn-danger" href="/delete-book/@book.Bookid">Delete</a>
+                        </td>
+
+                    </tr>
                     }
                 </tbody>
             </table>
             break;
         case "getByAuthors":
+            @foreach(var author in authorsBook)
+            {
+                <h3>@author.Name:</h3>
+                <ul>
+                    @foreach(var book in author.Book)
+                    {
+                        <li>@book.Name</li>
+                    }
+                </ul>
+            }
             break;
         default:
             <h2><em>Filtr doesnt exist</em></h2>
@@ -59,35 +98,43 @@ else
 }
 
 @functions {
-/* ukazka, jak nastavit componente parametr: */
-/*
-[Parameter]
-private string Title { get; set; }
-*/
+    /* ukazka, jak nastavit componente parametr: */
+    /*
+    [Parameter]
+    private string Title { get; set; }
+    */
 
-Book[] books;
+    //Book[] books;
+    //Author[] authorsBook;
 
-string FiltrType = "listBooks";
-
-/*
- * Volani api server
- */
-protected override async Task OnInitAsync()
-{
-
-    //books = await Http.GetJsonAsync<Book[]>("sample-data/books.json");
-
-    books = await Http.GetJsonAsync<Book[]>("api/mylibrary/getBooks");
-}
+    List<Book> books = new List<Book>();
+    List<Author> authorsBook = new List<Author>();
 
 
-protected async Task GetBooksByAuthor()
-{
+    string FiltrType = "listBooks";
 
-    //books = await Http.GetJsonAsync<Book[]>("sample-data/books.json");
-    FiltrType = "getByAuthors";
-    books = await Http.GetJsonAsync<Book[]>("api/mylibrary/getBooksByAuthor");
-}
+    /*
+     * Volani api server
+     */
+    protected override async Task OnInitAsync()
+    {
+        books = await Http.GetJsonAsync<List<Book>>("api/mylibrary/getBooks");
+        //books = await Http.GetJsonAsync<Book[]>("api/mylibrary/getBooks");
+
+        //result = await Http.GetStringAsync("api/mylibrary/getBooks");
+
+    }
+
+
+
+    protected async Task GetBooksByAuthor()
+    {
+
+        //books = await Http.GetJsonAsync<Book[]>("sample-data/books.json");
+        FiltrType = "getByAuthors";
+        //authorsBook = await Http.GetJsonAsync<Author[]>("api/mylibrary/getBooksByAuthor");
+        authorsBook = await Http.GetJsonAsync<List<Author>>("api/mylibrary/getBooksByAuthor");
+    }
 
 
 }

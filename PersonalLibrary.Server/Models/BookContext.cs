@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using PersonalLibrary.Shared;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +15,7 @@ namespace PersonalLibrary.Server.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            //modelBuilder.
             modelBuilder.Entity<Author>(entity =>
             {
                 entity.ToTable("author");
