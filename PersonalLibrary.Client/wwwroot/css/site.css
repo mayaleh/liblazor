@@ -8,6 +8,18 @@ a{
     cursor: pointer !important;
 }
 
+a.btn{
+    color:white !important;
+}
+
+.padding-md{
+    padding: 1rem;
+}
+
+.padding-y-sm{
+    padding: 0.5rem 0;
+}
+
 app {
     position: relative;
     display: flex;

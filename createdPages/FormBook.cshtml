@@ -173,7 +173,7 @@ else
         CanClickSave = false;
         Http.SendJsonAsync(HttpMethod.Post, "/api/mylibrary/editBook", formBook);
         _newName = formBook.Name;
-        //formBook = null;
+        formBook = null;
         CanClickSave = true;
     }
 }

@@ -93,7 +93,6 @@ else
                             </div>
                         </div>
                         <div class="padding-y-sm">
-                            @* Todo po editaci upatuj tabulku, asi nejaky event handler pro send update... *@
                             <FormBook BookId="@Convert.ToInt32(editBookId)" IsEdit="true" />
                         </div>
                     </div>
@@ -206,6 +205,7 @@ else
         //authorsBook = await Http.GetJsonAsync<Author[]>("api/mylibrary/getBooksByAuthor");
         authorsBook = await Http.GetJsonAsync<List<Author>>("api/mylibrary/getBooksByAuthor");
     }
+
 
     private void SearchFor()
     {

@@ -52,7 +52,12 @@ namespace PersonalLibrary.Server.Models
         {
             try
             {
-                Book book = db.Book.Find(bookId);
+                Book book = db.Book
+                    .Where(b => b.Bookid == bookId)
+                    .Include(d => d.Author)
+                    .Single();
+                    //.Find(bookId);
+                    //.Include(d => d.Author);
                 return book;
             }
             catch
@@ -76,7 +81,7 @@ namespace PersonalLibrary.Server.Models
 
 
         //To Add new Book     
-        public void AddBook(Book book)
+        public void SaveBook(Book book)
         {
             try
             {
@@ -84,7 +89,9 @@ namespace PersonalLibrary.Server.Models
                 if (!string.IsNullOrEmpty(book.Author.Name))
                 {
                     //find author if doesnt exist insert them and get his id
-                    Author author = db.Author.First(t => t.Name.ToUpper() == book.Author.Name.ToUpper());
+                    Author author = db.Author
+                        .Where(t => t.Name.ToUpper() == book.Author.Name.ToUpper())
+                        .FirstOrDefault(); // SingleOrDefault - when expect only one or zero. Without "OrDefault" will catch throw Exeption, couse zero is not allowed
                     if (author == null)
                     {
                         Author newAuthor = new Author()
@@ -93,15 +100,23 @@ namespace PersonalLibrary.Server.Models
                         };
                         db.Author.Add(newAuthor);
                         db.SaveChanges();
-                        _authorId = newAuthor.Authorid; // last inserted Id
+                        _authorId = (int?) newAuthor.Authorid; // last inserted Id
                     }
                     else
                     {
-                        _authorId = author.Authorid;
+                        _authorId = (int?) author.Authorid;
                     }
                 }
                 book.Authorid = _authorId;
-                db.Book.Add(book);
+
+                if (book.Bookid != 0)
+                {
+                    db.Entry(book).State = EntityState.Modified;
+                }
+                else
+                {
+                    db.Book.Add(book);
+                }
                 db.SaveChanges();
             }
             catch

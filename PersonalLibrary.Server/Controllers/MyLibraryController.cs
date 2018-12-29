@@ -42,7 +42,13 @@ namespace PersonalLibrary.Server.Controllers
         {
             return _book.GetAllBooksByAuthor();
         }
-        
+
+
+        [HttpGet("[action]/{id}")]
+        public Book BookDetail(int id)
+        {
+            return _book.GetBook(id);
+        }
 
         [HttpPost("[action]")]
         public void AddAuthor([FromBody] Author author)
@@ -56,9 +62,24 @@ namespace PersonalLibrary.Server.Controllers
         public void AddBook([FromBody] Book book)
         {
             if (ModelState.IsValid)
-                _book.AddBook(book);
+                _book.SaveBook(book);
         }
 
+
+
+        [HttpPost("[action]")]
+        public void EditBook([FromBody] Book book)
+        {
+            if (ModelState.IsValid)
+                _book.SaveBook(book);
+        }
+
+        [HttpDelete]
+        [HttpPost("[action]/{id}")]
+        public void DeleteBook(int id)
+        {
+            //
+        }
 
     }
 }
