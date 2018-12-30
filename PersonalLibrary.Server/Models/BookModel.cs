@@ -31,6 +31,7 @@ namespace PersonalLibrary.Server.Models
             }
         }
 
+        //Get authors and theirs books
         public List<Author> GetAllBooksByAuthor()
         {
             try
@@ -44,9 +45,7 @@ namespace PersonalLibrary.Server.Models
                 throw;
             }
         }
-
-
-
+        
         //Get the one Book by ID    
         public Book GetBook(int bookId)
         {
@@ -55,7 +54,7 @@ namespace PersonalLibrary.Server.Models
                 Book book = db.Book
                     .Where(b => b.Bookid == bookId)
                     .Include(d => d.Author)
-                    .Single();
+                    .Single(); // Expect exactly one row. Better use SingleOrDefaut for accept null result
                     //.Find(bookId);
                     //.Include(d => d.Author);
                 return book;
@@ -83,6 +82,7 @@ namespace PersonalLibrary.Server.Models
         //To Add new Book     
         public void SaveBook(Book book)
         {
+
             try
             {
                 int? _authorId = null;
@@ -117,6 +117,23 @@ namespace PersonalLibrary.Server.Models
                 {
                     db.Book.Add(book);
                 }
+                db.SaveChanges();
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        //To Delete book  
+        public void DeleteBook(int id)
+        {
+            try
+            {
+                Book book = db.Book
+                    .Where(b => b.Bookid == id)
+                    .Single(); // db.Book.Find(id);
+                db.Book.Remove(book);
                 db.SaveChanges();
             }
             catch

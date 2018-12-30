@@ -74,11 +74,12 @@ namespace PersonalLibrary.Server.Controllers
                 _book.SaveBook(book);
         }
 
-        [HttpDelete]
-        [HttpPost("[action]/{id}")]
-        public void DeleteBook(int id)
+        //[HttpDelete]
+        [HttpPost("[action]")]
+        public void DeleteBook(Book book)
         {
-            //
+            if (ModelState.IsValid)
+                _book.DeleteBook(book.Bookid);
         }
 
     }

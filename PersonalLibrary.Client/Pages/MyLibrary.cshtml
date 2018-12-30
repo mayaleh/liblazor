@@ -82,26 +82,50 @@ else
 
             @if (editBookId != null)
             {
-                    <div class="padding-md border border-info">
-                        <div class="row">
-                            <div class="col-12 text-right">
-                                <div class="text-right">
-                                    <button onclick="@(()=> editBookId = null )" class="btn btn-danger">
-                                        <span class="oi oi-x"></span>
-                                    </button>
-                                </div>
+                <div class="padding-md border border-info">
+                    <div class="row">
+                        <div class="col-12 text-right">
+                            <div class="text-right">
+                                <button onclick="@(()=> editBookId = null )" class="btn btn-danger">
+                                    <span class="oi oi-x"></span>
+                                </button>
                             </div>
                         </div>
-                        <div class="padding-y-sm">
-                            @* Todo po editaci upatuj tabulku, asi nejaky event handler pro send update... *@
-                            <FormBook BookId="@Convert.ToInt32(editBookId)" IsEdit="true" />
-                        </div>
                     </div>
-                
+                    <div class="padding-y-sm">
+                        @* Todo po editaci upatuj tabulku, asi nejaky event handler pro send update... *@
+                        <FormBook BookId="@Convert.ToInt32(editBookId)" IsEdit="true" />
+                    </div>
+                </div>
+
                 <br />
 
             }
 
+
+            @if (removedBookName != null)
+            {
+                <div class="row">
+                    <div class="col-12">
+                        <div class="alert alert-success" role="alert">
+                            <div class="text-right">
+                                <button onclick="@(()=> removedBookName = null )" class="btn btn-danger">
+                                    <span class="oi oi-x"></span>
+                                </button>
+                            </div>
+                            Book: <b>@removedBookName</b> deleted successfully.
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div class="row">
+                <div class="text-right">
+                    <button onclick="@OnInitAsync" class="btn btn-info">
+                        <span class="oi oi-reload"></span>
+                    </button>
+                </div>
+            </div>
             <table class="table">
                 <thead>
                     <tr>
@@ -136,7 +160,7 @@ else
                                     Edit
                                 </a>
                                 |
-                                <a class="btn btn-danger" href="/delete-book/@book.Bookid">
+                                <a onclick="@(() => this.DeleteBook(book))" class="btn btn-danger">
                                     <span class="oi oi-trash"></span>
                                     Delete
                                 </a>
@@ -166,77 +190,89 @@ else
 }
 
 @functions {
-    /* ukazka, jak nastavit componente parametr: */
-    /*
-    [Parameter]
-    private string Title { get; set; }
-    */
+/* ukazka, jak nastavit componente parametr: */
+/*
+[Parameter]
+private string Title { get; set; }
+*/
 
-    //Book[] books;
-    //Author[] authorsBook;
+//Book[] books;
+//Author[] authorsBook;
 
-    List<Book> books = new List<Book>();
-    List<Author> authorsBook = new List<Author>();
+List<Book> books = new List<Book>();
+List<Author> authorsBook = new List<Author>();
 
-    string searchFor;
-    List<Book> searchResult = new List<Book>();
-    string FiltrType = "listBooks";
+string searchFor;
+List<Book> searchResult = new List<Book>();
+string FiltrType = "listBooks";
 
-    bool isSearch = false;
+bool isSearch = false;
 
-    int? editBookId = null;
+int? editBookId = null;
 
-    /*
-     * Volani api server
-     */
-    protected override async Task OnInitAsync()
+string removedBookName;
+
+/*
+ * Volani api server
+ */
+protected override async Task OnInitAsync()
+{
+    FiltrType = "listBooks";
+    books = await Http.GetJsonAsync<List<Book>>("api/mylibrary/getBooks");
+    //books = await Http.GetJsonAsync<Book[]>("api/mylibrary/getBooks");
+
+    //result = await Http.GetStringAsync("api/mylibrary/getBooks");
+
+}
+
+protected async Task GetBooksByAuthor()
+{
+    //books = await Http.GetJsonAsync<Book[]>("sample-data/books.json");
+    FiltrType = "getByAuthors";
+    //authorsBook = await Http.GetJsonAsync<Author[]>("api/mylibrary/getBooksByAuthor");
+    authorsBook = await Http.GetJsonAsync<List<Author>>("api/mylibrary/getBooksByAuthor");
+}
+
+private void DeleteBook(Book deleteBook)
+{
+    Http.SendJsonAsync(HttpMethod.Post, "/api/mylibrary/deleteBook", deleteBook);
+    var item = books.SingleOrDefault(x => x.Bookid == deleteBook.Bookid);
+    if (item != null)
+        books.Remove(item);
+    removedBookName = item.Name;
+    //books.RemoveAll(x => x.Bookid == deleteBook);
+}
+
+private void SearchFor()
+{
+    if (!string.IsNullOrEmpty(searchFor))
     {
-        FiltrType = "listBooks";
-        books = await Http.GetJsonAsync<List<Book>>("api/mylibrary/getBooks");
-        //books = await Http.GetJsonAsync<Book[]>("api/mylibrary/getBooks");
-
-        //result = await Http.GetStringAsync("api/mylibrary/getBooks");
-
-    }
-
-    protected async Task GetBooksByAuthor()
-    {
-        //books = await Http.GetJsonAsync<Book[]>("sample-data/books.json");
-        FiltrType = "getByAuthors";
-        //authorsBook = await Http.GetJsonAsync<Author[]>("api/mylibrary/getBooksByAuthor");
-        authorsBook = await Http.GetJsonAsync<List<Author>>("api/mylibrary/getBooksByAuthor");
-    }
-
-    private void SearchFor()
-    {
-        if (!string.IsNullOrEmpty(searchFor))
-        {
-            isSearch = true;
-            /*
+        isSearch = true;
+        /*
+    searchResult = books.FindAll(
+        x =>
+            (x.Name.Contains(searchFor))
+            //|| (x.Place.Contains(searchFor))
+            //|| (x.About.Contains(searchFor))
+            //|| (x.Author.Name.Contains(searchFor))
+        );
+        */
         searchResult = books.FindAll(
-            x =>
-                (x.Name.Contains(searchFor))
-                //|| (x.Place.Contains(searchFor))
-                //|| (x.About.Contains(searchFor))
-                //|| (x.Author.Name.Contains(searchFor))
-            );
-            */
-            searchResult = books.FindAll(
-                delegate (Book bk)
-                {
-                    return (bk.Name.Contains(searchFor) 
-                        //|| bk.Place.Contains(searchFor) 
-                        //|| bk.About.Contains(searchFor)
-                        //|| bk.Author.Name.Contains(searchFor)
-                        );
-                }
-            );
-        }
-        else
-        {
-
-            isSearch = false;
-        }
+            delegate (Book bk)
+            {
+                return (bk.Name.Contains(searchFor)
+                    //|| bk.Place.Contains(searchFor)
+                    //|| bk.About.Contains(searchFor)
+                    //|| bk.Author.Name.Contains(searchFor)
+                    );
+            }
+        );
     }
+    else
+    {
+
+        isSearch = false;
+    }
+}
 
 }
