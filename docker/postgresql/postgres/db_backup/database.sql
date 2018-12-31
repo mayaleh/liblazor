@@ -27,3 +27,17 @@ create table if not exists book
 comment on table book is 'Books table';
 
 alter table book owner to appuser;
+
+create table useracess
+(
+	userid serial not null
+		constraint useraccess_pk
+			primary key,
+	name varchar(250),
+	email varchar(250) not null,
+	password varchar(350) not null
+);
+
+comment on table useraccess is 'Users login';
+
+alter table useraccess owner to appuser;

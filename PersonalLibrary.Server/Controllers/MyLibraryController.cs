@@ -8,14 +8,16 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PersonalLibrary.Server.Models;
 using PersonalLibrary.Shared;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PersonalLibrary.Server.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class MyLibraryController : ControllerBase
     {
-
+        //todo Edit to DI
         BookModel _book = new BookModel();
         AuthorModel _author = new AuthorModel();
 

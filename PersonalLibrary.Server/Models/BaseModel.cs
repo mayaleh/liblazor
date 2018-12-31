@@ -12,6 +12,7 @@ namespace PersonalLibrary.Server.Models
 
         public virtual DbSet<Author> Author { get; set; }
         public virtual DbSet<Book> Book { get; set; }
+        public virtual DbSet<UserAccess> UserAccess { get; set; }
 
         public BaseModel()
         {
