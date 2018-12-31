@@ -2,9 +2,13 @@
 @using PersonalLibrary.Shared
 
 @inject HttpClient Http
-@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+@inject IUriHelper UriHelper
 
-<SurveyPrompt Title="New Author" />
+
+@if (string.IsNullOrEmpty(Storage.GetItem("useraccessparam")))
+{
+    UriHelper.NavigateTo("/sign-in");
+}
 
 <div class="row">
 
@@ -19,10 +23,10 @@
             <input bind="@formAuthor.Name" type="text" class="form-control is-valid" id="nameAuthor" aria-describedby="nameHelp" placeholder="name" required />
             <small id="nameHelp" class="form-text text-muted">Everyone has at least name.</small>
             <!--
-    <div class="valid-feedback">
-        Looks good!
-    </div>
-    -->
+            <div class="valid-feedback">
+                Looks good!
+            </div>
+            -->
             <div class="invalid-feedback">
                 Please fill name.
             </div>
@@ -65,27 +69,28 @@ else
 }
 
 @functions {
-    private string _newName = "";
+private string _newName = "";
 
-    Author formAuthor = new Author();
-    bool CanClickSave = true;
-    bool IsInvalidName = false;
-    //protected override void OnInit()
-    protected void AddAuthor()
+Author formAuthor = new Author();
+bool CanClickSave = true;
+bool IsInvalidName = false;
+//protected override void OnInit()
+protected void AddAuthor()
+{
+    if (string.IsNullOrEmpty(formAuthor.Name))
     {
-        if(string.IsNullOrEmpty(formAuthor.Name))
-        {
-            IsInvalidName = true;
-            return;
-        }
-        IsInvalidName = false;
-        CanClickSave = false;
-        Http.SendJsonAsync(HttpMethod.Post, "/api/mylibrary/addAuthor", formAuthor);
-        _newName = formAuthor.Name;
-        formAuthor.Name = null;
-        formAuthor.About = null;
-        CanClickSave = true;
-
-        //UriHelper.NavigateTo("/form-author");
+        IsInvalidName = true;
+        return;
     }
+    IsInvalidName = false;
+    CanClickSave = false;
+    Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Storage["useraccessparam"]);
+    Http.SendJsonAsync(HttpMethod.Post, "/api/mylibrary/addAuthor", formAuthor);
+    _newName = formAuthor.Name;
+    formAuthor.Name = null;
+    formAuthor.About = null;
+    CanClickSave = true;
+
+    //UriHelper.NavigateTo("/form-author");
+}
 }

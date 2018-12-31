@@ -1,4 +1,8 @@
 ﻿@inherits BlazorLayoutComponent
+@using Cloudcrate.AspNetCore.Blazor.Browser.Storage;
+
+@inject LocalStorage Storage
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 
 <div class="sidebar">
     <NavMenu />
@@ -6,10 +10,37 @@
 
 <div class="main">
     <div class="top-row px-4">
-        <a href="http://blazor.net" target="_blank" class="ml-md-auto">About</a>
+        @if (!string.IsNullOrEmpty(Storage.GetItem("useraccessparam")))
+        {
+            <button onclick="@SignOut" class="btn btn-warning ml-md-auto">
+                <span class="oi oi-account-logout"></span>
+                Sign out
+            </button>
+        }
+        else
+        {
+            <NavLink class="btn btn-info ml-md-auto" href="sign-in" Match=NavLinkMatch.All>
+                <span class="oi oi-account-login"></span>
+                Sign in
+            </NavLink>
+        }
+
     </div>
 
     <div class="content px-4">
         @Body
     </div>
 </div>
+@functions{ //read cookie from IHttpContextAccessor
+    //string cookieValueFromContext = _httpContextAccessor.HttpContext.Request.Cookies["key"];
+
+    //read cookie from Request object
+    //string cookieValueFromReq = Request.Cookies["Key"];
+
+    protected void SignOut()
+    {
+        //Storage["useraccessparam"] = null;
+        Storage.Clear();
+        UriHelper.NavigateTo("/sign-in");
+    }
+}

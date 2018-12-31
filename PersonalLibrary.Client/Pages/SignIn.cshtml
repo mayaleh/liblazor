@@ -3,6 +3,8 @@
 
 @inject HttpClient Http
 
+@inject IUriHelper UriHelper
+
 <div class="form-group row">
     <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
     <div class="col-sm-10">
@@ -16,27 +18,53 @@
     </div>
 </div>
 
-<div class="form-group row">
-    <div class="col-sm-10">
-        <button onclick="@SubmitSignIn" class="btn btn-primary">Sign in</button>
+@if (isProcessing)
+{
+    <div class="text-center">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
     </div>
-</div>
+}
+else
+{
+    <div class="form-group row">
+        <div class="col-sm-10">
+            <button onclick="@SubmitSignIn" class="btn btn-primary">Sign in</button>
+        </div>
+    </div>
+}
+
+
+
+
 
 @functions{
 
     public string Email = "";
     public string Password = "";
+    private bool isProcessing = false;
 
     // Todo InitAsynchLoad check if user is logged in, if is true redirect to homepage
     private async Task SubmitSignIn()
     {
+        isProcessing = true;
         UserAccess userForm = new UserAccess
         {
             Email = Email,
             Password = Password
         };
+        //Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "Your Oauth token");
+        var response = await Http.PostJsonAsync<ResponseToken>("/api/sign/in", userForm);
 
-        var response = await Http.PostJsonAsync<UserAccess>("/api/sign/in", userForm);
+        if(!string.IsNullOrEmpty(response.Token))
+        {
+            Storage["useraccessparam"] = response.Token;
+            Console.WriteLine(Storage["useraccessparam"]);
+            UriHelper.NavigateTo("/");
+        }
+
+        isProcessing = false;
     }
 
 }

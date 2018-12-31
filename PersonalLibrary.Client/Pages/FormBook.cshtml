@@ -2,7 +2,15 @@
 @using PersonalLibrary.Shared
 
 @inject HttpClient Http
-@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+@inject IUriHelper UriHelper
+
+@if (!IsEdit)
+{
+    @if (string.IsNullOrEmpty(Storage.GetItem("useraccessparam")))
+    {
+        UriHelper.NavigateTo("/sign-in");
+    }
+}
 
 @if (IsEdit && formBook.Bookid == 0)
 {
@@ -102,78 +110,81 @@ else
 
 
 @functions {
-    private string _newName = "";
+private string _newName = "";
 
-    Book formBook = new Book()
+Book formBook = new Book()
+{
+    Author = new Author()
+};
+
+bool CanClickSave = true;
+bool IsInvalidName = false;
+//protected override void OnInit() //synch call
+
+bool isLoaded = false;
+
+[Parameter]
+bool IsEdit { get; set; } = false;
+
+[Parameter]
+int BookId { get; set; }
+
+string nadpis = "";
+
+protected override async Task OnInitAsync()
+{
+    if (IsEdit)
     {
-        Author = new Author()
-    };
-
-    bool CanClickSave = true;
-    bool IsInvalidName = false;
-    //protected override void OnInit() //synch call
-
-    bool isLoaded = false;
-
-    [Parameter]
-    bool IsEdit { get; set; } = false;
-
-    [Parameter]
-    int BookId { get; set; }
-
-    string nadpis = "";
-
-    protected override async Task OnInitAsync()
-    {
-        if (IsEdit)
-        {
-            nadpis = "Editing book";
-            formBook = await Http.GetJsonAsync<Book>("/api/mylibrary/bookDetail/" + Convert.ToInt32(BookId));
-            isLoaded = true;
-        }
-        else
-        {
-            nadpis = "Adding new book";
-        }
-
+        nadpis = "Editing book";
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Storage["useraccessparam"]);
+        formBook = await Http.GetJsonAsync<Book>("/api/mylibrary/bookDetail/" + Convert.ToInt32(BookId));
+        isLoaded = true;
     }
-    
-    protected void AddBook()
+    else
     {
-        if (IsEdit)
-        {
-            return;
-        }
-        if (string.IsNullOrEmpty(formBook.Name))
-        {
-            IsInvalidName = true;
-            return;
-        }
-        IsInvalidName = false;
-        CanClickSave = false;
-        Http.SendJsonAsync(HttpMethod.Post, "/api/mylibrary/addBook", formBook);
-        _newName = formBook.Name;
-        formBook.Name = null;
-        formBook.About = null;
-        formBook.Place = null;
-        formBook.Author.Name = null;
-        CanClickSave = true;
-
-        //UriHelper.NavigateTo("/form-author");
+        nadpis = "Adding new book";
     }
 
-    protected void EditBook()
+}
+
+protected void AddBook()
+{
+    if (IsEdit)
     {
-        if (string.IsNullOrEmpty(formBook.Name))
-        {
-            IsInvalidName = true;
-            return;
-        }
-        IsInvalidName = false;
-        CanClickSave = false;
-        Http.SendJsonAsync(HttpMethod.Post, "/api/mylibrary/editBook", formBook);
-        _newName = formBook.Name;
-        //formBook = null;
-        CanClickSave = true;
+        return;
     }
+    if (string.IsNullOrEmpty(formBook.Name))
+    {
+        IsInvalidName = true;
+        return;
+    }
+    IsInvalidName = false;
+    CanClickSave = false;
+    Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Storage["useraccessparam"]);
+    Http.SendJsonAsync(HttpMethod.Post, "/api/mylibrary/addBook", formBook);
+    _newName = formBook.Name;
+    formBook.Name = null;
+    formBook.About = null;
+    formBook.Place = null;
+    formBook.Author.Name = null;
+    CanClickSave = true;
+
+    //UriHelper.NavigateTo("/form-author");
+}
+
+protected void EditBook()
+{
+    if (string.IsNullOrEmpty(formBook.Name))
+    {
+        IsInvalidName = true;
+        return;
+    }
+    IsInvalidName = false;
+    CanClickSave = false;
+    Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Storage["useraccessparam"]);
+    Http.SendJsonAsync(HttpMethod.Post, "/api/mylibrary/editBook", formBook);
+    _newName = formBook.Name;
+    //formBook = null;
+    CanClickSave = true;
+}
 }

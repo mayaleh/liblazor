@@ -32,6 +32,18 @@ namespace PersonalLibrary.Server.Controllers
             if(userChecked != null)
             {
                 var token = _tokenService.BuildToken(userChecked.Email, userChecked.Userid.ToString());
+
+                // Set Cookie
+                /* In client - no access to cookies
+                CookieOptions option = new CookieOptions
+                {
+                    Expires = DateTime.Now.AddMinutes(30)
+                };
+
+                Response.Cookies.Append("userParamAccess", token, option);
+                */
+                
+
                 return Ok(new { token });
             }
             else
@@ -39,5 +51,7 @@ namespace PersonalLibrary.Server.Controllers
                 return Forbid();
             }
         }
+
+        //Todo Sign out
     }
 }

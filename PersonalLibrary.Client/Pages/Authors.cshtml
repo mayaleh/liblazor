@@ -2,8 +2,12 @@
 @using PersonalLibrary.Shared
 
 @inject HttpClient Http
+@inject IUriHelper UriHelper
 
-<SurveyPrompt Title="All Authors" />
+@if (string.IsNullOrEmpty(Storage.GetItem("useraccessparam")))
+{
+    UriHelper.NavigateTo("/sign-in");
+}
 
 <h1>All Authors</h1>
 
@@ -65,7 +69,8 @@ protected override async Task OnInitAsync()
 {
 
     //books = await Http.GetJsonAsync<Book[]>("sample-data/books.json");
-
+    //Storage["useraccessparam"];
+    Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Storage["useraccessparam"]);
     authors = await Http.GetJsonAsync<Author[]>("api/mylibrary/getAuthors");
 }
 }

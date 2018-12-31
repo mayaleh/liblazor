@@ -2,8 +2,12 @@
 @using PersonalLibrary.Shared
 
 @inject HttpClient Http
-@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+@inject IUriHelper UriHelper
 
+@if (string.IsNullOrEmpty(Storage.GetItem("useraccessparam")))
+{
+    UriHelper.NavigateTo("/sign-in");
+}
 
 <h1>My Library List</h1>
 
@@ -219,10 +223,14 @@ string removedBookName;
 protected override async Task OnInitAsync()
 {
     FiltrType = "listBooks";
+
+    Console.WriteLine(Storage["userParamAccess"]);
+    Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Storage["useraccessparam"]);
     books = await Http.GetJsonAsync<List<Book>>("api/mylibrary/getBooks");
     //books = await Http.GetJsonAsync<Book[]>("api/mylibrary/getBooks");
 
     //result = await Http.GetStringAsync("api/mylibrary/getBooks");
+
 
 }
 
@@ -231,11 +239,13 @@ protected async Task GetBooksByAuthor()
     //books = await Http.GetJsonAsync<Book[]>("sample-data/books.json");
     FiltrType = "getByAuthors";
     //authorsBook = await Http.GetJsonAsync<Author[]>("api/mylibrary/getBooksByAuthor");
+    Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Storage["useraccessparam"]);
     authorsBook = await Http.GetJsonAsync<List<Author>>("api/mylibrary/getBooksByAuthor");
 }
 
 private void DeleteBook(Book deleteBook)
 {
+    Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Storage["useraccessparam"]);
     Http.SendJsonAsync(HttpMethod.Post, "/api/mylibrary/deleteBook", deleteBook);
     var item = books.SingleOrDefault(x => x.Bookid == deleteBook.Bookid);
     if (item != null)
