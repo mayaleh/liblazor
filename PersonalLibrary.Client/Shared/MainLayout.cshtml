@@ -4,43 +4,37 @@
 @inject LocalStorage Storage
 @inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 
-<div class="sidebar">
+
+
+<nav>
     <NavMenu />
-</div>
+</nav>
 
-<div class="main">
-    <div class="top-row px-4">
-        @if (!string.IsNullOrEmpty(Storage.GetItem("useraccessparam")))
-        {
-            <button onclick="@SignOut" class="btn btn-warning ml-md-auto">
-                <span class="oi oi-account-logout"></span>
-                Sign out
-            </button>
-        }
-        else
-        {
-            <NavLink class="btn btn-info ml-md-auto" href="sign-in" Match=NavLinkMatch.All>
-                <span class="oi oi-account-login"></span>
-                Sign in
-            </NavLink>
-        }
-
+<main role="main">
+    <div class="container main">
+        <div class="content">
+            @Body
+        </div>
     </div>
+</main>
 
-    <div class="content px-4">
-        @Body
+
+<footer class="footer">
+    <div class="separator"></div>
+    <div class="container">
+        <span class="text-muted">Developed by <a href="http://www.mayaleh.cz" target="_blank">Salim Mayaleh</a></span>
     </div>
-</div>
-@functions{ //read cookie from IHttpContextAccessor
+    <div class="separator"></div>
+</footer>
+@functions{
+    //Alternativ extention to manage browser storage data and include usefull methods: https://github.com/floreseken/BlazorExtensions
+    //read cookie from IHttpContextAccessor
     //string cookieValueFromContext = _httpContextAccessor.HttpContext.Request.Cookies["key"];
 
     //read cookie from Request object
     //string cookieValueFromReq = Request.Cookies["Key"];
-
-    protected void SignOut()
-    {
-        //Storage["useraccessparam"] = null;
-        Storage.Clear();
-        UriHelper.NavigateTo("/sign-in");
-    }
 }
+
+<footer>
+
+</footer>

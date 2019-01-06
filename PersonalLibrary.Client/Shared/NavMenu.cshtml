@@ -1,31 +1,64 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">PersonalLibrary</a>
-    <button class="navbar-toggler" onclick=@ToggleNavMenu>
-        <span class="oi oi-grid-three-up" aria-hidden="true"></span>
-    </button>
-</div>
+﻿@using Cloudcrate.AspNetCore.Blazor.Browser.Storage;
+@inject LocalStorage Storage
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+@*
+    <div class="top-row pl-4 navbar navbar-dark">
+        <a class="navbar-brand" href="">PersonalLibrary</a>
+        <button class="navbar-toggler" onclick=@ToggleNavMenu>
+            <span class="oi oi-grid-three-up" aria-hidden="true"></span>
+        </button>
+    </div>
+*@
 
-<div class=@(collapseNavMenu ? "collapse" : null) onclick=@ToggleNavMenu>
-    <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match=NavLinkMatch.All>
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </li>
-        @if (!string.IsNullOrEmpty(Storage.GetItem("useraccessparam")))
-        {
-            <li class="nav-item px-3">
-                <NavLink class="nav-link" href="my-library" Match=NavLinkMatch.All>
-                    <span class="oi oi-vertical-align-bottom" aria-hidden="true"></span> My Library
+
+
+<div class="pos-f-t">
+    <nav class="navbar navbar-dark bg-mayaleh">
+        <button onclick="@RefreshThisCompo" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <form class="form-inline my-2 my-lg-0">
+            @if (!string.IsNullOrEmpty(Storage.GetItem("useraccessparam")))
+            {
+                <button onclick="@SignOut" class="btn btn-warning ml-md-auto">
+                    <span class="oi oi-account-logout"></span>
+                    Sign out
+                </button>
+            }
+            else
+            {
+                <NavLink class="btn btn-info ml-md-auto" href="sign-in" Match=NavLinkMatch.All>
+                    <span class="oi oi-account-login"></span>
+                    Sign in
                 </NavLink>
-            </li>
-            <li class="nav-item px-3">
-                <NavLink class="nav-link" href="all-authors" Match=NavLinkMatch.All>
-                    <span class="oi oi-people" aria-hidden="true"></span> Authors
-                </NavLink>
-            </li>
-        }
-    </ul>
+            }
+        </form>
+    </nav>
+    <div class="collapse" id="navbarToggleExternalContent">
+        <div class="bg-mayaleh p-4">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                <li>
+                    <NavLink href="" Match=NavLinkMatch.All>
+                        <span class="oi oi-home" aria-hidden="true"></span> Home
+                    </NavLink>
+                </li>
+                @if (!string.IsNullOrEmpty(Storage.GetItem("useraccessparam")))
+                {
+                    <li>
+                        <NavLink href="my-library" Match=NavLinkMatch.All>
+                            <span class="oi oi-vertical-align-bottom" aria-hidden="true"></span> My Library
+                        </NavLink>
+                    </li>
+                    <li>
+                        <NavLink href="all-authors" Match=NavLinkMatch.All>
+                            <span class="oi oi-people" aria-hidden="true"></span> Authors
+                        </NavLink>
+                    </li>
+                }
+            </ul>
+            
+        </div>
+    </div>
 </div>
 
 
@@ -34,8 +67,16 @@
 @functions {
     bool collapseNavMenu = true;
 
-    void ToggleNavMenu()
+    void RefreshThisCompo()
     {
-        collapseNavMenu = !collapseNavMenu;
+        StateHasChanged();
     }
+    protected void SignOut()
+    {
+        //Storage["useraccessparam"] = null;
+        Storage.Clear();
+        StateHasChanged();
+        UriHelper.NavigateTo("/sign-in");
+    }
+
 }
