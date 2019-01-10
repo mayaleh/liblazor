@@ -20,6 +20,11 @@
         <form class="form-inline my-2 my-lg-0">
             @if (!string.IsNullOrEmpty(Storage.GetItem("useraccessparam")))
             {
+
+                @if (!string.IsNullOrEmpty(Storage.GetItem("username")))
+                {
+                    <span class="username text-white">@Storage.GetItem("username")</span>
+                }
                 <button onclick="@SignOut" class="btn btn-warning ml-md-auto">
                     <span class="oi oi-account-logout"></span>
                     Sign out
@@ -56,7 +61,7 @@
                     </li>
                 }
             </ul>
-            
+
         </div>
     </div>
 </div>
@@ -64,19 +69,21 @@
 
 
 
-@functions {
-    bool collapseNavMenu = true;
 
-    void RefreshThisCompo()
-    {
-        StateHasChanged();
-    }
-    protected void SignOut()
-    {
-        //Storage["useraccessparam"] = null;
-        Storage.Clear();
-        StateHasChanged();
-        UriHelper.NavigateTo("/sign-in");
-    }
+
+@functions {
+bool collapseNavMenu = true;
+
+void RefreshThisCompo()
+{
+    StateHasChanged();
+}
+protected void SignOut()
+{
+    //Storage["useraccessparam"] = null;
+    Storage.Clear();
+    StateHasChanged();
+    UriHelper.NavigateTo("/sign-in");
+}
 
 }

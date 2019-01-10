@@ -45,7 +45,7 @@
     public string Email = "";
     public string Password = "";
     private bool isProcessing = false;
-    
+
 
     // Todo InitAsynchLoad check if user is logged in, if is true redirect to homepage
     private async Task SubmitSignIn()
@@ -62,6 +62,7 @@
         if(!string.IsNullOrEmpty(response.Token))
         {
             Storage["useraccessparam"] = response.Token;
+            Storage["username"] = response.Name;
             //StateHasChanged();
             UriHelper.NavigateTo("/");
         }

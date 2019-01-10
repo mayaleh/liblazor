@@ -50,21 +50,22 @@ else
     @switch (FiltrType)
     {
         case "listBooks":
-            <div class="row">
-                <div class="col-3">
-                    <div class="form-group">
-                        <input bind="@searchFor" onchange="@SearchFor" type="text" class="form-control" id="search" aria-describedby="searchHelp" placeholder="Search..." />
-                        <small id="searchHelp" class="form-text text-muted">Search for...</small>
+            <form onsubmit="@SearchFor" class="row margin-x-md">
+               
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <input bind="@searchFor" onchange="@SearchFor" type="text" class="form-control" id="search" aria-describedby="searchHelp" placeholder="Search..." />
+                            <small id="searchHelp" class="form-text text-muted">Search for...</small>
 
+                        </div>
                     </div>
-                </div>
-                <div class="col">
-                    <button onclick="@SearchFor" class="btn btn-primary">
-                        <span class="oi oi-magnifying-glass"></span>
-                        Search
-                    </button>
-                </div>
-            </div>
+                    <div class="col">
+                        <button onclick="@SearchFor" class="btn btn-primary">
+                            <span class="oi oi-magnifying-glass"></span>
+                            Search
+                        </button>
+                    </div>
+            </form>
 
             @if (isSearch)
             {
@@ -87,7 +88,7 @@ else
 
             @if (editBookId != null)
             {
-                <div class="padding-md border border-info">
+                <div class="padding-md border margin-x-md border-info">
                     <div class="row">
                         <div class="col-12 text-right">
                             <div class="text-right">
@@ -143,12 +144,13 @@ else
                 <tbody>
                     @foreach (var book in books)
                     {
+                        string bookDetailUrl = "/book/detail/" + book.Bookid.ToString();
                         <tr>
                             <td>
-                                <a href="#">
+                                <NavLink href="@bookDetailUrl">
                                     <span class="oi oi-link-intact"></span>
                                     @book.Name
-                                </a>
+                                </NavLink>
                             </td>
                             <td>
                                 @if (book.Authorid != null)
@@ -195,95 +197,107 @@ else
 }
 
 @functions {
-/* ukazka, jak nastavit componente parametr: */
-/*
-[Parameter]
-private string Title { get; set; }
-*/
+    /* ukazka, jak nastavit componente parametr: */
+    /*
+    [Parameter]
+    private string Title { get; set; }
+    */
 
-//Book[] books;
-//Author[] authorsBook;
+    //Book[] books;
+    //Author[] authorsBook;
 
-List<Book> books = new List<Book>();
-List<Author> authorsBook = new List<Author>();
+    List<Book> books = new List<Book>();
+    List<Author> authorsBook = new List<Author>();
 
-string searchFor;
-List<Book> searchResult = new List<Book>();
-string FiltrType = "listBooks";
+    string searchFor;
+    List<Book> searchResult = new List<Book>();
+    string FiltrType = "listBooks";
 
-bool isSearch = false;
+    bool isSearch = false;
 
-int? editBookId = null;
+    int? editBookId = null;
 
-string removedBookName;
+    string removedBookName;
 
-/*
- * Volani api server
- */
-protected override async Task OnInitAsync()
-{
-    FiltrType = "listBooks";
-
-    Console.WriteLine(Storage["userParamAccess"]);
-    Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Storage["useraccessparam"]);
-    books = await Http.GetJsonAsync<List<Book>>("api/mylibrary/getBooks");
-    //books = await Http.GetJsonAsync<Book[]>("api/mylibrary/getBooks");
-
-    //result = await Http.GetStringAsync("api/mylibrary/getBooks");
-
-
-}
-
-protected async Task GetBooksByAuthor()
-{
-    //books = await Http.GetJsonAsync<Book[]>("sample-data/books.json");
-    FiltrType = "getByAuthors";
-    //authorsBook = await Http.GetJsonAsync<Author[]>("api/mylibrary/getBooksByAuthor");
-    Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Storage["useraccessparam"]);
-    authorsBook = await Http.GetJsonAsync<List<Author>>("api/mylibrary/getBooksByAuthor");
-}
-
-private void DeleteBook(Book deleteBook)
-{
-    Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Storage["useraccessparam"]);
-    Http.SendJsonAsync(HttpMethod.Post, "/api/mylibrary/deleteBook", deleteBook);
-    var item = books.SingleOrDefault(x => x.Bookid == deleteBook.Bookid);
-    if (item != null)
-        books.Remove(item);
-    removedBookName = item.Name;
-    //books.RemoveAll(x => x.Bookid == deleteBook);
-}
-
-private void SearchFor()
-{
-    if (!string.IsNullOrEmpty(searchFor))
+    /*
+     * Volani api server
+     */
+    protected override async Task OnInitAsync()
     {
-        isSearch = true;
-        /*
-    searchResult = books.FindAll(
-        x =>
-            (x.Name.Contains(searchFor))
-            //|| (x.Place.Contains(searchFor))
-            //|| (x.About.Contains(searchFor))
-            //|| (x.Author.Name.Contains(searchFor))
-        );
-        */
+        FiltrType = "listBooks";
+
+        Console.WriteLine(Storage["userParamAccess"]);
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Storage["useraccessparam"]);
+        books = await Http.GetJsonAsync<List<Book>>("api/mylibrary/getBooks");
+        //books = await Http.GetJsonAsync<Book[]>("api/mylibrary/getBooks");
+
+        //result = await Http.GetStringAsync("api/mylibrary/getBooks");
+
+
+    }
+
+    protected async Task GetBooksByAuthor()
+    {
+        //books = await Http.GetJsonAsync<Book[]>("sample-data/books.json");
+        FiltrType = "getByAuthors";
+        //authorsBook = await Http.GetJsonAsync<Author[]>("api/mylibrary/getBooksByAuthor");
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Storage["useraccessparam"]);
+        authorsBook = await Http.GetJsonAsync<List<Author>>("api/mylibrary/getBooksByAuthor");
+    }
+
+    private void DeleteBook(Book deleteBook)
+    {
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Storage["useraccessparam"]);
+        Http.SendJsonAsync(HttpMethod.Post, "/api/mylibrary/deleteBook", deleteBook);
+        var item = books.SingleOrDefault(x => x.Bookid == deleteBook.Bookid);
+        if (item != null)
+            books.Remove(item);
+        removedBookName = item.Name;
+        //books.RemoveAll(x => x.Bookid == deleteBook);
+    }
+
+    private void SearchFor()
+    {
+        if (!string.IsNullOrEmpty(searchFor))
+        {
+            isSearch = true;
+            /*
         searchResult = books.FindAll(
+            x =>
+                (x.Name.Contains(searchFor))
+                //|| (x.Place.Contains(searchFor))
+                //|| (x.About.Contains(searchFor))
+                //|| (x.Author.Name.Contains(searchFor))
+            );
+            */
+            /*
+            searchResult = books.FindAll(
             delegate (Book bk)
             {
-                return (bk.Name.Contains(searchFor)
-                    //|| bk.Place.Contains(searchFor)
-                    //|| bk.About.Contains(searchFor)
-                    //|| bk.Author.Name.Contains(searchFor)
-                    );
+                return ((bk.Name.ToUpper().Contains(searchFor.ToUpper())
+                    || bk.Place.ToUpper().Contains(searchFor.ToUpper())
+                    || bk.About.ToUpper().Contains(searchFor.ToUpper())
+                    //|| bk.Author.Name.ToUpper().Contains(searchFor.ToUpper())
+                    ));
             }
-        );
-    }
-    else
-    {
 
-        isSearch = false;
+            );
+            */
+            searchResult = books
+                .Where(bk =>
+                    (bk.Name.ToUpper().Contains(searchFor.ToUpper())
+                    || bk.Place.ToUpper().Contains(searchFor.ToUpper())
+                    //|| bk.About.ToUpper().Contains(searchFor.ToUpper()) nefunguje hledani v tomto
+                    || bk.Author.Name.ToUpper().Contains(searchFor.ToUpper())
+                ))
+                .ToList<Book>();
+            StateHasChanged();
+        }
+        else
+        {
+
+            isSearch = false;
+        }
     }
-}
 
 }

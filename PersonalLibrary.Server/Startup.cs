@@ -14,6 +14,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using PersonalLibrary.Server.Services;
+using PersonalLibrary.Server.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace PersonalLibrary.Server
 {
@@ -79,6 +82,15 @@ namespace PersonalLibrary.Server
                         };
                     }
                 );
+
+            services.AddDbContext<ApplicationDBContext>(
+                    options =>
+                        options.UseNpgsql(
+                                Configuration.GetConnectionString("DefaultConnection")
+                            )
+                );
+            services.AddDefaultIdentity<IdentityUser>()
+                .AddEntityFrameworkStores<ApplicationDBContext>();
 
         }
 

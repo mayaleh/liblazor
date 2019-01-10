@@ -10,61 +10,78 @@
     UriHelper.NavigateTo("/sign-in");
 }
 
-<div class="row">
-
-    <div class="col-4">
-        <h2>Adding new Author or Book Writter:</h2>
-        <p>Please fill at least Author Name.</p>
-    </div>
-
-    <div class="col-4">
-        <div class="form-group">
-            <label for="nameAuthor">Author Name:</label>
-            <input bind="@formAuthor.Name" type="text" class="form-control is-valid" id="nameAuthor" aria-describedby="nameHelp" placeholder="name" required />
-            <small id="nameHelp" class="form-text text-muted">Everyone has at least name.</small>
-            <!--
-            <div class="valid-feedback">
-                Looks good!
-            </div>
-            -->
-            <div class="invalid-feedback">
-                Please fill name.
-            </div>
-            @if (IsInvalidName)
-            {
-                <span class="small form-text text-danger">Please fill this!</span>
-            }
-        </div>
-    </div>
-
-    <div class="col-4">
-
-        <div class="form-group">
-            <label for="aboutAuthor">About Author</label>
-            <textarea bind="@formAuthor.About" class="form-control" id="aboutAuthor" aria-describedby="aboutHelp" placeholder="about" rows="3"></textarea>
-            <small id="aboutHelp" class="form-text text-muted">For example copy some text about the author from wiki and paste it there</small>
-        </div>
-    </div>
-</div>
-@if (CanClickSave)
-{
-
-    <button onclick="@AddAuthor" class="btn btn-primary">Add Author</button>
-}
-else
+@if (IsEdit && formAuthor.Authorid == 0)
 {
     <div class="text-center">
         <div class="spinner-border" role="status">
-            <span class="sr-only">Processing...</span>
+            <span class="sr-only">Loading...</span>
         </div>
     </div>
 }
-
-@if (_newName != "")
+else
 {
-    <div class="alert alert-success" role="alert">
-        New Author added: <b>@_newName</b>
+
+    <div class="row">
+
+        <div class="col-sm-4">
+            <h2>@nadpis:</h2>
+            <p>Please fill at least Author Name.</p>
+        </div>
     </div>
+    <div class="row">
+        <div class="col-6">
+            <div class="form-group">
+                <label for="nameAuthor">Author Name:</label>
+                <input bind="@formAuthor.Name" type="text" class="form-control is-valid" id="nameAuthor" aria-describedby="nameHelp" placeholder="name" required />
+                <small id="nameHelp" class="form-text text-muted">Everyone has at least name.</small>
+
+                <div class="invalid-feedback">
+                    Please fill name.
+                </div>
+                @if (IsInvalidName)
+                {
+                    <span class="small form-text text-danger">Please fill this!</span>
+                }
+            </div>
+        </div>
+
+        <div class="col-6">
+
+            <div class="form-group">
+                <label for="aboutAuthor">About Author</label>
+                <textarea bind="@formAuthor.About" class="form-control" id="aboutAuthor" aria-describedby="aboutHelp" placeholder="about" rows="3"></textarea>
+                <small id="aboutHelp" class="form-text text-muted">For example copy some text about the author from wiki and paste it there</small>
+            </div>
+        </div>
+    </div>
+
+    @if (CanClickSave)
+    {
+        @if (IsEdit)
+        {
+            <button onclick="@EditAuthor" class="btn btn-primary">Edit Author</button>
+        }
+        else
+        {
+            <button onclick="@AddAuthor" class="btn btn-primary">Add Author</button>
+        }
+    }
+    else
+    {
+        <div class="text-center">
+            <div class="spinner-border" role="status">
+                <span class="sr-only">Processing...</span>
+            </div>
+        </div>
+    }
+
+    @if (_newName != "")
+    {
+        <div class="alert alert-success" role="alert">
+            Author saved: <b>@_newName</b>
+        </div>
+
+    }
 
 }
 
@@ -74,9 +91,44 @@ private string _newName = "";
 Author formAuthor = new Author();
 bool CanClickSave = true;
 bool IsInvalidName = false;
+
+
+bool isLoaded = false;
+
+[Parameter]
+bool IsEdit { get; set; } = false;
+
+[Parameter]
+int AuthorId { get; set; }
+
+string nadpis = "";
+
+
+protected override async Task OnInitAsync()
+{
+    if (IsEdit)
+    {
+        nadpis = "Editing author";
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Storage["useraccessparam"]);
+        formAuthor = await Http.GetJsonAsync<Author>("/api/mylibrary/authorDetail/" + Convert.ToInt32(AuthorId));
+        isLoaded = true;
+    }
+    else
+    {
+        nadpis = "Adding new auhtor";
+    }
+
+}
+
+
 //protected override void OnInit()
 protected void AddAuthor()
 {
+    if (IsEdit)
+    {
+        return;
+    }
+
     if (string.IsNullOrEmpty(formAuthor.Name))
     {
         IsInvalidName = true;
@@ -92,5 +144,21 @@ protected void AddAuthor()
     CanClickSave = true;
 
     //UriHelper.NavigateTo("/form-author");
+}
+
+protected void EditAuthor()
+{
+    if (string.IsNullOrEmpty(formAuthor.Name))
+    {
+        IsInvalidName = true;
+        return;
+    }
+    IsInvalidName = false;
+    CanClickSave = false;
+    Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Storage["useraccessparam"]);
+    Http.SendJsonAsync(HttpMethod.Post, "/api/mylibrary/editAuthor", formAuthor);
+    _newName = formAuthor.Name;
+    //formBook = null;
+    CanClickSave = true;
 }
 }

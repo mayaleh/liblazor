@@ -21,12 +21,37 @@ namespace PersonalLibrary.Server.Controllers
         BookModel _book = new BookModel();
         AuthorModel _author = new AuthorModel();
 
+        #region Authors
 
         [HttpGet("[action]")]
         public IEnumerable<Author> GetAuthors()
         {
             return _author.GetAllAuthors();
         }
+
+
+        [HttpGet("[action]/{id}")]
+        public Author AuthorDetail(int id)
+        {
+            return _author.GetAuthor(id);
+        }
+
+        [HttpPost("[action]")]
+        public void AddAuthor([FromBody] Author author)
+        {
+            if (ModelState.IsValid)
+                _author.SaveAuthor(author);
+        }
+
+        [HttpPost("[action]")]
+        public void EditAuthor([FromBody] Author author)
+        {
+            if (ModelState.IsValid)
+                _author.SaveAuthor(author);
+        }
+        #endregion
+
+        #region Books
 
         /*
         [HttpGet]
@@ -50,13 +75,6 @@ namespace PersonalLibrary.Server.Controllers
         public Book BookDetail(int id)
         {
             return _book.GetBook(id);
-        }
-
-        [HttpPost("[action]")]
-        public void AddAuthor([FromBody] Author author)
-        {
-            if (ModelState.IsValid)
-                _author.AddAuthor(author);
         }
 
 
@@ -83,6 +101,7 @@ namespace PersonalLibrary.Server.Controllers
             if (ModelState.IsValid)
                 _book.DeleteBook(book.Bookid);
         }
-
+        
+        #endregion
     }
 }

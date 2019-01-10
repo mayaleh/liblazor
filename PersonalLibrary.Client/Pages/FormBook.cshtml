@@ -24,94 +24,95 @@ else
 {
     <div class="row">
 
-        <div class="col-4">
+        <div class="col-sm-4">
             <h2>@nadpis:</h2>
             <p>Please fill at least Book Name.</p>
         </div>
-
-        <div class="col">
-            <div class="form-group">
-                <label for="nameBook">Book Name:</label>
-                <input bind="@formBook.Name" type="text" class="form-control is-valid" id="nameBook" aria-describedby="bnameHelp" placeholder="book name" required />
-                <small id="bnameHelp" class="form-text text-muted">All Books has at least name.</small>
-                <!--
+    </div>
+    <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="nameBook">Book Name:</label>
+                    <input bind="@formBook.Name" type="text" class="form-control is-valid" id="nameBook" aria-describedby="bnameHelp" placeholder="book name" required />
+                    <small id="bnameHelp" class="form-text text-muted">All Books has at least name.</small>
+                    <!--
                 <div class="valid-feedback">
                     Looks good!
                 </div>
                 -->
-                <div class="invalid-feedback">
-                    Please fill name.
+                    <div class="invalid-feedback">
+                        Please fill name.
+                    </div>
+                    @if (IsInvalidName)
+                    {
+                        <span class="small form-text text-danger">Please fill this!</span>
+                    }
                 </div>
-                @if (IsInvalidName)
-                {
-                    <span class="small form-text text-danger">Please fill this!</span>
-                }
             </div>
-        </div>
 
-        <div class="col">
-            <div class="form-group">
-                <label for="nameAuthor">Author Name:</label>
-                <input bind="@formBook.Author.Name" type="text" class="form-control" id="nameAuthor" aria-describedby="anameHelp" placeholder="author name" />
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="nameAuthor">Author Name:</label>
+                    <input bind="@formBook.Author.Name" type="text" class="form-control" id="nameAuthor" aria-describedby="anameHelp" placeholder="author name" />
+                </div>
             </div>
-        </div>
 
-        <div class="col">
-            <div class="form-group">
-                <label for="place">Place:</label>
-                <input bind="@formBook.Place" type="text" class="form-control" id="place" placeholder="place" />
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="place">Place:</label>
+                    <input bind="@formBook.Place" type="text" class="form-control" id="place" placeholder="place" />
+                </div>
             </div>
-        </div>
 
-        <div class="col">
+            <div class="col-6">
 
-            <div class="form-group">
-                <label for="aboutBook">About Book</label>
-                <textarea bind="@formBook.About" class="form-control" id="aboutBook" aria-describedby="aboutHelp" placeholder="about" rows="3"></textarea>
-                <small id="aboutHelp" class="form-text text-muted">For example copy some text about the book from wiki and paste it there</small>
+                <div class="form-group">
+                    <label for="aboutBook">About Book</label>
+                    <textarea bind="@formBook.About" class="form-control" id="aboutBook" aria-describedby="aboutHelp" placeholder="about" rows="3"></textarea>
+                    <small id="aboutHelp" class="form-text text-muted">For example copy some text about the book from wiki and paste it there</small>
+                </div>
             </div>
-        </div>
 
-    </div>
-    @if (CanClickSave)
-    {
-        @if (IsEdit)
+        </div>
+        @if (CanClickSave)
         {
-            <button onclick="@EditBook" class="btn btn-primary">Edit Book</button>
+            @if (IsEdit)
+            {
+                <button onclick="@EditBook" class="btn btn-primary">Edit Book</button>
+            }
+            else
+            {
+                <button onclick="@AddBook" class="btn btn-primary">Add Book</button>
+            }
         }
         else
         {
-            <button onclick="@AddBook" class="btn btn-primary">Add Book</button>
-        }
-    }
-    else
-    {
-        <div class="text-center">
-            <div class="spinner-border" role="status">
-                <span class="sr-only">Processing...</span>
+            <div class="text-center">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only">Processing...</span>
+                </div>
             </div>
+        }
+
+        @if (_newName != "")
+        {
+            <div class="alert alert-success" role="alert">
+                Book saved: <b>@_newName</b>
+            </div>
+
+        }
+        }
+        <p>Future feauters:</p>
+        <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input" id="customSwitch1">
+            <label class="custom-control-label" for="customSwitch1">Přečteno</label>
         </div>
-    }
-
-    @if (_newName != "")
-    {
-        <div class="alert alert-success" role="alert">
-            Book saved: <b>@_newName</b>
+        @*
+        <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input" disabled id="customSwitch2">
+            <label class="custom-control-label" for="customSwitch2">Disabled switch element</label>
         </div>
-
-    }
-}
-<p>Future feauters:</p>
-<div class="custom-control custom-switch">
-    <input type="checkbox" class="custom-control-input" id="customSwitch1">
-    <label class="custom-control-label" for="customSwitch1">Přečteno</label>
-</div>
-@*
-    <div class="custom-control custom-switch">
-        <input type="checkbox" class="custom-control-input" disabled id="customSwitch2">
-        <label class="custom-control-label" for="customSwitch2">Disabled switch element</label>
-    </div>
-*@
+        *@
 
 
 
@@ -119,82 +120,82 @@ else
 
 
 
-@functions {
+        @functions {
 private string _newName = "";
 
-Book formBook = new Book()
-{
-    Author = new Author()
-};
-
-bool CanClickSave = true;
-bool IsInvalidName = false;
-//protected override void OnInit() //synch call
-
-bool isLoaded = false;
-
-[Parameter]
-bool IsEdit { get; set; } = false;
-
-[Parameter]
-int BookId { get; set; }
-
-string nadpis = "";
-
-protected override async Task OnInitAsync()
-{
-    if (IsEdit)
+    Book formBook = new Book()
     {
-        nadpis = "Editing book";
+        Author = new Author()
+    };
+
+    bool CanClickSave = true;
+    bool IsInvalidName = false;
+    //protected override void OnInit() //synch call
+
+    bool isLoaded = false;
+
+    [Parameter]
+    bool IsEdit { get; set; } = false;
+
+    [Parameter]
+    int BookId { get; set; }
+
+    string nadpis = "";
+
+    protected override async Task OnInitAsync()
+    {
+        if (IsEdit)
+        {
+            nadpis = "Editing book";
+            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Storage["useraccessparam"]);
+            formBook = await Http.GetJsonAsync<Book>("/api/mylibrary/bookDetail/" + Convert.ToInt32(BookId));
+            isLoaded = true;
+        }
+        else
+        {
+            nadpis = "Adding new book";
+        }
+
+    }
+
+    protected void AddBook()
+    {
+        if (IsEdit)
+        {
+            return;
+        }
+        if (string.IsNullOrEmpty(formBook.Name))
+        {
+            IsInvalidName = true;
+            return;
+        }
+        IsInvalidName = false;
+        CanClickSave = false;
         Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Storage["useraccessparam"]);
-        formBook = await Http.GetJsonAsync<Book>("/api/mylibrary/bookDetail/" + Convert.ToInt32(BookId));
-        isLoaded = true;
-    }
-    else
-    {
-        nadpis = "Adding new book";
+        Http.SendJsonAsync(HttpMethod.Post, "/api/mylibrary/addBook", formBook);
+        _newName = formBook.Name;
+        formBook.Name = null;
+        formBook.About = null;
+        formBook.Place = null;
+        formBook.Author.Name = null;
+        CanClickSave = true;
+
+        //UriHelper.NavigateTo("/form-author");
     }
 
-}
-
-protected void AddBook()
-{
-    if (IsEdit)
+    protected void EditBook()
     {
-        return;
+        if (string.IsNullOrEmpty(formBook.Name))
+        {
+            IsInvalidName = true;
+            return;
+        }
+        IsInvalidName = false;
+        CanClickSave = false;
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Storage["useraccessparam"]);
+        Http.SendJsonAsync(HttpMethod.Post, "/api/mylibrary/editBook", formBook);
+        _newName = formBook.Name;
+        //formBook = null;
+        CanClickSave = true;
     }
-    if (string.IsNullOrEmpty(formBook.Name))
-    {
-        IsInvalidName = true;
-        return;
-    }
-    IsInvalidName = false;
-    CanClickSave = false;
-    Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Storage["useraccessparam"]);
-    Http.SendJsonAsync(HttpMethod.Post, "/api/mylibrary/addBook", formBook);
-    _newName = formBook.Name;
-    formBook.Name = null;
-    formBook.About = null;
-    formBook.Place = null;
-    formBook.Author.Name = null;
-    CanClickSave = true;
-
-    //UriHelper.NavigateTo("/form-author");
-}
-
-protected void EditBook()
-{
-    if (string.IsNullOrEmpty(formBook.Name))
-    {
-        IsInvalidName = true;
-        return;
-    }
-    IsInvalidName = false;
-    CanClickSave = false;
-    Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Storage["useraccessparam"]);
-    Http.SendJsonAsync(HttpMethod.Post, "/api/mylibrary/editBook", formBook);
-    _newName = formBook.Name;
-    //formBook = null;
-    CanClickSave = true;
-}
-}
+        }

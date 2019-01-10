@@ -7,5 +7,6 @@ namespace PersonalLibrary.Shared
     public class ResponseToken
     {
         public string Token { get; set; }
+        public string Name { get; set; }
     }
 }

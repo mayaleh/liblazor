@@ -1,8 +1,7 @@
 ﻿@page "/all-authors"
 @using PersonalLibrary.Shared
 
-@inject HttpClient Http
-@inject IUriHelper UriHelper
+@inherits AuthorsLogic
 
 @if (string.IsNullOrEmpty(Storage.GetItem("useraccessparam")))
 {
@@ -20,7 +19,7 @@
     </NavLink>
 </p>
 
-@if (authors == null)
+@if (!AuthorsLoaded)
 {
     <div class="text-center">
         <div class="spinner-border" role="status">
@@ -30,9 +29,36 @@
 }
 else
 {
-    <div class="row">
 
-    </div>
+    @if (EditAuthorId != null)
+    {
+        <div class="padding-md border margin-x-md border-info">
+            <div class="row">
+                <div class="col-12 text-right">
+                    <div class="text-right">
+                        <button onclick="@(()=> EditAuthorId = null )" class="btn btn-danger">
+                            <span class="oi oi-x"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="padding-y-sm">
+                @* Todo po editaci updatuj tabulku, asi nejaky event handler pro send update... *@
+                <FormAuthor AuthorId="@Convert.ToInt32(EditAuthorId)" IsEdit="true" />
+            </div>
+        </div>
+
+        <br />
+
+    }
+
+        <div class="row">
+            <div class="text-right">
+                <button onclick="@OnInitAsync" class="btn btn-info">
+                    <span class="oi oi-reload"></span>
+                </button>
+            </div>
+        </div>
     <table class="table">
         <thead>
             <tr>
@@ -42,35 +68,19 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var author in authors)
+            @foreach (var author in AuthorsData)
             {
                 <tr>
                     <td><a href="#">@author.Name</a></td>
                     <td><a href="#">@author.About</a></td>
-                    <td><a class="btn btn-success" href="/edit-author/@author.Authorid">Edit</a> | <a class="btn btn-danger" href="/delete-author/@author.Authorid">Delete</a></td>
+                    <td>
+                        <a class="btn btn-success" onclick="@( () => EditAuthorId = author.Authorid)">
+                            <span class="oi oi-pencil"></span>
+                            Edit
+                        </a>
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
-}
-
-@functions {
-/* ukazka, jak nastavit componente parametr: */
-/*
-[Parameter]
-private string Title { get; set; }
-*/
-
-Author[] authors;
-/*
- * Volani api server
- */
-protected override async Task OnInitAsync()
-{
-
-    //books = await Http.GetJsonAsync<Book[]>("sample-data/books.json");
-    //Storage["useraccessparam"];
-    Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Storage["useraccessparam"]);
-    authors = await Http.GetJsonAsync<Author[]>("api/mylibrary/getAuthors");
-}
 }

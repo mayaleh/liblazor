@@ -45,12 +45,32 @@ namespace PersonalLibrary.Server.Models
         //To Get all Authors
 
 
-        //To Add new Author     
-        public void AddAuthor(Author author)
+        //To Add or Edit   
+        public void SaveAuthor(Author author)
         {
             try
             {
-                db.Author.Add(author);
+               
+                if (author.Authorid != 0)
+                { //edit
+                    db.Entry(author).State = EntityState.Modified;
+                }
+                else
+                { //add
+                    Author authorCheck = db.Author
+                            .Where(t => t.Name.ToUpper() == author.Name.ToUpper())
+                            .FirstOrDefault(); // SingleOrDefault - when expect only one or zero. Without "OrDefault" will catch throw Exeption, couse zero is not allowed
+
+
+                    if (authorCheck == null)
+                    { // if doesnt exist add
+                        db.Author.Add(author);
+                    }
+                    else
+                    { //else exist
+                        return;
+                    }
+                }
                 db.SaveChanges();
             }
             catch
@@ -66,6 +86,24 @@ namespace PersonalLibrary.Server.Models
             {
                 Author author = db.Author.Find(authorId);
                 return author;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        //To Delete author - Dont allow 
+        public void DeleteAuthor(int id)
+        {
+            return;
+            try
+            {
+                Book book = db.Book
+                    .Where(b => b.Bookid == id)
+                    .Single(); // db.Book.Find(id);
+                db.Book.Remove(book);
+                db.SaveChanges();
             }
             catch
             {
