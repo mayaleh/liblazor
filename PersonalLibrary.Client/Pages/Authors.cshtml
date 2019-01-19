@@ -3,11 +3,6 @@
 
 @inherits AuthorsLogic
 
-@if (string.IsNullOrEmpty(Storage.GetItem("useraccessparam")))
-{
-    UriHelper.NavigateTo("/sign-in");
-}
-
 <h1>All Authors</h1>
 
 <p>

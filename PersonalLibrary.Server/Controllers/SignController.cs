@@ -29,7 +29,7 @@ namespace PersonalLibrary.Server.Controllers
         public IActionResult In([FromBody] UserAccess user)
         {
             var userChecked = _user.GetUserAccessLogin(user);
-            if(userChecked != null)
+            if (userChecked != null)
             {
                 var token = _tokenService.BuildToken(userChecked.Email, userChecked.Userid.ToString());
 
@@ -42,7 +42,7 @@ namespace PersonalLibrary.Server.Controllers
 
                 Response.Cookies.Append("userParamAccess", token, option);
                 */
-                
+
 
                 return Ok(new { token, userChecked.Name }); // TODO add to browser storage user name and display it
             }
@@ -53,5 +53,9 @@ namespace PersonalLibrary.Server.Controllers
         }
 
         //Todo Sign out
+
+        [Authorize]
+        [HttpPost("[action]")]
+        public IActionResult UserCheck(string token) => Ok();
     }
 }

@@ -9,6 +9,7 @@ namespace PersonalLibrary.Client
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddStorage();
+            services.AddSingleton<AppState>();
         }
 
         public void Configure(IBlazorApplicationBuilder app)

@@ -29,16 +29,21 @@ namespace PersonalLibrary.Client.Pages
 
         [Inject]
         protected LocalStorage Storage { get; set; }
+
+        [Inject]
+        protected AppState State { get; set; }
         #endregion
 
 
         #region Status properties used to enable/disable/hide/show UI elements
         public bool AuthorsLoaded => AuthorsData != null;
+
+
+        public int? EditAuthorId = null;
         #endregion
 
         public Author[] AuthorsData;
 
-        public int? EditAuthorId = null;
 
 
         //public AuthorsLogic() : base()
@@ -48,8 +53,10 @@ namespace PersonalLibrary.Client.Pages
 
         protected override async Task OnInitAsync()
         {
-            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Storage["useraccessparam"]);
+            await State.CheckIsLoggedIn();
+
             AuthorsData = await Http.GetJsonAsync<Author[]>("api/mylibrary/getAuthors");
+            
             StateHasChanged();
         }
     }

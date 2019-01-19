@@ -72,18 +72,18 @@
 
 
 @functions {
-bool collapseNavMenu = true;
+    bool collapseNavMenu = true;
 
-void RefreshThisCompo()
-{
-    StateHasChanged();
-}
-protected void SignOut()
-{
-    //Storage["useraccessparam"] = null;
-    Storage.Clear();
-    StateHasChanged();
-    UriHelper.NavigateTo("/sign-in");
-}
+    void RefreshThisCompo()
+    {
+        StateHasChanged();
+    }
+    protected void SignOut()
+    {
+        Storage.Clear();
+        StateHasChanged();
+        UriHelper.NavigateTo("/sign-in");
+    }
 
+    
 }

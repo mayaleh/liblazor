@@ -5,6 +5,8 @@
 
 @inject IUriHelper UriHelper
 
+@inject AppState State
+
 <form>
     <div class="form-group row">
         <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
@@ -57,13 +59,10 @@
             Password = Password
         };
         //Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "Your Oauth token");
-        var response = await Http.PostJsonAsync<ResponseToken>("/api/sign/in", userForm);
 
-        if(!string.IsNullOrEmpty(response.Token))
+        await State.Login(userForm);
+        if (State.IsLoggedIn)
         {
-            Storage["useraccessparam"] = response.Token;
-            Storage["username"] = response.Name;
-            //StateHasChanged();
             UriHelper.NavigateTo("/");
         }
 
