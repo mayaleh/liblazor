@@ -3,7 +3,7 @@
 
 @inject LocalStorage Storage
 @inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
-
+@inject AppState State;
 
 
 <nav>
@@ -26,18 +26,3 @@
     </div>
     <div class="separator"></div>
 </footer>
-@functions{
-    RenderFragment renderFragment;
-
-    //Alternativ extention to manage browser storage data and include usefull methods: https://github.com/floreseken/BlazorExtensions
-    //read cookie from IHttpContextAccessor
-    //string cookieValueFromContext = _httpContextAccessor.HttpContext.Request.Cookies["key"];
-
-    //read cookie from Request object
-    //string cookieValueFromReq = Request.Cookies["Key"];
-
-    protected void OnPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-    {
-        StateHasChanged();
-    }
-}

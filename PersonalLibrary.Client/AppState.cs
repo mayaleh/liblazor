@@ -17,7 +17,7 @@ namespace PersonalLibrary.Client
         private readonly LocalStorage _localStorage;
         private IUriHelper _uriHelper;
 
-        public bool IsLoggedIn { get; private set; }
+        public bool IsLoggedIn { get; private set; } = false;
 
 
         public AppState
@@ -30,6 +30,12 @@ namespace PersonalLibrary.Client
             _http = httpClient;
             _localStorage = localStorage;
             _uriHelper = uriHelper;
+            
+            if(!String.IsNullOrEmpty(_localStorage.GetItem("useraccessparam")))
+            {
+                IsLoggedIn = true;
+            }
+
         }
 
         public async Task CheckIsLoggedIn()
@@ -52,7 +58,7 @@ namespace PersonalLibrary.Client
                 }
                 else
                 {
-                    _uriHelper.NavigateTo("/sign-in");
+                    this.Logout();
                 }
 
             }
@@ -74,12 +80,13 @@ namespace PersonalLibrary.Client
         {
             _localStorage.Clear();
             IsLoggedIn = false;
+            _uriHelper.NavigateTo("/sign-in");
         }
 
         private void SaveToken(ResponseToken response)
         {
             _localStorage["useraccessparam"] = response.Token;
-
+            _localStorage["username"] = response.Name;
         }
 
         private void SetAuthorizationHeader()

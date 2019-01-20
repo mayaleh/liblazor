@@ -1,6 +1,7 @@
 ﻿@using Cloudcrate.AspNetCore.Blazor.Browser.Storage;
 @inject LocalStorage Storage
 @inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+@inject AppState State
 @*
     <div class="top-row pl-4 navbar navbar-dark">
         <a class="navbar-brand" href="">PersonalLibrary</a>
@@ -18,7 +19,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <form class="form-inline my-2 my-lg-0">
-            @if (!string.IsNullOrEmpty(Storage.GetItem("useraccessparam")))
+            @if (State.IsLoggedIn)
             {
 
                 @if (!string.IsNullOrEmpty(Storage.GetItem("username")))
@@ -69,21 +70,26 @@
 
 
 
-
-
 @functions {
     bool collapseNavMenu = true;
 
-    void RefreshThisCompo()
+    protected override void OnInit()
+    {
+        if (!State.IsLoggedIn)
+        {
+            this.RefreshThisCompo();
+        }
+    }
+    
+
+    protected void RefreshThisCompo()
     {
         StateHasChanged();
     }
     protected void SignOut()
     {
-        Storage.Clear();
-        StateHasChanged();
-        UriHelper.NavigateTo("/sign-in");
+        State.Logout();
     }
 
-    
+
 }
