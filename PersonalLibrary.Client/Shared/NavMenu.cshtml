@@ -71,7 +71,23 @@
 
 
 @functions {
+
+    [Parameter]
+    protected bool UserChanged { get; set; }
+
+    [Parameter]
+    private Action<bool> UserChangedChanged { get; set; }
+
     bool collapseNavMenu = true;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        Console.WriteLine("Nav menu state has changed");
+        StateHasChanged();
+    }
+
+
 
     protected override void OnInit()
     {
@@ -80,7 +96,7 @@
             this.RefreshThisCompo();
         }
     }
-    
+
 
     protected void RefreshThisCompo()
     {

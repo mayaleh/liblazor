@@ -49,6 +49,9 @@
     private bool isProcessing = false;
 
 
+    [Parameter]
+    protected Action<string> SignedIn { get; set; } // TODO bool
+
     // Todo InitAsynchLoad check if user is logged in, if is true redirect to homepage
     private async Task SubmitSignIn()
     {
@@ -63,6 +66,7 @@
         await State.Login(userForm);
         if (State.IsLoggedIn)
         {
+            SignedIn?.Invoke("Some String");
             UriHelper.NavigateTo("/");
         }
 

@@ -7,7 +7,7 @@
 
 
 <nav>
-    <NavMenu />
+    <NavMenu bind-UserChanged="@userChanged" />
 </nav>
 
 <main role="main">
@@ -26,3 +26,21 @@
     </div>
     <div class="separator"></div>
 </footer>
+
+@functions
+{
+    //public RenderFragment Body { get; set; }
+    [Parameter] LocalStorage storage { get; set; }
+
+    bool userChanged = false;
+
+    protected override void OnParametersSet()
+    {
+        userChanged = true;
+        base.OnParametersSet();
+        Console.WriteLine("State has change");
+        StateHasChanged();
+        //userChanged = false;
+    }
+
+}
