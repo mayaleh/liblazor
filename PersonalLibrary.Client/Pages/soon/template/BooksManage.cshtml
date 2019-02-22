@@ -1,10 +1,10 @@
-﻿@page "/my-library"
+﻿@page "/soon/books-manage"
 @using PersonalLibrary.Shared
 
 
 
 
-@inherits MyLibraryLogic
+@inherits BooksManageLogic
 
 
 <h1>My Library List</h1>
@@ -131,51 +131,30 @@ else
                 </div>
             </div>
 
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Book Name</th>
-                        <th>Author</th>
-                        <th>Place</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var book in books)
-                    {
-                        string bookDetailUrl = "/book/detail/" + book.Bookid.ToString();
-                        <tr>
-                            <td>
-                                <NavLink href="@bookDetailUrl">
-                                    <span class="oi oi-link-intact"></span>
-                                    @book.Name
-                                </NavLink>
-                            </td>
-                            <td>
-                                @if (book.Authorid != null)
-                                {
-                                    <NavLink href="/author/detail" Match=NavLinkMatch.All>
-                                        @book.Author.Name
-                                    </NavLink>
-                                }
-                            </td>
-                            <td>@book.Place</td>
-                            <td>
-                                <a class="btn btn-success" onclick="@( () => editBookId = book.Bookid)">
-                                    <span class="oi oi-pencil"></span>
-                                    Edit
-                                </a>
-                                |
-                                <a onclick="@(() => this.DeleteBook(book))" class="btn btn-danger">
-                                    <span class="oi oi-trash"></span>
-                                    Delete
-                                </a>
-                            </td>
 
-                        </tr>
-                    }
-                </tbody>
-            </table>
+            <KendoGrid Data=@books Height=700  Pageable=true PageSize=10 Sortable=true>
+                <KendoGridColumn Field=@nameof(Book.Name) />
+
+                <KendoGridColumn Field=@nameof(Book.Author) >
+                    <Template>
+                        @((context as Book).Author.Name)
+                    </Template>
+                </KendoGridColumn>
+
+                <KendoGridColumn Field=@nameof(Book.Place) />
+
+                <KendoGridColumn Field="Actions">
+                    <Template>
+                        @* onclick="@( () => editBookId = (context as Book).Bookid)" *@
+                        <KendoButton OnButtonClick="@( () => HandleEditBtn((context as Book).Bookid) )" Class="k-button k-button-icontext k-primary" Icon="edit">
+                            <span>Edit</span>
+                        </KendoButton>
+
+                    </Template>
+                </KendoGridColumn>
+
+            </KendoGrid>
+            
             break;
         case "getByAuthors":
             @foreach (var author in authorsBook)

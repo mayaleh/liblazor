@@ -12,4 +12,4 @@ CRUD tables records
 
 LiBlaz is an online library, where user can sign in and manage his personal books database.
 
-Application website: https://liblaz.azurewebsites.net/
+Application website: http://liblaz.aspfree.cz/

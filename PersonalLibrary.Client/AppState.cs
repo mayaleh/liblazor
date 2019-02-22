@@ -64,6 +64,13 @@ namespace PersonalLibrary.Client
             }
         }
 
+
+        public void CheckIsLoggedIn(bool isPublicPage)
+        {
+           
+        }
+
+
         public async Task Login(UserAccess loginDetails)
         {
             var response = await _http.PostJsonAsync<ResponseToken>("/api/sign/in", loginDetails);

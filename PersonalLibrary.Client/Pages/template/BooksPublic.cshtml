@@ -1,0 +1,42 @@
+﻿@page "/public/books"
+@using PersonalLibrary.Shared
+
+
+
+
+@inherits BooksPublicLogic
+
+
+<h1>Available books</h1>
+
+@if (!books.Any())
+{
+
+    <div class="spinner-grow text-warning" role="status">
+        <span class="sr-only"></span>
+    </div>
+    <div class="spinner-grow text-info" role="status">
+        <span class="sr-only"></span>
+    </div>
+    <div class="spinner-grow text-light" role="status">
+        <span class="sr-only"></span>
+    </div>
+    <div class="spinner-grow text-dark" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+}
+else
+{
+
+    <KendoGrid Data=@books Height=1100 Pageable=true PageSize=20 Sortable=true>
+        <KendoGridColumn Field=@nameof(Book.Name) />
+
+        <KendoGridColumn Field=@nameof(Book.Author)>
+            <Template>
+                @((context as Book).Author.Name)
+            </Template>
+        </KendoGridColumn>
+
+    </KendoGrid>
+
+}
