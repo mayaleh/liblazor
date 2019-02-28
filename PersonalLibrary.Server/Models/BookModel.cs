@@ -11,6 +11,7 @@ namespace PersonalLibrary.Server.Models
     {
         BookContext db = new BookContext();
 
+        #region Get Data
         //To Get all Books
         public List<Book> GetAllBooks()
         {
@@ -78,52 +79,104 @@ namespace PersonalLibrary.Server.Models
             }
         }
 
+        #endregion
 
-        //To Add new Book     
+        #region Save actions
+
+        //todo Get user Id
+        //TODO accept Object Userbook with sets Book And UserAccess for saving all references
+        /// <summary>
+        /// On call action Save by loged in user
+        /// </summary>
         public void SaveBook(Book book)
         {
 
             try
             {
-                int? _authorId = null;
-                if (!string.IsNullOrEmpty(book.Author.Name))
-                {
-                    //find author if doesnt exist insert them and get his id
-                    Author author = db.Author
-                        .Where(t => t.Name.ToUpper() == book.Author.Name.ToUpper())
-                        .FirstOrDefault(); // SingleOrDefault - when expect only one or zero. Without "OrDefault" will catch throw Exeption, couse zero is not allowed
-                    if (author == null)
-                    {
-                        Author newAuthor = new Author()
-                        {
-                            Name = book.Author.Name
-                        };
-                        db.Author.Add(newAuthor);
-                        db.SaveChanges();
-                        _authorId = (int?) newAuthor.Authorid; // last inserted Id
-                    }
-                    else
-                    {
-                        _authorId = (int?) author.Authorid;
-                    }
-                }
-                book.Authorid = _authorId;
-
+                //if book is set and exist, create only reference to user and book
                 if (book.Bookid != 0)
                 {
-                    db.Entry(book).State = EntityState.Modified;
+                    //this._addReferenceUserBook();
                 }
+                //else first create the new book, then create reference
                 else
                 {
-                    db.Book.Add(book);
+                    Book newRecord = this._addNewBook(book);
+                    //this._addReferenceUserBook();
                 }
-                db.SaveChanges();
+                    
             }
             catch
             {
                 throw;
             }
         }
+
+        /// <summary>
+        /// Add new record to table Book.
+        /// If Author doesnt exist, add new record to table Author and get reference for Book table
+        /// </summary>
+        private Book _addNewBook(Book book)
+        {
+            int? _authorId = null;
+            if (!string.IsNullOrEmpty(book.Author.Name))
+            {
+                //find author if doesnt exist insert them and get his id
+                Author author = db.Author
+                    .Where(t => t.Name.ToUpper() == book.Author.Name.ToUpper())
+                    .FirstOrDefault(); // SingleOrDefault - when expect only one or zero. Without "OrDefault" will catch throw Exeption, couse zero is not allowed
+                if (author == null)
+                {
+                    Author newAuthor = new Author()
+                    {
+                        Name = book.Author.Name
+                    };
+                    db.Author.Add(newAuthor);
+                    db.SaveChanges();
+                    _authorId = (int?)newAuthor.Authorid; // last inserted Id
+                }
+                else
+                {
+                    _authorId = (int?)author.Authorid;
+                }
+            }
+            book.Authorid = _authorId;
+
+            if (book.Bookid != 0)
+            {
+                db.Entry(book).State = EntityState.Modified;
+            }
+            else
+            {
+                db.Book.Add(book);
+            }
+            db.SaveChanges();
+            return book;
+        }
+
+        /// <summary>
+        /// Add new record to table usersbook if Book record exist. (references table [user <=> book] many has many).
+        /// </summary>
+        private void _addReferenceUserBook(Userbook userbook)
+        {
+            int bookId = userbook.Bookid.GetValueOrDefault();
+            int userId = userbook.Userid.GetValueOrDefault();
+
+
+            Book existingBook = db.Book.Where(b => b.Bookid == bookId).FirstOrDefault();
+
+            if (existingBook == null || userId == 0)
+            {
+                return;
+            }
+
+
+            //TODO save
+
+
+        }
+
+        #endregion
 
         //To Delete book  
         public void DeleteBook(int id)

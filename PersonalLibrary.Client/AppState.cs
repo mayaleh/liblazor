@@ -17,6 +17,8 @@ namespace PersonalLibrary.Client
         private readonly LocalStorage _localStorage;
         private IUriHelper _uriHelper;
 
+        public int UserIdentity { get; private set; }
+
         public bool IsLoggedIn { get; private set; } = false;
 
 
@@ -33,7 +35,7 @@ namespace PersonalLibrary.Client
             
             if(!String.IsNullOrEmpty(_localStorage.GetItem("useraccessparam")))
             {
-                IsLoggedIn = true;
+                sendCheckPost(false).Wait(30); //synch call
             }
 
         }
@@ -49,21 +51,32 @@ namespace PersonalLibrary.Client
             }
             else
             {
-                HttpResponseMessage response = await _http.PostAsync("/api/sign/userCheck", new StringContent(_localStorage.GetItem("useraccessparam")));
-                HttpResponseHeaders headers = response.Headers;
-
-                if(response.IsSuccessStatusCode)
-                {
-                    SetAuthorizationHeader();
-                }
-                else
-                {
-                    this.Logout();
-                }
-
+                await this.sendCheckPost();
             }
         }
 
+
+        private async Task sendCheckPost(bool redirect = true)
+        {
+            HttpResponseMessage response = await _http.PostAsync("/api/sign/userCheck", new StringContent(_localStorage.GetItem("useraccessparam")));
+            HttpResponseHeaders headers = response.Headers;
+            if (response.IsSuccessStatusCode)
+            {
+                SetAuthorizationHeader();
+            }
+            else
+            {
+                if (redirect)
+                {
+                    this.Logout();
+                }
+                else
+                {
+                    _localStorage.Clear();
+                    IsLoggedIn = false;
+                }
+            }
+        }
 
         public void CheckIsLoggedIn(bool isPublicPage)
         {
@@ -77,7 +90,7 @@ namespace PersonalLibrary.Client
 
             if (!string.IsNullOrEmpty(response.Token))
             {
-                SaveToken(response);
+                SaveIdentityToLocal(response);
                 SetAuthorizationHeader();
                 IsLoggedIn = true;
             }
@@ -87,13 +100,15 @@ namespace PersonalLibrary.Client
         {
             _localStorage.Clear();
             IsLoggedIn = false;
-            _uriHelper.NavigateTo("/sign-in");
+            _uriHelper.NavigateTo("/");
         }
 
-        private void SaveToken(ResponseToken response)
+        private void SaveIdentityToLocal(ResponseToken response)
         {
             _localStorage["useraccessparam"] = response.Token;
             _localStorage["username"] = response.Name;
+            _localStorage["userIdentity"] = response.Id.ToString();
+            UserIdentity = response.Id;
         }
 
         private void SetAuthorizationHeader()

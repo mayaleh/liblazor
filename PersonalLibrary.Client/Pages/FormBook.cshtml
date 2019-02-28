@@ -4,13 +4,8 @@
 @inject HttpClient Http
 @inject IUriHelper UriHelper
 
-@if (!IsEdit)
-{
-    @if (string.IsNullOrEmpty(Storage.GetItem("useraccessparam")))
-    {
-        UriHelper.NavigateTo("/sign-in");
-    }
-}
+@inject AppState State
+
 
 @if (IsEdit && formBook.Bookid == 0)
 {
@@ -30,98 +25,114 @@ else
         </div>
     </div>
     <div class="row">
-            <div class="col-6">
-                <div class="form-group">
-                    <label for="nameBook">Book Name:</label>
-                    <input bind="@formBook.Name" type="text" class="form-control is-valid" id="nameBook" aria-describedby="bnameHelp" placeholder="book name" required />
-                    <small id="bnameHelp" class="form-text text-muted">All Books has at least name.</small>
-                    <!--
+        <div class="col-6">
+            <div class="form-group">
+                <label for="nameBook">Book Name: <span>@formBook.Name</span></label>
+                <input bind="@formBook.Name" onkeypress="@OnInputChange" type="text" class="form-control is-valid" id="nameBook" aria-describedby="bnameHelp" placeholder="book name" required />
+                <small id="bnameHelp" class="form-text text-muted">All Books has at least name.</small>
+                <!--
                 <div class="valid-feedback">
                     Looks good!
                 </div>
                 -->
-                    <div class="invalid-feedback">
-                        Please fill name.
-                    </div>
-                    @if (IsInvalidName)
-                    {
-                        <span class="small form-text text-danger">Please fill this!</span>
-                    }
+                <div class="invalid-feedback">
+                    Please fill name.
                 </div>
+                @if (IsInvalidName)
+                {
+                    <span class="small form-text text-danger">Please fill this!</span>
+                }
             </div>
-
-            <div class="col-6">
-                <div class="form-group">
-                    <label for="nameAuthor">Author Name:</label>
-                    <input bind="@formBook.Author.Name" type="text" class="form-control" id="nameAuthor" aria-describedby="anameHelp" placeholder="author name" />
-                </div>
-            </div>
-
-            <div class="col-6">
-                <div class="form-group">
-                    <label for="place">Place:</label>
-                    <input bind="@formBook.Place" type="text" class="form-control" id="place" placeholder="place" />
-                </div>
-            </div>
-
-            <div class="col-6">
-
-                <div class="form-group">
-                    <label for="aboutBook">About Book</label>
-                    <textarea bind="@formBook.About" class="form-control" id="aboutBook" aria-describedby="aboutHelp" placeholder="about" rows="3"></textarea>
-                    <small id="aboutHelp" class="form-text text-muted">For example copy some text about the book from wiki and paste it there</small>
-                </div>
-            </div>
-
         </div>
-        @if (CanClickSave)
+
+        <div class="col-6">
+            <div class="form-group">
+                <label for="nameAuthor">Author Name:</label>
+                <input bind="@formBook.Author.Name" type="text" class="form-control" id="nameAuthor" aria-describedby="anameHelp" placeholder="author name" />
+            </div>
+        </div>
+
+        <div class="col-6">
+            <div class="form-group">
+                <label for="place">Place:</label>
+                @*<input bind="@formBook.Place" type="text" class="form-control" id="place" placeholder="place" />*@
+            </div>
+        </div>
+
+        <div class="col-6">
+
+            <div class="form-group">
+                <label for="aboutBook">About Book</label>
+                <textarea bind="@formBook.About" class="form-control" id="aboutBook" aria-describedby="aboutHelp" placeholder="about" rows="3"></textarea>
+                <small id="aboutHelp" class="form-text text-muted">For example copy some text about the book from wiki and paste it there</small>
+            </div>
+        </div>
+
+    </div>
+    @if (CanClickSave)
+    {
+        @if (IsEdit)
         {
-            @if (IsEdit)
-            {
-                <button onclick="@EditBook" class="btn btn-primary">Edit Book</button>
-            }
-            else
-            {
-                <button onclick="@AddBook" class="btn btn-primary">Add Book</button>
-            }
+            <button onclick="@EditBook" class="btn btn-primary">Edit Book</button>
         }
         else
         {
-            <div class="text-center">
-                <div class="spinner-border" role="status">
-                    <span class="sr-only">Processing...</span>
-                </div>
-            </div>
+            <button onclick="@AddBook" class="btn btn-primary">Add Book</button>
         }
+    }
+    else
+    {
+        <div class="text-center">
+            <div class="spinner-border" role="status">
+                <span class="sr-only">Processing...</span>
+            </div>
+        </div>
+    }
 
-        @if (_newName != "")
+    @if (_newName != "")
+    {
+        <div class="alert alert-success" role="alert">
+            Book saved: <b>@_newName</b>
+        </div>
+
+    }
+}
+<p>Future feauters:</p>
+<div class="custom-control custom-switch">
+    <input type="checkbox" class="custom-control-input" id="customSwitch1">
+    <label class="custom-control-label" for="customSwitch1">Přečteno</label>
+</div>
+@*
+    <div class="custom-control custom-switch">
+        <input type="checkbox" class="custom-control-input" disabled id="customSwitch2">
+        <label class="custom-control-label" for="customSwitch2">Disabled switch element</label>
+    </div>
+*@
+
+
+@if (isLoaded && SimilarBooks.Any())
+{
+    <h3>Maybe you mean:</h3>
+   
+    <div class="list-group">
+        @foreach (var found in SimilarBooks)
         {
-            <div class="alert alert-success" role="alert">
-                Book saved: <b>@_newName</b>
-            </div>
-
+            <button onclick="@(() => FillForm(found))" type="button" class="list-group-item list-group-item-action">@found.Name - @found.Author.Name</button>
         }
-        }
-        <p>Future feauters:</p>
-        <div class="custom-control custom-switch">
-            <input type="checkbox" class="custom-control-input" id="customSwitch1">
-            <label class="custom-control-label" for="customSwitch1">Přečteno</label>
-        </div>
-        @*
-        <div class="custom-control custom-switch">
-            <input type="checkbox" class="custom-control-input" disabled id="customSwitch2">
-            <label class="custom-control-label" for="customSwitch2">Disabled switch element</label>
-        </div>
-        *@
+
+    </div>
+}
 
 
 
 
 
+@functions {
 
+    List<Book> books { get; set; }
+    List<Book> SimilarBooks { get; set; }
 
-        @functions {
-private string _newName = "";
+    private string _newName = "";
 
     Book formBook = new Book()
     {
@@ -142,8 +153,39 @@ private string _newName = "";
 
     string nadpis = "";
 
+
+    protected void OnInputChange(UIKeyboardEventArgs e)
+    {
+        //Console.WriteLine(formBook.Name.ToString());
+     
+        if (formBook.Name.Length > 2)
+        {
+            SimilarBooks = books.Where(bk =>
+                   (bk.Name.ToUpper().Contains(formBook.Name.ToUpper()))
+               ).ToList<Book>();
+            isLoaded = true;
+            StateHasChanged();
+        }
+        else
+        {
+            isLoaded = false;
+        }
+    }
+
+
+
+    protected void FillForm(Book found)
+    {
+        formBook = found;
+
+    }
+
+
     protected override async Task OnInitAsync()
     {
+        await State.CheckIsLoggedIn();
+
+
         if (IsEdit)
         {
             nadpis = "Editing book";
@@ -154,6 +196,10 @@ private string _newName = "";
         else
         {
             nadpis = "Adding new book";
+            books = await Http.GetJsonAsync<List<Book>>("api/mylibrary/getBooks");
+            //isLoaded = true;
+            // Load Book its author to list for autocomplete
+
         }
 
     }
@@ -176,7 +222,7 @@ private string _newName = "";
         _newName = formBook.Name;
         formBook.Name = null;
         formBook.About = null;
-        formBook.Place = null;
+        //formBook.Place = null;
         formBook.Author.Name = null;
         CanClickSave = true;
 
@@ -198,4 +244,4 @@ private string _newName = "";
         //formBook = null;
         CanClickSave = true;
     }
-        }
+}

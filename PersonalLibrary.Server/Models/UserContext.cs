@@ -16,26 +16,27 @@ namespace PersonalLibrary.Server.Models
         {
             modelBuilder.Entity<UserAccess>(entity =>
             {
-                entity.ToTable("useraccess");
+                entity.HasKey(e => e.Userid);
 
-                entity.ForNpgsqlHasComment("Users login");
+                entity.ToTable("useraccess");
 
                 entity.Property(e => e.Userid).HasColumnName("userid");
 
                 entity.Property(e => e.Email)
+                    .IsRequired()
                     .HasColumnName("email")
+                    .HasMaxLength(250);
+
+                entity.Property(e => e.Name)
+                    .HasColumnName("name")
                     .HasMaxLength(250);
 
                 entity.Property(e => e.Password)
                     .IsRequired()
                     .HasColumnName("password")
                     .HasMaxLength(500);
-
-
-                entity.Property(e => e.Name)
-                    .HasColumnName("name")
-                    .HasMaxLength(250);
             });
+
         }
     }
 }

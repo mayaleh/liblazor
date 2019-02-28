@@ -78,7 +78,7 @@ else
 
                         @foreach (var found in searchResult)
                         {
-                            <li>Book name: <b>@found.Name</b> - Author: <b>@found.Author.Name</b> - Place: <b>@found.Place</b></li>
+                            <li>Book name: <b>@found.Name</b> - Author: <b>@found.Author.Name</b> - Place: <b>@*@found.Place*@</b></li>
                         }
                     </ul>
                 }
@@ -132,16 +132,15 @@ else
             </div>
 
 
-            <KendoGrid Data=@books Height=700  Pageable=true PageSize=10 Sortable=true>
+            <KendoGrid Data=@books Height=700 Pageable=true PageSize=10 Sortable=true>
                 <KendoGridColumn Field=@nameof(Book.Name) />
 
-                <KendoGridColumn Field=@nameof(Book.Author) >
-                    <Template>
-                        @((context as Book).Author.Name)
-                    </Template>
-                </KendoGridColumn>
+                <KendoGridColumn Field=@nameof(Book.Author.Name) Title="Author" />
+                @*<Template>
+            @((context as Book).Author.Name)
+        </Template>*@
+                @* </KendoGridColumn> *@
 
-                <KendoGridColumn Field=@nameof(Book.Place) />
 
                 <KendoGridColumn Field="Actions">
                     <Template>

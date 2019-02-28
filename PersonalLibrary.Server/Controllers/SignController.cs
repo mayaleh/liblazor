@@ -44,7 +44,7 @@ namespace PersonalLibrary.Server.Controllers
                 */
 
 
-                return Ok(new { token, userChecked.Name }); // TODO add to browser storage user name and display it
+                return Ok(new { token, userChecked.Name, userChecked.Userid }); // TODO add to browser storage user name and display it
             }
             else
             {

@@ -33,6 +33,7 @@ namespace PersonalLibrary.Client.Pages
         public string FiltrType = "listBooks";
 
         public bool isSearch = false;
+        public bool searchInProgress = false;
 
         public int? editBookId = null;
 
@@ -106,7 +107,7 @@ namespace PersonalLibrary.Client.Pages
 
         protected async void SearchFor()
         {
-
+            searchInProgress = true;
             await State.CheckIsLoggedIn();
             if (!string.IsNullOrEmpty(searchFor))
             {
@@ -114,7 +115,6 @@ namespace PersonalLibrary.Client.Pages
                 searchResult = books
                     .Where(bk =>
                         (bk.Name.ToUpper().Contains(searchFor.ToUpper())
-                        || bk.Place.ToUpper().Contains(searchFor.ToUpper())
                         //|| bk.About.ToUpper().Contains(searchFor.ToUpper()) //nefunguje hledani v tomto
                         || bk.Author.Name.ToUpper().Contains(searchFor.ToUpper())
                     ))
@@ -126,6 +126,7 @@ namespace PersonalLibrary.Client.Pages
 
                 isSearch = false;
             }
+            searchInProgress = false;
         }
 
     }

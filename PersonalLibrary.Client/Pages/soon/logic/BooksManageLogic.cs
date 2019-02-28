@@ -57,7 +57,7 @@ namespace PersonalLibrary.Client.Pages
         protected override async Task OnInitAsync()
         {
 
-            await State.CheckIsLoggedIn();
+            State.CheckIsLoggedIn().Wait(30);
             FiltrType = "listBooks";
 
             //Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Storage["useraccessparam"]);
@@ -117,7 +117,7 @@ namespace PersonalLibrary.Client.Pages
                 searchResult = books
                     .Where(bk =>
                         (bk.Name.ToUpper().Contains(searchFor.ToUpper())
-                        || bk.Place.ToUpper().Contains(searchFor.ToUpper())
+                        //|| bk.Place.ToUpper().Contains(searchFor.ToUpper())
                         //|| bk.About.ToUpper().Contains(searchFor.ToUpper()) //nefunguje hledani v tomto
                         || bk.Author.Name.ToUpper().Contains(searchFor.ToUpper())
                     ))

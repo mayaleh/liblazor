@@ -53,6 +53,11 @@
                         <span class="oi oi-book" aria-hidden="true"></span> All Books
                     </NavLink>
                 </li>
+                <li>
+                    <NavLink href="public/authors" Match=NavLinkMatch.All>
+                        <span class="oi oi-eye" aria-hidden="true"></span> All Auhtors
+                    </NavLink>
+                </li>
                 @if (State.IsLoggedIn)
                 {
                     <li>
@@ -101,6 +106,7 @@
 
     protected override void OnInit()
     {
+        Console.WriteLine("State Nav: " + State.IsLoggedIn.ToString());
         StateHasChanged();
     }
 

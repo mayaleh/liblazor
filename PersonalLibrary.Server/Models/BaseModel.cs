@@ -13,6 +13,7 @@ namespace PersonalLibrary.Server.Models
         public virtual DbSet<Author> Author { get; set; }
         public virtual DbSet<Book> Book { get; set; }
         public virtual DbSet<UserAccess> UserAccess { get; set; }
+        public virtual DbSet<Userbook> UserBooks { get; set; }
 
         public BaseModel()
         {
@@ -26,15 +27,16 @@ namespace PersonalLibrary.Server.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            //dotnet ef dbcontext scaffold "Host=localhost;Port=4112;Database=liblazor;Username=appuser;Password=libraryUser1997" Npgsql.EntityFrameworkCore.PostgreSQL
+
             //optionsBuilder.UseNpgsql("Host=localhost:4112;Database=liblazor;Username=appuser;Password=libraryUser1997");
-            
+
             if (!optionsBuilder.IsConfigured)
             {
                 //"User ID=appuser;Password=libraryUser1997;Server=localhost;Port=4112;Database=liblazor"
                 //
                 optionsBuilder.UseNpgsql("User ID=appuser;Password=libraryUser1997;Server=localhost;Port=4112;Database=liblazor");
-                // optionsBuilder.UseSqlServer(@"User ID=appuser;Password=libraryUser1997;Host=localhost;Port=5432;Database=liblazor;");
-                //:4112
+
             }
         }
 

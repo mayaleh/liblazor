@@ -1,15 +1,15 @@
-﻿@page "/public/books"
+﻿@page "/public/authors"
 @using PersonalLibrary.Shared
 
 
 
+@inherits AuthorsPublicLogic
 
-@inherits BooksPublicLogic
+<h1>Available authors</h1>
 
+<p>Available main data added by the community or by a few users</p>
 
-<h1>Available books</h1>
-
-@if (!books.Any())
+@if (!authors.Any())
 {
 
     <div class="spinner-grow text-primary" role="status">
@@ -36,16 +36,9 @@
 }
 else
 {
-    <p>Please, excuse me, I'm just trying this UI</p>
-    <KendoGrid Data=@books Height=1100 Pageable=true PageSize=20 Sortable=true>
-        <KendoGridColumn Field=@nameof(Book.Name) />
-
-        <KendoGridColumn Field=@nameof(Book.Author)>
-            <Template>
-                @((context as Book).Author.Name)
-            </Template>
-        </KendoGridColumn>
-
-    </KendoGrid>
+    //something
+    <ListUl CollectionItems="@authors">
+        <Name>@context.Name</Name>
+    </ListUl>
 
 }

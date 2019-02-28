@@ -12,7 +12,7 @@ namespace PersonalLibrary.Server.Models
         AuthorContext db = new AuthorContext();
 
         //To Get all Authors
-        public IEnumerable<Author> GetAllAuthors()
+        public List<Author> GetAllAuthors()
         {
             try
             {

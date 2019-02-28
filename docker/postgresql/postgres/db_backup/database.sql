@@ -41,3 +41,29 @@ create table useracess
 comment on table useraccess is 'Users login';
 
 alter table useraccess owner to appuser;
+
+
+create table if not exists userbook
+(
+	userbook serial not null
+		constraint userbooks_pk
+			primary key,
+	userid integer
+		constraint userbook_useraccess_userid_fk
+			references useraccess,
+	bookid integer
+		constraint userbook_book_bookid_fk
+			references book,
+	rate integer,
+	note varchar(500),
+	readdone bool,
+	place varchar(150)
+);
+
+comment on table userbook is 'Users Books table';
+
+alter table userbook owner to appuser;
+
+
+alter table book
+  drop column place;

@@ -7,70 +7,79 @@
 
 @inject AppState State
 
-<form>
-    <div class="form-group row">
-        <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
-        <div class="col-sm-10">
-            <input type="email" class="form-control" id="inputEmail3" placeholder="Email" bind="@Email" />
-        </div>
-    </div>
-    <div class="form-group row">
-        <label for="inputPassword3" class="col-sm-2 col-form-label">Password</label>
-        <div class="col-sm-10">
-            <input type="password" class="form-control" id="inputPassword3" placeholder="Password" bind="@Password" />
-        </div>
-    </div>
 
-    @if (isProcessing)
-    {
-        <div class="text-center">
-            <div class="spinner-border" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
-        </div>
-    }
-    else
-    {
+
+    <form>
         <div class="form-group row">
+            <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
             <div class="col-sm-10">
-                <button onclick="@SubmitSignIn" class="btn btn-primary">Sign in</button>
+                <input type="email" class="form-control" id="inputEmail3" placeholder="Email" bind="@Email" />
             </div>
         </div>
-    }
-</form>
+        <div class="form-group row">
+            <label for="inputPassword3" class="col-sm-2 col-form-label">Password</label>
+            <div class="col-sm-10">
+                <input type="password" class="form-control" id="inputPassword3" placeholder="Password" bind="@Password" />
+            </div>
+        </div>
 
-
-
-
-@functions{
-
-    public string Email = "";
-    public string Password = "";
-    private bool isProcessing = false;
-
-
-    [Parameter]
-    protected Action<string> SignedIn { get; set; } // TODO bool
-
-    // Todo InitAsynchLoad check if user is logged in, if is true redirect to homepage
-    private async Task SubmitSignIn()
-    {
-        isProcessing = true;
-        UserAccess userForm = new UserAccess
+        @if (isProcessing)
         {
-            Email = Email,
-            Password = Password
-        };
-        //Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "Your Oauth token");
-
-        await State.Login(userForm);
-        if (State.IsLoggedIn)
+            <div class="text-center">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+        }
+        else
         {
-            SignedIn?.Invoke("Some String");
-            UriHelper.NavigateTo("/");
+            <div class="form-group row">
+                <div class="col-sm-10">
+                    <button onclick="@SubmitSignIn" class="btn btn-primary">Sign in</button>
+                </div>
+            </div>
+        }
+    </form>
+
+
+
+
+    @functions{
+
+#if DEBUG
+        public string Email = "salim.mayaleh@seznam.cz";
+        public string Password = "12345";
+#else
+        public string Email = "";
+        public string Password = "";
+#endif
+
+
+        private bool isProcessing = false;
+
+
+        [Parameter]
+        protected Action<string> SignedIn { get; set; } // TODO bool
+
+        // Todo InitAsynchLoad check if user is logged in, if is true redirect to homepage
+        private async Task SubmitSignIn()
+        {
+            isProcessing = true;
+            UserAccess userForm = new UserAccess
+            {
+                Email = Email,
+                Password = Password
+            };
+            //Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "Your Oauth token");
+
+            await State.Login(userForm);
+            if (State.IsLoggedIn)
+            {
+                SignedIn?.Invoke("Some String");
+                UriHelper.NavigateTo("/");
+            }
+
+            isProcessing = false;
         }
 
-        isProcessing = false;
     }
-
-}

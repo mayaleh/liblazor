@@ -1,25 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.ComponentModel.DataAnnotations;
 
-namespace PersonalLibrary.Shared
+namespace PersonalLibrary.Server
 {
-    public partial class UserAccess
+    public partial class Useraccess
     {
-        public UserAccess()
+        public Useraccess()
         {
             Userbook = new HashSet<Userbook>();
         }
 
-        [Key]
         public int Userid { get; set; }
-        [Required]
         public string Email { get; set; }
-        [Required]
         public string Password { get; set; }
         public string Name { get; set; }
-
 
         public ICollection<Userbook> Userbook { get; set; }
     }

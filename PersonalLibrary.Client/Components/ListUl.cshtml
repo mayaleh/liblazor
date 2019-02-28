@@ -1,0 +1,23 @@
+﻿@typeparam Items
+
+<ul class="list-group">
+    @foreach (var item in CollectionItems)
+    {
+        <li class="list-group-item disabled" aria-disabled="true">
+            @Name(item)
+            @*<b>@Related(item)</b>*@
+        </li>
+    }
+</ul>
+
+
+@functions{
+    [Parameter]
+    IEnumerable<Items> CollectionItems { get; set; }
+
+    [Parameter]
+    RenderFragment<Items> Name { get; set; }
+
+    //[Parameter]
+    //RenderFragment<Items> Related { get; set; }
+}

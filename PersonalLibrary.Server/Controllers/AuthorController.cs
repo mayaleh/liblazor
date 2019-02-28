@@ -8,17 +8,17 @@ using PersonalLibrary.Shared;
 
 namespace PersonalLibrary.Server.Controllers
 {
+    
     [Route("api/[controller]")]
     [ApiController]
-    public class BookController : ControllerBase
+    public class AuthorController : ControllerBase
     {
-        private BookModel _book = new BookModel();
-
+        private AuthorModel _author = new AuthorModel();
 
         [HttpGet("[action]")]
-        public List<Book> GetAll()
+        public List<Author> GetAll()
         {
-            var data = _book.GetAllBooks();
+            var data = _author.GetAllAuthors();
             return data;
         }
 
