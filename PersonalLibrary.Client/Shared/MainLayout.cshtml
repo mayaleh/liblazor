@@ -1,13 +1,7 @@
 ﻿@inherits BlazorLayoutComponent
-@using Cloudcrate.AspNetCore.Blazor.Browser.Storage;
-
-@inject LocalStorage Storage
-@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
-@inject AppState State;
-
 
 <nav>
-    <NavMenu bind-UserChanged="@userChanged" />
+    <NavMenu/>
 </nav>
 
 <main role="main">
@@ -30,14 +24,16 @@
 @functions
 {
     //public RenderFragment Body { get; set; }
+    
+    protected override async Task OnInitAsync()
+    {
+        await State.CheckIsLoggedIn();
+    }
 
-    [Parameter] LocalStorage storage { get; set; }
-
-    bool userChanged = false;
 
     protected override void OnParametersSet()
     {
-        userChanged = true;
+        //userChanged = true;
         base.OnParametersSet();
         Console.WriteLine("State has change");
         StateHasChanged();

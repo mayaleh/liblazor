@@ -10,7 +10,7 @@ namespace PersonalLibrary.Shared
     {
         public Book()
         {
-            Userbook = new HashSet<Userbook>();
+            Userbook = new HashSet<UserBook>();
         }
 
         public int Bookid { get; set; }
@@ -22,6 +22,6 @@ namespace PersonalLibrary.Shared
         //[ForeignKey("Authorid")]
         [ForeignKey(nameof(Authorid))]
         public Author Author { get; set; }
-        public ICollection<Userbook> Userbook { get; set; }
+        public ICollection<UserBook> Userbook { get; set; }
     }
 }

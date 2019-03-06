@@ -157,19 +157,19 @@ namespace PersonalLibrary.Server.Models
         /// <summary>
         /// Add new record to table usersbook if Book record exist. (references table [user <=> book] many has many).
         /// </summary>
-        private void _addReferenceUserBook(Userbook userbook)
+        private void _addReferenceUserBook(UserBook userbook)
         {
-            int bookId = userbook.Bookid.GetValueOrDefault();
-            int userId = userbook.Userid.GetValueOrDefault();
+            //int bookId = userbook.Bookid.GetValueOrDefault();
+            //int userId = userbook.Userid.GetValueOrDefault();
 
-
+            /*
             Book existingBook = db.Book.Where(b => b.Bookid == bookId).FirstOrDefault();
 
             if (existingBook == null || userId == 0)
             {
                 return;
             }
-
+            */
 
             //TODO save
 

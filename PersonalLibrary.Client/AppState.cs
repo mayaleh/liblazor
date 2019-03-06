@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 using Cloudcrate.AspNetCore.Blazor.Browser.Storage;
 using Microsoft.AspNetCore.Blazor;
 using Microsoft.AspNetCore.Blazor.Services;
+using Newtonsoft.Json;
 using PersonalLibrary.Shared;
+using PersonalLibrary.Shared.Model;
 
 namespace PersonalLibrary.Client
 {
@@ -21,6 +23,7 @@ namespace PersonalLibrary.Client
 
         public bool IsLoggedIn { get; private set; } = false;
 
+        private UserState _userState { get; set; }
 
         public AppState
             (
@@ -32,30 +35,57 @@ namespace PersonalLibrary.Client
             _http = httpClient;
             _localStorage = localStorage;
             _uriHelper = uriHelper;
-            
-            if(!String.IsNullOrEmpty(_localStorage.GetItem("useraccessparam")))
-            {
-                sendCheckPost(false).Wait(30); //synch call
-            }
-
         }
 
         public async Task CheckIsLoggedIn()
         {
             
-            //FooPayload payload = await response.ReadFromJsonAsync<FooPayload>();
-
-            if (string.IsNullOrEmpty(_localStorage.GetItem("useraccessparam")))
+            var response = await _http.GetAsync("/api/sign/getUser");
+            if (response.IsSuccessStatusCode)
             {
-                _uriHelper.NavigateTo("/sign-in");
+                UserState _userState = JsonConvert.DeserializeObject<UserState>(await response.Content.ReadAsStringAsync());
+                IsLoggedIn = _userState.IsLoggedIn;
             }
             else
             {
-                await this.sendCheckPost();
+                throw new Exception((int)response.StatusCode + "-" + response.StatusCode.ToString());
+            }
+
+        }
+        
+        public async Task Login(UserLogin loginDetails)
+        {
+            var response = await _http.PostJsonAsync<UserState>("/api/sign/in", loginDetails);
+
+            if(response.IsLoggedIn)
+            {
+                SaveIdentityToLocal(response);
+                IsLoggedIn = true;
             }
         }
 
+        public async Task Logout()
+        {
 
+            var response = await _http.PutJsonAsync<UserState>("/api/sign/out", _userState);
+            IsLoggedIn = response.IsLoggedIn;
+            _userState = response;
+
+            if(IsLoggedIn == false)
+            {
+                _localStorage.Clear();
+                //_uriHelper.NavigateTo("/");
+            }
+
+        }
+
+        private void SaveIdentityToLocal(UserState response)
+        {
+            //TODO get real name
+            _userState = response;
+        }
+
+        [Obsolete("sendCheckPost is deprecated, now we are using diffrent method to authenticate.")]
         private async Task sendCheckPost(bool redirect = true)
         {
             HttpResponseMessage response = await _http.PostAsync("/api/sign/userCheck", new StringContent(_localStorage.GetItem("useraccessparam")));
@@ -68,7 +98,7 @@ namespace PersonalLibrary.Client
             {
                 if (redirect)
                 {
-                    this.Logout();
+                    await this.Logout();
                 }
                 else
                 {
@@ -78,39 +108,7 @@ namespace PersonalLibrary.Client
             }
         }
 
-        public void CheckIsLoggedIn(bool isPublicPage)
-        {
-           
-        }
-
-
-        public async Task Login(UserAccess loginDetails)
-        {
-            var response = await _http.PostJsonAsync<ResponseToken>("/api/sign/in", loginDetails);
-
-            if (!string.IsNullOrEmpty(response.Token))
-            {
-                SaveIdentityToLocal(response);
-                SetAuthorizationHeader();
-                IsLoggedIn = true;
-            }
-        }
-
-        public void Logout()
-        {
-            _localStorage.Clear();
-            IsLoggedIn = false;
-            _uriHelper.NavigateTo("/");
-        }
-
-        private void SaveIdentityToLocal(ResponseToken response)
-        {
-            _localStorage["useraccessparam"] = response.Token;
-            _localStorage["username"] = response.Name;
-            _localStorage["userIdentity"] = response.Id.ToString();
-            UserIdentity = response.Id;
-        }
-
+        [Obsolete("SetAuthorizationHeader is deprecated, don't edit request header.")]
         private void SetAuthorizationHeader()
         {
             if (!_http.DefaultRequestHeaders.Contains("Authorization"))

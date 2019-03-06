@@ -1,5 +1,5 @@
 ﻿@page "/book/detail/{BookIdString}"
-@using PersonalLibrary.Shared
+
 @inject HttpClient Http
 @inject IUriHelper UriHelper
 @if (string.IsNullOrEmpty(Storage.GetItem("useraccessparam")))

@@ -260,7 +260,7 @@ paket-files/
 __pycache__/
 *.pyc
 
-PersonalLibrary.Server/appsettings.json
+PersonalLibrary.Server/appsettings.Production.json
 PersonalLibrary.Server/Properties/PublishProfiles/Liblaz - Web Deploy.pubxml
 PersonalLibrary.Server/PersonalLibrary.Server.csproj
 /PersonalLibrary.Server/Properties/PublishProfiles

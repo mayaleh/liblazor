@@ -13,7 +13,7 @@ namespace PersonalLibrary.Server.Models
         public virtual DbSet<Author> Author { get; set; }
         public virtual DbSet<Book> Book { get; set; }
         public virtual DbSet<UserAccess> UserAccess { get; set; }
-        public virtual DbSet<Userbook> UserBooks { get; set; }
+        public virtual DbSet<UserBook> UserBooks { get; set; }
 
         public BaseModel()
         {
@@ -35,7 +35,11 @@ namespace PersonalLibrary.Server.Models
             {
                 //"User ID=appuser;Password=libraryUser1997;Server=localhost;Port=4112;Database=liblazor"
                 //
+#if DEBUG
                 optionsBuilder.UseNpgsql("User ID=appuser;Password=libraryUser1997;Server=localhost;Port=4112;Database=liblazor");
+#else
+                optionsBuilder.UseNpgsql("");
+#endif
 
             }
         }

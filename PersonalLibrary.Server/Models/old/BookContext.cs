@@ -16,6 +16,7 @@ namespace PersonalLibrary.Server.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //modelBuilder.
+            /*
             modelBuilder.Entity<Author>(entity =>
             {
                 entity.ToTable("author");
@@ -97,6 +98,7 @@ namespace PersonalLibrary.Server.Models
                     .HasForeignKey(d => d.Userid)
                     .HasConstraintName("userbook_useraccess_userid_fk");
             });
+            */
         }
     }
 

@@ -1,11 +1,12 @@
 ﻿@page "/sign-in"
-@using PersonalLibrary.Shared
+
+@* TODO move to nav and merge with logout action *@
 
 @inject HttpClient Http
 
 @inject IUriHelper UriHelper
 
-@inject AppState State
+
 
 
 
@@ -47,8 +48,8 @@
     @functions{
 
 #if DEBUG
-        public string Email = "salim.mayaleh@seznam.cz";
-        public string Password = "12345";
+        public string Email = "salim.mayaleh";
+        public string Password = "0000RootAdmin12345";
 #else
         public string Email = "";
         public string Password = "";
@@ -64,10 +65,12 @@
         // Todo InitAsynchLoad check if user is logged in, if is true redirect to homepage
         private async Task SubmitSignIn()
         {
+
+            
             isProcessing = true;
-            UserAccess userForm = new UserAccess
+            UserLogin userForm = new UserLogin
             {
-                Email = Email,
+                UserName = Email,
                 Password = Password
             };
             //Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "Your Oauth token");

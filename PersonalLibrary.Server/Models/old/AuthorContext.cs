@@ -12,6 +12,7 @@ namespace PersonalLibrary.Server.Models
         //public virtual DbSet<Author> Author { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            /*
             modelBuilder.Entity<Author>(entity =>
             {
                 entity.ToTable("author");
@@ -29,6 +30,7 @@ namespace PersonalLibrary.Server.Models
                     .HasColumnName("name")
                     .HasMaxLength(150);
             });
+            */
         }
     }
 }

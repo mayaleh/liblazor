@@ -10,13 +10,13 @@ using System.Linq;
 using System.Net.Mime;
 using System.Buffers;
 using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Text;
 using PersonalLibrary.Server.Services;
 using PersonalLibrary.Server.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace PersonalLibrary.Server
 {
@@ -59,38 +59,50 @@ namespace PersonalLibrary.Server
                 }
             );
             /* Konec */
-            services.AddTransient<IJwtTokenService, JwtTokenService>(); //pro vytvarani tokenu
-            services.AddAuthentication(
-                    options =>
-                    {
-                        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                    }
-                )
-                .AddJwtBearer(
-                    options =>
-                    {
-                        options.TokenValidationParameters = new TokenValidationParameters
-                        {
-                            ValidateIssuer = true,
-                            ValidateAudience = true,
-                            ValidateLifetime = true,
-                            ValidateIssuerSigningKey = true,
-                            ValidIssuer = Configuration["Jwt:Issuer"],
-                            ValidAudience = Configuration["Jwt:Audience"],
-                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
-                        };
-                    }
-                );
 
+            /* Database  */
+            var connectionString = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationDBContext>(
                     options =>
                         options.UseNpgsql(
-                                Configuration.GetConnectionString("DefaultConnection")
+                                connectionString
                             )
                 );
-            services.AddDefaultIdentity<IdentityUser>()
-                .AddEntityFrameworkStores<ApplicationDBContext>();
+            /* END */
+
+            #region Identity Services
+
+            services
+               .AddDefaultIdentity<IdentityUser>()
+               .AddRoles<IdentityRole>()
+               .AddDefaultTokenProviders()
+               //.AddDefaultUI(UIFramework.Bootstrap4)
+               .AddEntityFrameworkStores<Models.ApplicationDBContext>();
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Default Lockout settings.
+                //options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                //options.Lockout.MaxFailedAccessAttempts = 5;
+                //options.Lockout.AllowedForNewUsers = true;
+
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequiredUniqueChars = 0;
+                options.Password.RequireNonAlphanumeric = false;
+            });
+
+            services.AddAuthentication(
+                    options =>
+                    {
+                        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    }
+                ).AddCookie();
+
+            #endregion
+
 
         }
 
@@ -104,6 +116,7 @@ namespace PersonalLibrary.Server
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCookiePolicy();
             app.UseAuthentication();
 
             app.UseMvc(routes =>

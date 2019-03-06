@@ -9,7 +9,7 @@ namespace PersonalLibrary.Shared
     {
         public UserAccess()
         {
-            Userbook = new HashSet<Userbook>();
+            Userbook = new HashSet<UserBook>();
         }
 
         [Key]
@@ -21,6 +21,6 @@ namespace PersonalLibrary.Shared
         public string Name { get; set; }
 
 
-        public ICollection<Userbook> Userbook { get; set; }
+        public ICollection<UserBook> Userbook { get; set; }
     }
 }

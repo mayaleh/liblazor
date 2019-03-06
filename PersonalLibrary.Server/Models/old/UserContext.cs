@@ -14,6 +14,7 @@ namespace PersonalLibrary.Server.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            /*
             modelBuilder.Entity<UserAccess>(entity =>
             {
                 entity.HasKey(e => e.Userid);
@@ -36,7 +37,7 @@ namespace PersonalLibrary.Server.Models
                     .HasColumnName("password")
                     .HasMaxLength(500);
             });
-
+            */
         }
     }
 }
