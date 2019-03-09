@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using PersonalLibrary.Server.Models.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,22 +12,28 @@ namespace PersonalLibrary.Server.Models.Seed
     {
         public static void Initialize(
             ApplicationDBContext dBContext,
-            UserManager<IdentityUser> userManager,
+            UserManager<UserAppIdentity> userManager,
             RoleManager<IdentityRole> roleManager)
         {
             InitIdentity(userManager, roleManager);
         }
 
-        private static void InitIdentity(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        private static void InitIdentity(UserManager<UserAppIdentity> userManager, RoleManager<IdentityRole> roleManager)
         {
             Task.Run(async () =>
             {
                 var roleAdmin = new IdentityRole("Admin");
                 var roleUser = new IdentityRole("User");
 
-                var admin = new IdentityUser("salim.mayaleh"); //could be extended to my User
+                var admin = new UserAppIdentity
+                {
+                    Email = "salim.mayaleh@gmail.com",
+                    RealName = "Salim Mayaleh",
+                    UserName = "salim.mayaleh"
+                }
+                ; //could be extended to my User
 
-                await roleManager.CreateAsync(roleAdmin);
+                await roleManager.CreateAsync(roleAdmin); 
                 await roleManager.CreateAsync(roleUser);
 
                 var roles = new[] { roleAdmin.Name, roleUser.Name };

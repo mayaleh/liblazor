@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using PersonalLibrary.Server.Models.Entities;
+
 namespace PersonalLibrary.Server
 {
     public class Program
@@ -21,7 +23,7 @@ namespace PersonalLibrary.Server
                 if (dbContext.Database.EnsureCreated())
                 {
                     var userManager = scope.ServiceProvider
-                    .GetRequiredService<UserManager<IdentityUser>>();
+                    .GetRequiredService<UserManager<UserAppIdentity>>();
 
                     var roleManager = scope.ServiceProvider
                         .GetRequiredService<RoleManager<IdentityRole>>();

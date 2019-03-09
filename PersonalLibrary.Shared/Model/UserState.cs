@@ -10,6 +10,8 @@ namespace PersonalLibrary.Shared.Model
 
         public string FullName { get; set; }
 
+        public string LoginName { get; set; }
+
         public string Email { get; set; }
     }
 }

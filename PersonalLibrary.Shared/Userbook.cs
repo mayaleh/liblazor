@@ -22,9 +22,7 @@ namespace PersonalLibrary.Shared
         public string Note { get; set; }
         public bool? Readdone { get; set; }
         public string Place { get; set; }
-
-
+        
         public Book Book { get; set; }
-        public UserAccess User { get; set; }
     }
 }

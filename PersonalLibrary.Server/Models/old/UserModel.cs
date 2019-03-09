@@ -10,6 +10,7 @@ namespace PersonalLibrary.Server.Models
 {
     public class UserModel
     {
+        /*
         private readonly UserContext db = new UserContext();
 
         public UserAccess GetUserAccessLogin(UserAccess login)
@@ -28,5 +29,7 @@ namespace PersonalLibrary.Server.Models
                 throw;
             }
         }
+
+        */
     }
 }

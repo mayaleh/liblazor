@@ -17,6 +17,7 @@ using PersonalLibrary.Server.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
+using PersonalLibrary.Server.Models.Entities;
 
 namespace PersonalLibrary.Server
 {
@@ -73,7 +74,7 @@ namespace PersonalLibrary.Server
             #region Identity Services
 
             services
-               .AddDefaultIdentity<IdentityUser>()
+               .AddDefaultIdentity<UserAppIdentity>()
                .AddRoles<IdentityRole>()
                .AddDefaultTokenProviders()
                //.AddDefaultUI(UIFramework.Bootstrap4)

@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
+using PersonalLibrary.Server.Models.Entities;
 
 namespace PersonalLibrary.Server.Controllers
 {
@@ -26,9 +27,10 @@ namespace PersonalLibrary.Server.Controllers
 
         // udelat svuj objekt pro uzivatele dedici z IdentityUser - pridat email a realname a nahradit IdentityUser
         // pak upravit userState a vracet realname a email
-        private readonly SignInManager<IdentityUser> signInManager;
+        // UserManager.GetEmailAsync(user);
+        private readonly SignInManager<UserAppIdentity> signInManager;
 
-        public SignController(SignInManager<IdentityUser> signInManager)
+        public SignController(SignInManager<UserAppIdentity> signInManager)
         {
             this.signInManager = signInManager;
         }
@@ -37,7 +39,7 @@ namespace PersonalLibrary.Server.Controllers
         public UserState GetUser()
         {
             return User.Identity.IsAuthenticated
-               ? new UserState { IsLoggedIn = true, FullName = User.Identity.Name }
+               ? new UserState { IsLoggedIn = true, FullName = User.Identity.Name, }
                : new UserState { IsLoggedIn = false };
         }
 
