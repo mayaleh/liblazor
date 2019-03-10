@@ -29,39 +29,59 @@ namespace PersonalLibrary.Server.Controllers
         // pak upravit userState a vracet realname a email
         // UserManager.GetEmailAsync(user);
         private readonly SignInManager<UserAppIdentity> signInManager;
+        private readonly UserManager<UserAppIdentity> userManager;
 
-        public SignController(SignInManager<UserAppIdentity> signInManager)
+        public SignController(SignInManager<UserAppIdentity> signInManager, UserManager<UserAppIdentity> userManager)
         {
             this.signInManager = signInManager;
+            this.userManager = userManager;
         }
 
         [HttpGet("[action]")]
         public UserState GetUser()
         {
+            if(User.Identity.IsAuthenticated)
+            {
+
+            }
+
             return User.Identity.IsAuthenticated
-               ? new UserState { IsLoggedIn = true, FullName = User.Identity.Name, }
+               ? new UserState
+               {
+                   IsLoggedIn = true,
+                   FullName = ((ClaimsIdentity)User.Identity).FindFirst("RealName").Value, // TODO refactoring - create private function
+                   LoginName = User.Identity.Name,
+                   Email = ((ClaimsIdentity)User.Identity).FindFirst(ClaimTypes.Email).Value
+               }
                : new UserState { IsLoggedIn = false };
         }
 
         [HttpPost("[action]")]
         public async Task<JsonResult> In([FromBody] UserLogin userLogin)
         {
-            //HttpContext.SignInAsync()
-            var u = User.Identity;
+            //var u = User.Identity;
             var result = await signInManager.PasswordSignInAsync(userLogin.UserName, userLogin.Password, true, lockoutOnFailure: true);
-            var b = User.Identity;
+            //System.Security.Claims.ClaimsPrincipal currentUser = this.User;
+
+            
 
             if (result.Succeeded)
             {
+                var identity = (ClaimsIdentity)User.Identity;
+
+                var userApp = userManager.FindByNameAsync(userLogin.UserName).Result;
+                
+
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, userLogin.UserName),
-                    new Claim("FullName", userLogin.UserName),
                     new Claim(ClaimTypes.Role, "Administrator"),
+                    new Claim(ClaimTypes.Email, userApp.Email),
+                    new Claim("RealName", userApp.RealName)
                 };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
+                
                 var authProperties = new AuthenticationProperties
                 {
                     //AllowRefresh = <bool>,
