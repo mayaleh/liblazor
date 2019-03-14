@@ -26,7 +26,7 @@ namespace PersonalLibrary.Server.Models
         {
            
         }
-
+        /*
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -39,6 +39,6 @@ namespace PersonalLibrary.Server.Models
                  .HasForeignKey(ub => ub.UserAppIdentityId)
                  .IsRequired();
             });
-        }
+        } */
     }
 }

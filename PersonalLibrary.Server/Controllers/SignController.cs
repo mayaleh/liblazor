@@ -22,36 +22,27 @@ namespace PersonalLibrary.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SignController : ControllerBase
+    public class SignController : AppBaseController
     {
-
-        // udelat svuj objekt pro uzivatele dedici z IdentityUser - pridat email a realname a nahradit IdentityUser
-        // pak upravit userState a vracet realname a email
-        // UserManager.GetEmailAsync(user);
         private readonly SignInManager<UserAppIdentity> signInManager;
         private readonly UserManager<UserAppIdentity> userManager;
 
-        public SignController(SignInManager<UserAppIdentity> signInManager, UserManager<UserAppIdentity> userManager)
+        public SignController(SignInManager<UserAppIdentity> signInManager, UserManager<UserAppIdentity> userManager) : base(signInManager, userManager)
         {
-            this.signInManager = signInManager;
-            this.userManager = userManager;
+            this.signInManager = SignInManager;
+            this.userManager = UserManager;
         }
 
         [HttpGet("[action]")]
         public UserState GetUser()
         {
-            if(User.Identity.IsAuthenticated)
-            {
-
-            }
-
             return User.Identity.IsAuthenticated
                ? new UserState
                {
                    IsLoggedIn = true,
-                   FullName = ((ClaimsIdentity)User.Identity).FindFirst("RealName").Value, // TODO refactoring - create private function
+                   FullName = GetClaim("RealName").Value,
                    LoginName = User.Identity.Name,
-                   Email = ((ClaimsIdentity)User.Identity).FindFirst(ClaimTypes.Email).Value
+                   Email = GetClaim(ClaimTypes.Email).Value
                }
                : new UserState { IsLoggedIn = false };
         }
@@ -59,12 +50,8 @@ namespace PersonalLibrary.Server.Controllers
         [HttpPost("[action]")]
         public async Task<JsonResult> In([FromBody] UserLogin userLogin)
         {
-            //var u = User.Identity;
             var result = await signInManager.PasswordSignInAsync(userLogin.UserName, userLogin.Password, true, lockoutOnFailure: true);
-            //System.Security.Claims.ClaimsPrincipal currentUser = this.User;
-
             
-
             if (result.Succeeded)
             {
                 var identity = (ClaimsIdentity)User.Identity;
@@ -127,66 +114,8 @@ namespace PersonalLibrary.Server.Controllers
         public async Task<UserState> Out()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            //return LoggedOutState;
+            
             return new UserState { IsLoggedIn = false };
         }
-
-        #region OLD jwtToken
-        /*
-        [HttpPost("[action]")]
-        public IActionResult In([FromBody] UserAccess user)
-        {
-            var userChecked = userModel.GetUserAccessLogin(user);
-            if (userChecked != null)
-            {
-                var token = _tokenService.BuildToken(userChecked.Email, userChecked.Userid.ToString());
-
-                // Set Cookie
-
-                CookieOptions option = new CookieOptions
-                {
-                    Expires = DateTime.Now.AddMinutes(30)
-                };
-
-                Response.Cookies.Append("token", token, option);
-                Response.Cookies.Append("userName", userChecked.Name, option);
-                
-
-
-                return Ok(new { token, userChecked.Name, userChecked.Userid }); // add to browser storage user name and display it
-            }
-            else
-            {
-                return Forbid();
-            }
-        } */
-
-        [Authorize]
-        [HttpPost("[action]")]
-        public IActionResult UserCheck(string token) => Ok();
-        /*public IActionResult UserCheck(HttpRequestMessage request)// => Ok();
-         {
-            CookieHeaderValue token = request.Headers.GetCookies("token").FirstOrDefault();
-
-            if (token == null)
-            {
-                return Forbid();
-            }
-
-
-            CookieHeaderValue name = request.Headers.GetCookies("userName").FirstOrDefault();
-
-            string userName = "";
-            if (name != null)
-            {
-                userName = name["userName"].Value;
-            }
-
-            return Ok(new { token["token"].Value, userName });
-        } */
-
-        #endregion
-        //Todo Sign out
-
     }
 }

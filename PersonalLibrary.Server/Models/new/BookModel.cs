@@ -92,8 +92,9 @@ namespace PersonalLibrary.Server.Models.New
             public List<UserBook> GetUsersBooks(string userId)
             {
                 var result = DBContext.UserBook
-                    .Where(b => b.UserAppIdentityId == userId)
+                    .Where(b => b.UserId == userId) //TODO doesnot work???
                     .Include(d => d.Book)
+                    .Include(d => d.Book.Author)
                     .ToList();
                 return result;
             }

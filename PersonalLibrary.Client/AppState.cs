@@ -25,6 +25,8 @@ namespace PersonalLibrary.Client
 
         private UserState _userState { get; set; }
 
+        public string UserFullName { get; private set; } = "";
+
         public AppState
             (
                 HttpClient httpClient,
@@ -43,8 +45,7 @@ namespace PersonalLibrary.Client
             var response = await _http.GetAsync("/api/sign/getUser");
             if (response.IsSuccessStatusCode)
             {
-                UserState _userState = JsonConvert.DeserializeObject<UserState>(await response.Content.ReadAsStringAsync());
-                IsLoggedIn = _userState.IsLoggedIn;
+                SaveIdentityToLocal(JsonConvert.DeserializeObject<UserState>(await response.Content.ReadAsStringAsync()));
             }
             else
             {
@@ -82,8 +83,11 @@ namespace PersonalLibrary.Client
         private void SaveIdentityToLocal(UserState response)
         {
             //TODO get real name
+            IsLoggedIn = response.IsLoggedIn;
             _userState = response;
+            UserFullName = response.FullName;
         }
+        
 
         [Obsolete("sendCheckPost is deprecated, now we are using diffrent method to authenticate.")]
         private async Task sendCheckPost(bool redirect = true)

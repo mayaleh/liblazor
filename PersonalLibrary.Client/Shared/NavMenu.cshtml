@@ -91,9 +91,9 @@
                 @if (State.IsLoggedIn)
                 {
 
-                    @if (!string.IsNullOrEmpty(Storage.GetItem("username")))
+                    @if (!string.IsNullOrEmpty(State.UserFullName))
                     {
-                        <span class="username text-white">@Storage.GetItem("username")</span>
+                        <span class="username text-white">@State.UserFullName</span>
                     }
 
                     <button onclick="@SignOut" class="btn btn-warning ml-md-auto">

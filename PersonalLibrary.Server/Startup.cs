@@ -18,7 +18,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using PersonalLibrary.Server.Models.Entities;
-
+using PersonalLibrary.Server.Models.New;
 namespace PersonalLibrary.Server
 {
     public class Startup
@@ -104,6 +104,9 @@ namespace PersonalLibrary.Server
 
             #endregion
 
+            #region DI Model services
+            services.AddScoped<Models.New.BookModel>();
+            #endregion
 
         }
 

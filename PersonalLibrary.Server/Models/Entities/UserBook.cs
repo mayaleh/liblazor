@@ -12,7 +12,7 @@ namespace PersonalLibrary.Server.Models.Entities
         public string Note { get; set; }
         public bool? Readdone { get; set; }
         public string Place { get; set; }
-        public string UserAppIdentityId { get; set; }
+        public string UserId { get; set; }
 
         public Book Book { get; set; }
         public UserAppIdentity User { get; set; }
