@@ -105,6 +105,9 @@ namespace PersonalLibrary.Server
             #endregion
 
             #region DI Model services
+            // Translator of entites between Client and Server
+            services.AddScoped<EntitiyTranslator>();
+
             services.AddScoped<Models.New.BookModel>();
             #endregion
 

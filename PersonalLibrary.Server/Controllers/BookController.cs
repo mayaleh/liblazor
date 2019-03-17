@@ -9,6 +9,7 @@ using Model = PersonalLibrary.Server.Models.New;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
+using PersonalLibrary.Server.Services;
 
 namespace PersonalLibrary.Server.Controllers
 {
@@ -18,16 +19,20 @@ namespace PersonalLibrary.Server.Controllers
     public class BookController : AppBaseController
     {
         private readonly Model.BookModel bookModel;
+        private readonly EntitiyTranslator etranslator;
+
         //private BookModel _book = new BookModel();
 
         public BookController
             (
                 Model.BookModel bookModel,
+                EntitiyTranslator etranslator,
                 SignInManager<UserAppIdentity> signInManager,
                 UserManager<UserAppIdentity> userManager
             ) : base(signInManager, userManager)
         {
             this.bookModel = bookModel;
+            this.etranslator = etranslator;
         }
 
         
@@ -35,28 +40,15 @@ namespace PersonalLibrary.Server.Controllers
 
         #region Public API methods
         [HttpGet("[action]")]
-        public List<Book> GetAll()
+        public List<Shared.Book> GetAll()
         {
             List<Shared.Book> result = new List<Shared.Book>();
             List<Book> data = bookModel.GetAllBooks();
             foreach (Book item in data)
             {
-                result.Add(
-                        new Shared.Book()
-                        {
-                            Bookid = item.Bookid,
-                            Authorid = item.Authorid,
-                            Name = item.Name,
-                            About = item.About,
-                            Author = new Shared.Author()
-                            {
-                                Authorid = item.Author.Authorid,
-                                Name = item.Author.Name,
-                            },
-                        }
-                        );
+                result.Add(etranslator.ToClientBook(item));
             }
-            return data;
+            return result;
         }
 
         #endregion
@@ -73,26 +65,55 @@ namespace PersonalLibrary.Server.Controllers
             foreach(var item in data)
             {
                 result.Add(
-                         new Shared.Book()
-                         {
-                             Bookid = item.BookId,
-                             Authorid = item.Book.Authorid,
-                             Name = item.Book.Name,
-                             About = item.Book.About,
-                             Note = item.Note,
-                             Place = item.Place,
-                             Rate = item.Rate.GetValueOrDefault(),
-                             Readdone = item.Readdone.GetValueOrDefault(),
-                             Author = new Shared.Author()
-                             {
-                                 Authorid = item.Book.Author.Authorid,
-                                 Name = item.Book.Author.Name,
-                             },
-                         }
+                    etranslator.ToClientBookUser(item)
+                         //new Shared.Book()
+                         //{
+                         //    Bookid = item.BookId,
+                         //    Authorid = item.Book.Authorid,
+                         //    Name = item.Book.Name,
+                         //    About = item.Book.About,
+                         //    Note = item.Note,
+                         //    Place = item.Place,
+                         //    Rate = item.Rate.GetValueOrDefault(),
+                         //    Readdone = item.Readdone.GetValueOrDefault(),
+                         //    Author = new Shared.Author()
+                         //    {
+                         //        Authorid = item.Book.Author.Authorid,
+                         //        Name = item.Book.Author.Name,
+                         //    },
+                         //}
                     );
             }
             return result;
         }
+
+
+
+        [Authorize]
+        [HttpPost("[action]")]
+        public Shared.Book AddBook([FromBody] Shared.Book book)
+        {
+            if (ModelState.IsValid)
+            {
+                var userBook = etranslator.ToServerUserBook(book);
+                userBook.UserId =  GetUserId().Result;
+
+                var serverBook = userBook.Book;
+
+                var author = serverBook.Author;
+                //TODO check Author,
+                //TODO check Book,
+                //Todo save reference
+
+                bookModel.SaveBook(userBook);
+            }
+
+           return book;
+        }
+
+
+
+
 
         #endregion
 

@@ -110,9 +110,15 @@ namespace PersonalLibrary.Server.Models.New
         /// <summary>
         /// On call action Save by loged in user
         /// </summary>
-        public void SaveBook(Book book)
+        public void SaveBook(UserBook userBook)
         {
+            var book = userBook.Book;
 
+            var author = book.Author;
+
+            //TODO find author if exist
+            //TODO find book if exist
+            //TODO find userBook if book and userBook and author exist
             try
             {
                 //if book is set and exist, create only reference to user and book
@@ -123,7 +129,7 @@ namespace PersonalLibrary.Server.Models.New
                 //else first create the new book, then create reference
                 else
                 {
-                    Book newRecord = this._addNewBook(book);
+                    //Book newRecord = this._addNewBook(book);
                     //this._addReferenceUserBook();
                 }
                     
