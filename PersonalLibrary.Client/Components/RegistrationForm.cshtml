@@ -1,0 +1,115 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@inject HttpClient Http
+
+<div class="modal fade" id="registrationForm" tabindex="-1" role="dialog" aria-labelledby="registrationFormTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="registrationFormTitle">Registration</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    @if (!IsRegistred)
+                    {
+
+                        <div class="row">
+                            <label for="regFN" class="col-sm-3 col-form-label">Full name:</label>
+                            <div class="col-sm-9">
+                                <input bind="@userReg.RealName" type="text" class="form-control" id="regFN" placeholder="Full name" />
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <label for="regE" class="col-sm-3 col-form-label">Email:</label>
+                            <div class="col-sm-9">
+                                <input bind="@userReg.Email" type="email" class="form-control" id="regE" placeholder="Email" />
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <label for="regUN" class="col-sm-3 col-form-label">User name (login):</label>
+                            <div class="col-sm-9">
+                                <input bind="@userReg.UserName" type="text" class="form-control" id="regUN" placeholder="User name" />
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <label for="regPasswd" class="col-sm-3 col-form-label">Password:</label>
+                            <div class="col-sm-9">
+                                <input bind="@userReg.Password" type="password" class="form-control" id="regPasswd" placeholder="Password" />
+                            </div>
+                        </div>
+
+                        @if (ShowFillMessage)
+                        {
+                            <div class="row mt-4">
+                                <div class="col-sm-12">
+                                    <div class="alert alert-info" role="alert">
+                                        <p class="center">
+                                            Please fill User name and Password!
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                            <div class="row mt-4">
+
+                                <div class="alert alert-success" role="alert">
+                                    <div class="text-right">
+                                        <p>Your new account has been successfully created. Now, you can Sing in and fill your data under your account!</p>
+                                    </div>
+                                </div>
+
+                            </div>
+                    }
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                @if (!IsRegistred)
+                {
+                    <button type="button" onclick="@DoRegistration" class="btn btn-primary">Create account</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@functions
+{
+    public UserRegistration userReg = new UserRegistration();
+    protected bool ShowFillMessage = false;
+    protected bool IsRegistred = false;
+
+    protected async Task DoRegistration()
+    {
+        if (
+            !string.IsNullOrEmpty(userReg.UserName)
+            && !string.IsNullOrEmpty(userReg.Password)
+            && !string.IsNullOrEmpty(userReg.Email)
+            && !string.IsNullOrEmpty(userReg.RealName)
+        )
+        {
+
+            ShowFillMessage = false;
+            var result = await Http.SendJsonAsync<object>(HttpMethod.Post, "/api/registration/newUser", userReg);
+            IsRegistred = true;
+        }
+        else
+        {
+            ShowFillMessage = true;
+        }
+    }
+}

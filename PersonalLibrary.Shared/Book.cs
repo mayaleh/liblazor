@@ -8,22 +8,6 @@ namespace PersonalLibrary.Shared
 {
     public partial class Book
     {
-        /*public Book()
-        {
-            Userbook = new HashSet<UserBook>();
-        }
-
-        public int Bookid { get; set; }
-        public int? Authorid { get; set; }
-        [Required]
-        public string Name { get; set; }
-        public string About { get; set; }
-
-        //[ForeignKey("Authorid")]
-        [ForeignKey(nameof(Authorid))]
-        public Author Author { get; set; }
-        public ICollection<UserBook> Userbook { get; set; }
-        */
         public int Bookid { get; set; }
         public int? Authorid { get; set; }
 

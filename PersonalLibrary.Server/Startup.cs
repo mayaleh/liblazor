@@ -45,7 +45,7 @@ namespace PersonalLibrary.Server
                 });
             });
 
-             /* Nastaveni Json Response pro spravne odpovidani pro include related entities */
+             /* JSON serealization */
             var ser = new JsonSerializerSettings
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
@@ -59,7 +59,7 @@ namespace PersonalLibrary.Server
                     options.OutputFormatters.Insert(0, jsonOutputFormatter);
                 }
             );
-            /* Konec */
+            /* End */
 
             /* Database  */
             var connectionString = Configuration.GetConnectionString("DefaultConnection");

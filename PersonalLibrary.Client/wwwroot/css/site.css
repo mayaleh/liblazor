@@ -1,11 +1,13 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background-color: #fffdf4;
+    /*font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
+    /*background-color: #fffdf4;*/
 }
-
-a{
+.modal, .toast {
+    /*color: #2E2E2E*/
+}
+a {
     cursor: pointer !important;
 }
 
@@ -23,6 +25,10 @@ a.btn{
 
 .margin-x-md {
     margin: 1rem 0;
+}
+
+.mr-r{
+    margin-right: 1rem;
 }
 
 app {
@@ -114,8 +120,8 @@ app {
 }
 
 .footer {
-    margin-top:100px;
-    background-color: #f7f7f7;
+    margin-top: 100px;
+    /*background-color: #f7f7f7;*/
 }
 
 .footer .separator {
