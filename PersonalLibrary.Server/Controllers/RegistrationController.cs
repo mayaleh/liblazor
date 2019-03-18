@@ -62,11 +62,22 @@ namespace PersonalLibrary.Server.Controllers
 
                     //await SignInManager.SignInAsync(user, isPersistent: false);
                     //return LocalRedirect(returnUrl);
-                    return Ok(new { Registred = true });
+                    return Ok(new { Code = "Success", Describtion = "New user created successfully!" });
                 }
                 else
                 {
-                    return BadRequest(new { Registred = false });
+                    IdentityError errReg = result.Errors.FirstOrDefault();
+
+                    /*
+                     * 
+                    var errList = new List<IdentityError>();
+                    foreach (var error in result.Errors)
+                    {
+                        errList.Add(error);
+                        //ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    */
+                    return BadRequest(errReg);
                 }
             }
             else

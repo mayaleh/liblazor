@@ -58,18 +58,32 @@
                                 </div>
                             </div>
                         }
+
+
+                        @if (IsResultFail)
+                        {
+                            <div class="row mt-4">
+                                <div class="col-sm-12">
+                                    <div class="alert alert-info" role="alert">
+                                        <p class="center" bind="@ResultMessage">
+                                            
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
                     }
                     else
                     {
-                            <div class="row mt-4">
+                        <div class="row mt-4">
 
-                                <div class="alert alert-success" role="alert">
-                                    <div class="text-right">
-                                        <p>Your new account has been successfully created. Now, you can Sing in and fill your data under your account!</p>
-                                    </div>
+                            <div class="alert alert-success" role="alert">
+                                <div class="text-right">
+                                    <p>Your new account has been successfully created. Now, you can Sing in and fill your data under your account!</p>
                                 </div>
-
                             </div>
+
+                        </div>
                     }
 
                 </div>
@@ -92,6 +106,8 @@
     public UserRegistration userReg = new UserRegistration();
     protected bool ShowFillMessage = false;
     protected bool IsRegistred = false;
+    protected bool IsResultFail = false;
+    protected string ResultMessage = "";
 
     protected async Task DoRegistration()
     {
@@ -103,13 +119,22 @@
         )
         {
 
-            ShowFillMessage = false;
-            var result = await Http.SendJsonAsync<object>(HttpMethod.Post, "/api/registration/newUser", userReg);
-            IsRegistred = true;
+            ShowFillMessage = false;//todo
+            var result = await Http.SendJsonAsync<RegistrationResult>(HttpMethod.Post, "/api/registration/newUser", userReg);
+            if(result.Code == "Success")
+            {
+
+                IsRegistred = true;
+            }
+            else
+            {
+                ResultMessage = result.Description;
+            }
         }
         else
         {
             ShowFillMessage = true;
         }
+        StateHasChanged();
     }
 }
