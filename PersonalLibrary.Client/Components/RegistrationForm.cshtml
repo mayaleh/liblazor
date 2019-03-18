@@ -64,9 +64,9 @@
                         {
                             <div class="row mt-4">
                                 <div class="col-sm-12">
-                                    <div class="alert alert-info" role="alert">
-                                        <p class="center" bind="@ResultMessage">
-                                            
+                                    <div class="alert alert-danger" role="alert">
+                                        <p class="center">
+                                            @ResultMessage
                                         </p>
                                     </div>
                                 </div>
@@ -123,11 +123,12 @@
             var result = await Http.SendJsonAsync<RegistrationResult>(HttpMethod.Post, "/api/registration/newUser", userReg);
             if(result.Code == "Success")
             {
-
+                IsResultFail = false;
                 IsRegistred = true;
             }
             else
             {
+                IsResultFail = true;
                 ResultMessage = result.Description;
             }
         }

@@ -77,12 +77,12 @@ namespace PersonalLibrary.Server.Controllers
                         //ModelState.AddModelError(string.Empty, error.Description);
                     }
                     */
-                    return BadRequest(errReg);
+                    return Ok(errReg);
                 }
             }
             else
             {
-                return BadRequest(new { Registred = false });
+                return BadRequest();
             }
 
             // If we got this far, something failed, redisplay form
