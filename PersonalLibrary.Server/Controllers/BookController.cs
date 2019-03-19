@@ -19,6 +19,7 @@ namespace PersonalLibrary.Server.Controllers
     public class BookController : AppBaseController
     {
         private readonly Model.BookModel bookModel;
+        private readonly Model.AuthorModel authorModel;
         private readonly EntitiyTranslator etranslator;
 
         //private BookModel _book = new BookModel();
@@ -26,12 +27,14 @@ namespace PersonalLibrary.Server.Controllers
         public BookController
             (
                 Model.BookModel bookModel,
+                Model.AuthorModel authorModel,
                 EntitiyTranslator etranslator,
                 SignInManager<UserAppIdentity> signInManager,
                 UserManager<UserAppIdentity> userManager
             ) : base(signInManager, userManager)
         {
             this.bookModel = bookModel;
+            this.authorModel = authorModel;
             this.etranslator = etranslator;
         }
 
@@ -97,12 +100,15 @@ namespace PersonalLibrary.Server.Controllers
             {
                 var userBook = etranslator.ToServerUserBook(book);
                 userBook.UserId =  GetUserId().Result;
-
                 var serverBook = userBook.Book;
-
                 var author = serverBook.Author;
-                //TODO check Author,
+
+                //TODO check Author - Return author and get his Id
+                authorModel.SaveAuthor(author);
+
                 //TODO check Book,
+
+
                 //Todo save reference
 
                 bookModel.SaveBook(userBook);

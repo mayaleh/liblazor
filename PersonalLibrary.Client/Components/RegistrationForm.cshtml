@@ -46,6 +46,14 @@
                             </div>
                         </div>
 
+
+                        <div class="row mt-4">
+                            <label for="regPasswdConf" class="col-sm-3 col-form-label">Confirm Password:</label>
+                            <div class="col-sm-9">
+                                <input bind="@ConfirmPasswd" type="password" class="form-control" id="regPasswdConf" placeholder="Confirm Password" />
+                            </div>
+                        </div>
+
                         @if (ShowFillMessage)
                         {
                             <div class="row mt-4">
@@ -108,6 +116,7 @@
     protected bool IsRegistred = false;
     protected bool IsResultFail = false;
     protected string ResultMessage = "";
+    protected string ConfirmPasswd = "";
 
     protected async Task DoRegistration()
     {
@@ -119,7 +128,7 @@
         )
         {
 
-            ShowFillMessage = false;//todo
+            ShowFillMessage = false;
             var result = await Http.SendJsonAsync<RegistrationResult>(HttpMethod.Post, "/api/registration/newUser", userReg);
             if(result.Code == "Success")
             {

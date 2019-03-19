@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using PersonalLibrary.Server.Models.Entities;
 
 namespace PersonalLibrary.Server.Models.New
 {
@@ -15,7 +17,69 @@ namespace PersonalLibrary.Server.Models.New
         }
 
 
+        public Author GetAuthorById(int id)
+        {
+            return DBContext.Author
+                .Where(a => a.Authorid == id)
+                .FirstOrDefault();
+        }
 
+        public Author FindByName(string name)
+        {
+            return DBContext.Author
+                .Where(a => a.Name.ToUpper() == name.ToUpper())
+                .FirstOrDefault();
+        }
+
+        public void SearchOn()
+        {
+
+        }
+
+        public void SaveAuthor(Author author)
+        {
+            if (author.Authorid > 0)
+            {
+                var foundAuthor = GetAuthorById(author.Authorid);
+                if (foundAuthor != null)
+                {
+                    this._updateAuthor(author);
+                }
+                else
+                {
+                    //err
+                }
+            }
+            else
+            {
+                var foundAuthor = FindByName(author.Name);
+
+                if (foundAuthor != null)
+                {
+                    this._updateAuthor(author);
+                }
+                else
+                {
+                    this._createAuthor(author);
+                }
+
+            }
+        }
+
+
+        private Author _createAuthor(Author author)
+        {
+            DBContext.Author.Add(author);
+            DBContext.SaveChanges();
+            int _authorId = (int)author.Authorid;
+            return GetAuthorById(_authorId);
+        }
+
+        private void _updateAuthor(Author author)
+        {
+            //TODO
+            DBContext.Entry(author).State = EntityState.Modified;
+        }
 
 
     }

@@ -62,7 +62,7 @@ namespace PersonalLibrary.Server.Models.New
                     Book book = DBContext.Book
                         .Where(b => b.Bookid == bookId)
                         .Include(d => d.Author)
-                        .Single(); // Expect exactly one row. Better use SingleOrDefaut for accept null result
+                        .SingleOrDefault(); // Expect exactly one row. Better use SingleOrDefaut for accept null result
                         //.Find(bookId);
                         //.Include(d => d.Author);
                     return book;
