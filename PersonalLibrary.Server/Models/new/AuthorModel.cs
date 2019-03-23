@@ -36,18 +36,19 @@ namespace PersonalLibrary.Server.Models.New
 
         }
 
-        public void SaveAuthor(Author author)
+        public Author SaveAuthor(Author author)
         {
             if (author.Authorid > 0)
             {
                 var foundAuthor = GetAuthorById(author.Authorid);
                 if (foundAuthor != null)
                 {
-                    this._updateAuthor(author);
+                    return foundAuthor; // dont update
+                    //return this._updateAuthor(author);
                 }
                 else
                 {
-                    //err
+                    throw new KeyNotFoundException("Author with ID: " + author.Authorid.ToString() + " not found to update");
                 }
             }
             else
@@ -56,11 +57,12 @@ namespace PersonalLibrary.Server.Models.New
 
                 if (foundAuthor != null)
                 {
-                    this._updateAuthor(author);
+                    return foundAuthor; //dont update
+                    //return this._updateAuthor(author);
                 }
                 else
                 {
-                    this._createAuthor(author);
+                    return this._createAuthor(author);
                 }
 
             }
@@ -75,10 +77,12 @@ namespace PersonalLibrary.Server.Models.New
             return GetAuthorById(_authorId);
         }
 
-        private void _updateAuthor(Author author)
+        private Author _updateAuthor(Author author)
         {
             //TODO
             DBContext.Entry(author).State = EntityState.Modified;
+            DBContext.SaveChanges();
+            return author;
         }
 
 

@@ -19,6 +19,9 @@ using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using PersonalLibrary.Server.Models.Entities;
 using PersonalLibrary.Server.Models.New;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity.UI.Services;
+
 namespace PersonalLibrary.Server
 {
     public class Startup
@@ -34,6 +37,9 @@ namespace PersonalLibrary.Server
         public void ConfigureServices(IServiceCollection services)
         {
             
+
+
+
             services.AddEntityFrameworkNpgsql();
 
             services.AddResponseCompression(options =>
@@ -58,7 +64,7 @@ namespace PersonalLibrary.Server
                     options.OutputFormatters.Clear();
                     options.OutputFormatters.Insert(0, jsonOutputFormatter);
                 }
-            );
+            );//.SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             /* End */
 
             /* Database  */
@@ -74,7 +80,10 @@ namespace PersonalLibrary.Server
             #region Identity Services
 
             services
-               .AddDefaultIdentity<UserAppIdentity>()
+               .AddDefaultIdentity<UserAppIdentity>(config =>
+               {
+                   config.SignIn.RequireConfirmedEmail = true;
+               })
                .AddRoles<IdentityRole>()
                .AddDefaultTokenProviders()
                //.AddDefaultUI(UIFramework.Bootstrap4)
@@ -109,6 +118,16 @@ namespace PersonalLibrary.Server
             services.AddScoped<EntitiyTranslator>();
 
             services.AddScoped<Models.New.BookModel>();
+            #endregion
+
+
+
+            #region Email sender
+            // requires
+            // using Microsoft.AspNetCore.Identity.UI.Services;
+            // using WebPWrecover.Services;
+            services.AddTransient<IEmailSender, EmailSender>();
+            services.Configure<AuthMessageSenderOptions>(Configuration);
             #endregion
 
         }

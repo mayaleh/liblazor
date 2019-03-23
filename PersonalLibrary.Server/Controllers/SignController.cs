@@ -50,7 +50,7 @@ namespace PersonalLibrary.Server.Controllers
         [HttpPost("[action]")]
         public async Task<JsonResult> In([FromBody] UserLogin userLogin)
         {
-            var result = await signInManager.PasswordSignInAsync(userLogin.UserName, userLogin.Password, true, lockoutOnFailure: true);
+            var result = await signInManager.PasswordSignInAsync(userLogin.UserName, userLogin.Password, false, lockoutOnFailure: true);
             
             if (result.Succeeded)
             {

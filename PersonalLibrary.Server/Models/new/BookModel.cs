@@ -85,6 +85,13 @@ namespace PersonalLibrary.Server.Models.New
                     throw;
                 }
             }
+
+        public Book FindBook(Book book)
+        {
+            return DBContext.Book
+                .Where(b => (b.Name.ToUpper() == book.Name.ToUpper() && b.Authorid == book.Authorid))
+                .SingleOrDefault();
+        }
         #endregion
 
         #region Protected by Identity
@@ -112,8 +119,9 @@ namespace PersonalLibrary.Server.Models.New
         /// </summary>
         public void SaveBook(UserBook userBook)
         {
-            var book = userBook.Book;
-
+            //var book = userBook.Book;
+            var book = FindBook(userBook.Book) ?? _addNewBook(userBook.Book);
+            userBook.BookId = book.Bookid;
             var author = book.Author;
 
             //TODO find author if exist
@@ -124,7 +132,7 @@ namespace PersonalLibrary.Server.Models.New
                 //if book is set and exist, create only reference to user and book
                 if (book.Bookid != 0)
                 {
-                    //this._addReferenceUserBook();
+                    this._addReferenceUserBook(userBook);
                 }
                 //else first create the new book, then create reference
                 else

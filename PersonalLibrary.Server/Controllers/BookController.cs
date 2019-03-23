@@ -103,14 +103,12 @@ namespace PersonalLibrary.Server.Controllers
                 var serverBook = userBook.Book;
                 var author = serverBook.Author;
 
-                //TODO check Author - Return author and get his Id
-                authorModel.SaveAuthor(author);
-
-                //TODO check Book,
-
-
-                //Todo save reference
-
+                
+                var updatedAuthor = authorModel.SaveAuthor(author);
+                serverBook.Authorid = updatedAuthor.Authorid;
+                serverBook.Author = updatedAuthor;
+                userBook.Book = serverBook;
+                
                 bookModel.SaveBook(userBook);
             }
 
