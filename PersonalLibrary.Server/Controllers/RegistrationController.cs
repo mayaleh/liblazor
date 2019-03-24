@@ -101,6 +101,8 @@ namespace PersonalLibrary.Server.Controllers
         {
             if (ModelState.IsValid)
             {
+                //var user = UserManager.
+                var user = UserManager.
                 UserManager.ConfirmEmailAsync(user, data.Code); // TODO 
             }
             return Forbid();

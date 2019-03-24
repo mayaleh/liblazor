@@ -5,8 +5,70 @@
 @using Microsoft.AspNetCore.Blazor.Services;
 
 @inject IUriHelper UriHelper
+@inject HttpClient Http
 
 @page "/Registration/NewUser"
+
+
+<h1>Account confirm:</h1>
+<p>Please open your email and click on the URL to verify your account. If URL is invalid, contact us on <a href='mailto:salim.mayaleh@gmail.com'>salim.mayaleh@gmail.com</a></p>
+
+@if (IsDoneRequest)
+{
+    @if (IsSuccess)
+    {
+
+        <div class="alert alert-success" role="alert">
+            <div class="text-right">
+                <p>Your new account has been successfully verified.</p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger" role="alert">
+            <div class="text-right">
+                <p>Invalid token. Could not verify your account.</p>
+            </div>
+        </div>
+    }
+
+    <a href="/">Back to homepage</a>
+}
+else
+{
+    <div class="mx-auto text-center center" style="width: 300px; margin-top:300px;">
+        <div class="spinner-grow text-primary" role="status">
+            <span class="sr-only">.</span>
+        </div>
+        <div class="spinner-grow text-secondary" role="status">
+            <span class="sr-only"></span>
+        </div>
+        <div class="spinner-grow text-success" role="status">
+            <span class="sr-only"></span>
+        </div>
+        <div class="spinner-grow text-danger" role="status">
+            <span class="sr-only"></span>
+        </div>
+        <div class="spinner-grow text-warning" role="status">
+            <span class="sr-only"></span>
+        </div>
+        <div class="spinner-grow text-info" role="status">
+            <span class="sr-only"></span>
+        </div>
+        <div class="spinner-grow text-dark" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+
+        <div class="text-center center">
+            <h1>Verifying...</h1>
+        </div>
+    </div>
+}
+
+
+
+
 
 
 
@@ -15,16 +77,29 @@
     string UserId;
     string Code;
 
-    protected override Task OnInitAsync()
+    bool IsSuccess = false;
+
+    bool IsDoneRequest = false;
+
+    protected override async Task OnInitAsync()
     {
         this.getUrlParams();
 
-        if(!string.IsNullOrEmpty(UserId) && !string.IsNullOrEmpty(Code))
+        if (!string.IsNullOrEmpty(UserId) && !string.IsNullOrEmpty(Code))
         {
-            //sernd init asynch to confirm account
+            //sernd init asHttpynch to confirm account
+            var result = await Http.SendJsonAsync<string>(HttpMethod.Post, "/api/mylibrary/deleteBook", new { UserId = UserId, Code = Code });
+
+            if (result == "Success")
+            {
+                IsSuccess = true;
+            }
         }
 
-        return base.OnInitAsync();
+        IsDoneRequest = true;
+
+
+        //return base.OnInitAsync();
     }
 
     private void getUrlParams()
