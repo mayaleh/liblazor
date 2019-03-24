@@ -118,6 +118,7 @@ namespace PersonalLibrary.Server
             services.AddScoped<EntitiyTranslator>();
 
             services.AddScoped<Models.New.BookModel>();
+            services.AddScoped<Models.New.AuthorModel>();
             #endregion
 
 

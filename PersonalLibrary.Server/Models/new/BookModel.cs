@@ -96,7 +96,7 @@ namespace PersonalLibrary.Server.Models.New
 
         #region Protected by Identity
 
-            public List<UserBook> GetUsersBooks(string userId)
+        public List<UserBook> GetUsersBooks(string userId)
             {
                 var result = DBContext.UserBook
                     .Where(b => b.UserId == userId) //TODO doesnot work???
@@ -106,13 +106,19 @@ namespace PersonalLibrary.Server.Models.New
                 return result;
             }
 
+        public UserBook GetOneUserBook(string userId, int bookId)
+        {
+            return DBContext.UserBook
+                .Where(ub => (ub.BookId == bookId && ub.UserId == userId))
+                .FirstOrDefault();
+        }
+
         #endregion
 
         #endregion
 
         #region Save actions
 
-        //todo Get user Id
         //TODO accept Object Userbook with sets Book And UserAccess for saving all references
         /// <summary>
         /// On call action Save by loged in user
@@ -123,28 +129,26 @@ namespace PersonalLibrary.Server.Models.New
             var book = FindBook(userBook.Book) ?? _addNewBook(userBook.Book);
             userBook.BookId = book.Bookid;
             var author = book.Author;
-
-            //TODO find author if exist
-            //TODO find book if exist
-            //TODO find userBook if book and userBook and author exist
+        
+            var ubExist = GetOneUserBook(userBook.UserId, userBook.BookId);
             try
             {
-                //if book is set and exist, create only reference to user and book
-                if (book.Bookid != 0)
+                if(book.Bookid != 0)
                 {
-                    this._addReferenceUserBook(userBook);
-                }
-                //else first create the new book, then create reference
-                else
-                {
-                    //Book newRecord = this._addNewBook(book);
-                    //this._addReferenceUserBook();
+                    if (ubExist == null)
+                    {
+                        this._addReferenceUserBook(userBook);
+                    }
+                    else
+                    {
+                        this._updateReferenceUserBook(userBook);
+                    }
                 }
                     
             }
-            catch
+            catch(Exception e)
             {
-                throw;
+                
             }
         }
 
@@ -195,23 +199,34 @@ namespace PersonalLibrary.Server.Models.New
         /// </summary>
         private void _addReferenceUserBook(UserBook userbook)
         {
-            //int bookId = userbook.Bookid.GetValueOrDefault();
-            //int userId = userbook.Userid.GetValueOrDefault();
-
-            /*
-            Book existingBook = db.Book.Where(b => b.Bookid == bookId).FirstOrDefault();
-
-            if (existingBook == null || userId == 0)
+            if (userbook.BookId != 0 && !string.IsNullOrEmpty(userbook.UserId))
             {
-                return;
+                DBContext.UserBook.Add(userbook);
+                DBContext.SaveChanges();
             }
-            */
-
-            //TODO save
-
 
         }
 
+        /// <summary>
+        /// Update record to table usersbook if reference UserBook record exist. (references table [user <=> book] many has many).
+        /// </summary>
+        private void _updateReferenceUserBook(UserBook userBook)
+        {
+            try
+            {
+                if (userBook.UserbookId != 0)
+                {
+                    DBContext.Entry(userBook).State = EntityState.Modified;
+                    DBContext.SaveChanges();
+                }
+            }
+            catch (DbUpdateException ue)
+            {
+
+            }
+            catch (Exception ex)
+            { }
+        }
         #endregion
 
         //To Delete book  
