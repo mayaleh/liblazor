@@ -88,7 +88,7 @@ else
         if (!string.IsNullOrEmpty(UserId) && !string.IsNullOrEmpty(Code))
         {
             //sernd init asHttpynch to confirm account
-            var result = await Http.SendJsonAsync<string>(HttpMethod.Post, "/api/mylibrary/deleteBook", new { UserId = UserId, Code = Code });
+            var result = await Http.SendJsonAsync<string>(HttpMethod.Post, "/api/registration/confirmAccount", new { UserId = UserId, Code = Code });
 
             if (result == "Success")
             {

@@ -96,16 +96,20 @@ namespace PersonalLibrary.Server.Controllers
         }
 
 
-
+        [HttpPost("[action]")]
         public async Task<IActionResult> ConfirmAccount([FromBody] ConfirmationUser data)
         {
             if (ModelState.IsValid)
             {
                 //var user = UserManager.
-                var user = UserManager.
-                UserManager.ConfirmEmailAsync(user, data.Code); // TODO 
+                var user = UserManager.FindByIdAsync(data.UserId).Result;
+                var identityResult = await UserManager.ConfirmEmailAsync(user, data.Code); // TODO 
+                if(identityResult.Succeeded)
+                {
+                    return Ok("Success");
+                }
             }
-            return Forbid();
+            return Forbid("Failled");
         }
 
     }
