@@ -1,0 +1,129 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@page "/soon/my-books"
+
+@inherits MyBooksLogic
+
+
+
+@if (IsDataLoaded)
+{
+    @* NOT suported yet... :(
+            <KendoGrid Data=@Books Height=700 Pageable=true PageSize=20 Sortable=true>
+                <KendoGridToolBar>
+                    <KendoGridCommandButton Command="Create" Icon="add">Add Book</KendoGridCommandButton>
+                </KendoGridToolBar>
+                <KendoGridColumns>
+                    <KendoGridColumn Field="@(nameof(Book.Name))" Title="Book">
+                    </KendoGridColumn>
+                    <KendoGridColumn Field="@(nameof(Book.Author.Name))" Title="Author">
+                    </KendoGridColumn>
+                    <KendoGridColumn Field="Actions">
+                        <Template>
+                            <KendoButton Icon="edit" OnClick="@( () => HandleEditBtn((context as Book).Bookid) )">Edit</KendoButton>
+                            <KendoGridCommandButton Command="Edit" Icon="edit">Edit</KendoGridCommandButton>
+        </Template>
+        </KendoGridColumn>
+        </KendoGridColumns>
+        </KendoGrid>
+    *@
+
+    <h2>My books</h2>
+    <p></p>
+    <!--
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-offset 1 col-xs-11 col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6">
+                <div class="btn-toolbar" role="toolbar">
+                    <div class="btn-group btn-group-justified" role="group">
+                        <div class="btn-group" role="group">
+                            <button id="list" class="btn btn-primary" data-original-title="Refreshr"><i class="fa fa-plus fa-lg" aria-hidden="true"></i><span style="padding-left:10px;">Add</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        -->
+
+    <p></p>
+    <h3>Data Grid:</h3>
+
+    <table class="table table-dark table-striped">
+        <thead>
+            <tr>
+                <td>
+                    <div class="btn-toolbar" role="toolbar">
+                        <div class="btn-group btn-group-justified" role="group">
+                            <div class="btn-group" role="group">
+                                <button id="list" class="btn btn-primary" data-original-title="Refreshr"><i class="fa fa-plus fa-lg" aria-hidden="true"></i><span style="padding-left:10px;">Add</span></button>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </thead>
+    </table>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Book</th>
+                <th>Author</th>
+                <th>Place</th>
+                <th>Read</th>
+                <th>Rate</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Books)
+            {
+
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Author.Name</td>
+                    <td>@item.Place</td>
+                    <td>
+                        @if (item.Readdone)
+                        {
+                            <span>yes</span>
+                        }
+                        else
+                        {
+                            <span>no</span>
+                        }
+                    </td>
+                    <td>@item.Rate</td>
+                    <td>
+                        @*<KendoButton Icon="edit" OnClick="@( () => HandleEditBtn(item.Bookid) )">Edit</KendoButton>*@
+
+                        <div class="btn-toolbar" role="toolbar">
+                            <div class="btn-group btn-group-justified" role="group">
+                                <div class="btn-group" role="group">
+                                    <button id="edit" onclick="@( () => HandleEditBtn(item.Bookid) )" class="btn btn-primary" data-original-title="Deactivate"><i class="fa fa-pencil fa-lg" aria-hidden="true"></i></button>
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <button id="delete" onclick="@( () => HandleDeleteBtn(item.Bookid) )" class="btn btn-warning" data-original-title="Delete"><i class="fa fa-trash-o fa-lg" aria-hidden="true"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </td>
+                </tr>
+            }
+
+
+        </tbody>
+    </table>
+
+
+}
+else
+{
+    <LoadingSpinner />
+}
+

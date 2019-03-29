@@ -119,7 +119,7 @@ namespace PersonalLibrary.Server.Models.New
 
         #region Save actions
 
-        //TODO accept Object Userbook with sets Book And UserAccess for saving all references
+
         /// <summary>
         /// On call action Save by loged in user
         /// </summary>
