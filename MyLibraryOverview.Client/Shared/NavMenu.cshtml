@@ -1,0 +1,142 @@
+﻿@inherits NavMenuLogic
+
+@if (IsAvailableLogin)
+{
+
+    <!-- Modal Login form -->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Sing in</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+
+                        <div class="row">
+                            <label for="inputEmail3" class="col-sm-3 col-form-label">User name:</label>
+                            <div class="col-sm-9">
+                                <input bind="@UserName" type="text" class="form-control" id="inputEmail3" placeholder="User name" />
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <label for="inputPasswd" class="col-sm-3 col-form-label">Password:</label>
+                            <div class="col-sm-9">
+                                <input bind="@Password" type="password" class="form-control" id="inputPasswd" placeholder="Password" />
+                            </div>
+                        </div>
+
+                        @if (ShowFillMessage)
+                        {
+                            <div class="row mt-4">
+                                <div class="col-sm-12">
+                                    <div class="alert alert-info" role="alert">
+                                        <p class="center">
+                                            Please fill User name and Password!
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        @if (IsWrongLoggin)
+                        {
+                            <div class="row mt-4">
+                                <div class="col-sm-12">
+                                    <div class="alert alert-info" role="alert">
+                                        <p class="center">
+                                            Your User name or password or both are not valid!
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" onclick="@SignIn" class="btn btn-primary">Sign in</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Registration form -->
+    <RegistrationForm></RegistrationForm>
+}
+
+
+
+<div class="pos-f-t">
+    <nav class="navbar navbar-dark bg-mayaleh">
+        @*onclick="@RefreshThisCompo"*@
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="form-inline my-2 my-lg-0">
+            @if (State.IsLoggedIn)
+            {
+
+                @if (!string.IsNullOrEmpty(State.UserFullName))
+                {
+                    <span class="username text-white">@State.UserFullName</span>
+                }
+
+                <button onclick="@SignOut" class="btn btn-warning ml-md-auto">
+                    <span class="oi oi-account-logout"></span>
+                    Sign out
+                </button>
+            }
+            else
+            {
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-info ml-md-auto mr-r" data-toggle="modal" data-target="#registrationForm">
+                    <span class="oi oi-pin"></span>
+                    Registration
+                </button>
+                <button type="button" class="btn btn-info ml-md-auto" data-toggle="modal" data-target="#exampleModalCenter">
+                    <span class="oi oi-account-login"></span>
+                    Sign in
+                </button>
+            }
+        </div>
+    </nav>
+    <div class="collapse" id="navbarToggleExternalContent">
+        <div class="bg-mayaleh p-4">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                <li>
+                    <NavLink href="" Match=NavLinkMatch.All>
+                        <span class="oi oi-home" aria-hidden="true"></span> Home
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink href="public/books" Match=NavLinkMatch.All>
+                        <span class="oi oi-book" aria-hidden="true"></span> All Books
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink href="public/authors" Match=NavLinkMatch.All>
+                        <span class="oi oi-eye" aria-hidden="true"></span> All Auhtors
+                    </NavLink>
+                </li>
+                @if (State.IsLoggedIn)
+                {
+                    <li>
+                        <NavLink href="private/my-books" Match=NavLinkMatch.All>
+                            <span class="oi oi-vertical-align-bottom" aria-hidden="true"></span> My Books
+                        </NavLink>
+                    </li>
+                }
+            </ul>
+
+        </div>
+    </div>
+</div>
+
+
+
