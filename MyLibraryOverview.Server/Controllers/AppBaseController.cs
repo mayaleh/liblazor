@@ -1,21 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using MyLibraryOverview.Server.Models;
-using MyLibraryOverview.Shared;
-using MyLibraryOverview.Shared;
-using Microsoft.AspNetCore.Authorization;
-using MyLibraryOverview.Server.Services;
-using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
 using MyLibraryOverview.Server.Models.Entities;
 
 namespace MyLibraryOverview.Server.Controllers

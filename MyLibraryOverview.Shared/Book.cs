@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyLibraryOverview.Shared
 {
     public partial class Book
     {
+        public Book()
+        {
+            Author = new Author();
+        }
+
         public int Bookid { get; set; }
-        public int? Authorid { get; set; }
 
         [Required]
         public string Name { get; set; }
@@ -25,5 +28,11 @@ namespace MyLibraryOverview.Shared
         public string Place { get; set; }
 
         public Author Author { get; set; }
+
+        public int Authorid { get; set; }
+
+        public string AuthorName { get; set; }
+
+        public string AuthorAbout { get; set; }
     }
 }

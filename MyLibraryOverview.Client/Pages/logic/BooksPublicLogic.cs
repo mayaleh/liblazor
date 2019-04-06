@@ -30,7 +30,12 @@ namespace MyLibraryOverview.Client.Pages
         public List<Book> books = new List<Book>();
 
         public List<Author> authorsBook = new List<Author>();
-        
+
+        protected bool IsDataLoaded { get; set; } = false;
+
+        protected bool IsError { get; set; } = false;
+
+        protected string ErrMessage { get; set; }
         #endregion
 
 
@@ -40,11 +45,17 @@ namespace MyLibraryOverview.Client.Pages
             try
             {
                 books = await Http.GetJsonAsync<List<Book>>("api/book/getAll");
+                IsDataLoaded = true;
+                Console.WriteLine("Data loaded");
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
-                throw;
+                ErrMessage = "Ups! Something went wrong. Error: " + e.Message; 
+                //throw;
+            }
+            finally
+            {
+                StateHasChanged();
             }
 
 

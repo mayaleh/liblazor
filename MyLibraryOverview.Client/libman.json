@@ -1,5 +1,13 @@
 {
   "version": "1.0",
-  "defaultProvider": "cdnjs",
-  "libraries": []
+  "defaultProvider": "unpkg",
+  "libraries": [
+    {
+      "library": "@progress/kendo-theme-material@2.0.0",
+      "destination": "wwwroot/css/kendo-themes/material",
+      "files": [
+        "dist/all.css"
+      ]
+    }
+  ]
 }

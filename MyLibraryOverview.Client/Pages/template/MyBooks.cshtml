@@ -8,45 +8,103 @@
 
 @inherits MyBooksLogic
 
-
+@if (IsError)
+{
+    <p>@ErrorMessage</p>
+}
 
 @if (IsDataLoaded)
 {
-    
+
     <h2>My books</h2>
     <p></p>
-    <!--
-    <div class="container">
-        <div class="row">
-            <div class="col-xs-offset 1 col-xs-11 col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6">
-                <div class="btn-toolbar" role="toolbar">
-                    <div class="btn-group btn-group-justified" role="group">
-                        <div class="btn-group" role="group">
-                            <button id="list" class="btn btn-primary" data-original-title="Refreshr"><i class="fa fa-plus fa-lg" aria-hidden="true"></i><span style="padding-left:10px;">Add</span></button>
-                        </div>
-                    </div>
+    <h3>Data Grid:</h3>
+    <div class="row">
+        <form class="col-md-6 py-2">
+            <h5>Search:</h5>
+            <div class="input-group">
+                <input type="text" bind="@SearchInput" class="form-control typeahead border-primary" oninput="@((UIChangeEventArgs e) => SearchBook(e.Value.ToString()))" name="query" id="query" placeholder="Start typing something to search..." data-provide="typeahead" autocomplete="off" />
+                @if (!BookSearchR.Any())
+                {
+                    
+                }
+                else
+                {
+
+                    <ul class="typeahead dropdown-menu" role="listbox" style="top: 38px; left: 0px; display:block;">
+                        @foreach (var it in BookSearchR)
+                        {
+                            <li>
+                                <a class="dropdown-item" onclick="@(() => SetGridRow(it.Bookid))" role="option">@it.Name - @it.AuthorName</a>
+                            </li>
+                        }
+                    </ul>
+                }
+                <div class="input-group-append">
+                    <button class="btn btn-outline-primary">
+                        <i class="fa fa-search"></i>
+                    </button>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
-        -->
 
-    <p></p>
-    <h3>Data Grid:</h3>
-    <KendoGrid Data=@Books Height=700 Pageable=true PageSize=20 Sortable=true>
+
+    <KendoGrid Data=@Books EditMode="popup" Sortable=true Pageable=true PageSize="20">
+        <KendoGridEvents>
+            <EventsManager OnUpdate="@UpdateHandler" OnEdit="@EditHandler" OnDelete="@DeleteHandler" OnCreate="@CreateHandler" OnCancel="@CancelHandler"></EventsManager>
+        </KendoGridEvents>
+
         <KendoGridToolBar>
             <KendoGridCommandButton Command="Create" Icon="add">Add Book</KendoGridCommandButton>
         </KendoGridToolBar>
+
         <KendoGridColumns>
-            <KendoGridColumn Field="@(nameof(Book.Name))" Title="Book">
-            </KendoGridColumn>
-            <KendoGridColumn  Field="Author" Title="Author">
-            </KendoGridColumn>
-            <KendoGridColumn Field="Actions">
+            <KendoGridColumn Field=@nameof(Book.Bookid) Title="ID" Editable="false"></KendoGridColumn>
+            <KendoGridColumn Field=@nameof(Book.Name) Title="Book" />
+            <KendoGridColumn Field=@nameof(Book.AuthorName) Title="Author" />
+            <KendoGridColumn Field=@nameof(Book.Place) Title="Place" />
+            <KendoGridColumn Field=@nameof(Book.Rate) Title="My Rate" />
+            <KendoGridColumn Field=@nameof(Book.Readdone) Title="I have read it">
+                @*<EditorTemplate> Define only for inline editing
+                        @{
+                                var current = context as Book;
+                                            <div class="custom-control custom-switch">
+                                                                    <label class="custom-control-label">
+                                                                        I have read it
+                                                                    </label>
+                                                <input type="checkbox" bin="@current.Readdone" class="custom-control-input">
+                                            </div>
+                        }
+                    </EditorTemplate>*@
                 <Template>
-                    <KendoGridCommandButton Command="Edit" Icon="edit">Edit</KendoGridCommandButton>
+                    @{
+                            var read = (context as Book).Readdone;
+                            if (read)
+                            {
+                            <span>Yes</span>
+                            }
+                            else
+                            {
+
+                            <span>No</span>
+                            }
+                    }
                 </Template>
             </KendoGridColumn>
+            <KendoGridColumn Field=@nameof(Book.Note) Title="Note">
+                <Template>
+                    @(TurnicateString((context as Book).Note, 15))
+                </Template>
+            </KendoGridColumn>
+
+            <KendoGridCommandColumn>
+                <KendoGridCommandButton Command="Update" Icon="save" ShowInEdit="true">Update</KendoGridCommandButton>
+                <KendoGridCommandButton Command="Cancel" Icon="cancel" ShowInEdit="true">Cancel</KendoGridCommandButton>
+
+                <KendoGridCommandButton Command="Edit" Icon="edit">Edit</KendoGridCommandButton>
+                <KendoGridCommandButton Command="Delete" Icon="delete">Delete</KendoGridCommandButton>
+            </KendoGridCommandColumn>
         </KendoGridColumns>
     </KendoGrid>
     @*

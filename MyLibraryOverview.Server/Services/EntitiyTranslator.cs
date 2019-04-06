@@ -14,7 +14,7 @@ namespace MyLibraryOverview.Server.Services
             return new Shared.Book()
             {
                 Bookid = book.Bookid,
-                Authorid = book.Authorid,
+                Authorid = book.Authorid.GetValueOrDefault(),
                 Name = book.Name,
                 About = book.About,
                 Author = new Shared.Author()
@@ -23,9 +23,12 @@ namespace MyLibraryOverview.Server.Services
                     Name = book.Author.Name,
                     About = book.Author.About,
                 },
+                AuthorName = book.Author.Name,
+                AuthorAbout = book.Author.About,
             };
         }
 
+        //TODO 
         public Priv.Book ToServertBook(Publ.Book book)
         {
             return new Priv.Book()
@@ -36,9 +39,9 @@ namespace MyLibraryOverview.Server.Services
                 About = book.About,
                 Author = new Priv.Author()
                 {
-                    Authorid = book.Author.Authorid,
-                    Name = book.Author.Name,
-                    About = book.Author.About,
+                    Authorid = book.Authorid,
+                    Name = book.AuthorName,
+                    About = book.AuthorAbout,
                 },
             };
         }
@@ -48,7 +51,7 @@ namespace MyLibraryOverview.Server.Services
             return new Shared.Book()
             {
                 Bookid = ub.BookId,
-                Authorid = ub.Book.Authorid,
+                Authorid = ub.Book.Authorid.GetValueOrDefault(),
                 Name = ub.Book.Name,
                 About = ub.Book.About,
                 Note = ub.Note,
@@ -61,6 +64,8 @@ namespace MyLibraryOverview.Server.Services
                     Name = ub.Book.Author.Name,
                     About = ub.Book.Author.About,
                 },
+                AuthorName = ub.Book.Author.Name,
+                AuthorAbout = ub.Book.Author.About,
             };
         }
 

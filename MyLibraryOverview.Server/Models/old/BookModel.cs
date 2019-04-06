@@ -118,7 +118,7 @@ namespace MyLibraryOverview.Server.Models
         /// </summary>
         private Book _addNewBook(Book book)
         {
-            int? _authorId = null;
+            int _authorId = 0;
             if (!string.IsNullOrEmpty(book.Author.Name))
             {
                 //find author if doesnt exist insert them and get his id
@@ -133,11 +133,11 @@ namespace MyLibraryOverview.Server.Models
                     };
                     db.Author.Add(newAuthor);
                     db.SaveChanges();
-                    _authorId = (int?)newAuthor.Authorid; // last inserted Id
+                    _authorId = newAuthor.Authorid; // last inserted Id
                 }
                 else
                 {
-                    _authorId = (int?)author.Authorid;
+                    _authorId = author.Authorid;
                 }
             }
             book.Authorid = _authorId;
