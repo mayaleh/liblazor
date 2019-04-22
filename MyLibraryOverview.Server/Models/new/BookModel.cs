@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MyLibraryOverview.Server.Models.Entities;
+using MyLibraryOverview.Library.Rop;
 
 namespace MyLibraryOverview.Server.Models.New
 {
+    using importResult = Library.Rop.Result<int, Exception>;
     public class BookModel
     {
         private ApplicationDBContext DBContext { get; }
@@ -19,72 +21,72 @@ namespace MyLibraryOverview.Server.Models.New
         #region Get Data
 
         #region Public
-            //To Get all Books (Public data)
-            public List<Book> GetAllBooks()
+        //To Get all Books (Public data)
+        public List<Book> GetAllBooks()
+        {
+            try
             {
-                try
-                {
-                    //var v = from p in db.Book join a in db.Author on p.Authorid equals a.Authorid;
+                //var v = from p in db.Book join a in db.Author on p.Authorid equals a.Authorid;
 
-                    return DBContext.Book
-                        .Include(d => d.Author) // works  - error on Client site
-                        .OrderBy(d => d.Name)
-                        .ToList(); 
-                    
-                        //.ToList(); // neni nutne
-                }
-                catch
-                {
-                    throw;
-                }
-            }
+                return DBContext.Book
+                    .Include(d => d.Author) // works  - error on Client site
+                    .OrderBy(d => d.Name)
+                    .ToList();
 
-            //Get authors and theirs books
-            public List<Author> GetAllBooksByAuthor()
-            {
-                try
-                {
-                    return DBContext.Author
-                        .Include(p => p.Book) // Error on client site
-                        .ToList();
-                }
-                catch
-                {
-                    throw;
-                }
+                //.ToList(); // neni nutne
             }
-        
-            //Get the one Book by ID    
-            public Book GetBook(int bookId)
+            catch
             {
-                try
-                {
-                    Book book = DBContext.Book
-                        .Where(b => b.Bookid == bookId)
-                        .Include(d => d.Author)
-                        .SingleOrDefault(); // Expect exactly one row. Better use SingleOrDefaut for accept null result
-                        //.Find(bookId);
-                        //.Include(d => d.Author);
-                    return book;
-                }
-                catch
-                {
-                    throw;
-                }
+                throw;
             }
+        }
 
-            public Author GetAuthor(int authorId)
+        //Get authors and theirs books
+        public List<Author> GetAllBooksByAuthor()
+        {
+            try
             {
-                try
-                {
-                    Author author = DBContext.Author.Find(authorId);
-                    return author;
-                }
-                catch
-                {
-                    throw;
-                }
+                return DBContext.Author
+                    .Include(p => p.Book) // Error on client site
+                    .ToList();
             }
+            catch
+            {
+                throw;
+            }
+        }
+
+        //Get the one Book by ID    
+        public Book GetBook(int bookId)
+        {
+            try
+            {
+                Book book = DBContext.Book
+                    .Where(b => b.Bookid == bookId)
+                    .Include(d => d.Author)
+                    .SingleOrDefault(); // Expect exactly one row. Better use SingleOrDefaut for accept null result
+                                        //.Find(bookId);
+                                        //.Include(d => d.Author);
+                return book;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public Author GetAuthor(int authorId)
+        {
+            try
+            {
+                Author author = DBContext.Author.Find(authorId);
+                return author;
+            }
+            catch
+            {
+                throw;
+            }
+        }
 
         public Book FindBook(Book book)
         {
@@ -97,14 +99,14 @@ namespace MyLibraryOverview.Server.Models.New
         #region Protected by Identity
 
         public List<UserBook> GetUsersBooks(string userId)
-            {
-                var result = DBContext.UserBook
-                    .Where(b => b.UserId == userId) //TODO doesnot work???
-                    .Include(d => d.Book)
-                    .Include(d => d.Book.Author)
-                    .ToList();
-                return result;
-            }
+        {
+            var result = DBContext.UserBook
+                .Where(b => b.UserId == userId) //TODO doesnot work???
+                .Include(d => d.Book)
+                .Include(d => d.Book.Author)
+                .ToList();
+            return result;
+        }
 
         public UserBook GetOneUserBook(string userId, int bookId)
         {
@@ -123,32 +125,36 @@ namespace MyLibraryOverview.Server.Models.New
         /// <summary>
         /// On call action Save by loged in user
         /// </summary>
-        public void SaveBook(UserBook userBook)
+        public importResult SaveBook(UserBook userBook)
         {
             //var book = userBook.Book;
             var book = FindBook(userBook.Book) ?? _addNewBook(userBook.Book);
             userBook.BookId = book.Bookid;
             var author = book.Author;
-        
+
             var ubExist = GetOneUserBook(userBook.UserId, userBook.BookId);
             try
             {
-                if(book.Bookid != 0)
+                if (book.Bookid != 0)
                 {
                     if (ubExist == null)
                     {
-                        this._addReferenceUserBook(userBook);
+                        return this._addReferenceUserBook(userBook);
                     }
                     else
                     {
-                        this._updateReferenceUserBook(userBook);
+                        return this._updateReferenceUserBook(userBook);
                     }
                 }
-                    
+                else
+                {
+                    return importResult.Failed(new Exception("Could not create or update data. Foreign key do not relate to any book key!"));
+                }
+
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                
+                return importResult.Failed(e);
             }
         }
 
@@ -197,20 +203,22 @@ namespace MyLibraryOverview.Server.Models.New
         /// <summary>
         /// Add new record to table usersbook if Book record exist. (references table [user <=> book] many has many).
         /// </summary>
-        private void _addReferenceUserBook(UserBook userbook)
+        private importResult _addReferenceUserBook(UserBook userbook)
         {
             if (userbook.BookId != 0 && !string.IsNullOrEmpty(userbook.UserId))
             {
                 DBContext.UserBook.Add(userbook);
                 DBContext.SaveChanges();
+                return importResult.Succeeded(1);
             }
+            return importResult.Failed(new Exception("Foreign key do not relate to any book key!"));
 
         }
 
         /// <summary>
         /// Update record to table usersbook if reference UserBook record exist. (references table [user <=> book] many has many).
         /// </summary>
-        private void _updateReferenceUserBook(UserBook userBook)
+        private importResult _updateReferenceUserBook(UserBook userBook)
         {
             try
             {
@@ -218,14 +226,18 @@ namespace MyLibraryOverview.Server.Models.New
                 {
                     DBContext.Entry(userBook).State = EntityState.Modified;
                     DBContext.SaveChanges();
+                    return importResult.Succeeded(1);
                 }
+                return importResult.Failed(new Exception("Id of User Book is empty!"));
             }
             catch (DbUpdateException ue)
             {
-
+                return importResult.Failed(ue);
             }
             catch (Exception ex)
-            { }
+            {
+                return importResult.Failed(ex);
+            }
         }
         #endregion
 

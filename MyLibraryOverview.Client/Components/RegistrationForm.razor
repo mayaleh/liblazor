@@ -2,7 +2,11 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 
+@using MyLibraryOverview.Shared
+@using System.Net.Http
+
 @inject HttpClient Http
+
 
 <div class="modal fade" id="registrationForm" tabindex="-1" role="dialog" aria-labelledby="registrationFormTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -130,7 +134,7 @@
 
             ShowFillMessage = false;
             var result = await Http.SendJsonAsync<RegistrationResult>(HttpMethod.Post, "/api/registration/newUser", userReg);
-            if(result.Code == "Success")
+            if (result.Code == "Success")
             {
                 IsResultFail = false;
                 IsRegistred = true;

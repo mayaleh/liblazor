@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Layouts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Services;
-using Kendo.Blazor.Components.Grid;
 using System.Linq;
+using Telerik.Blazor.Components.Grid;
+using Microsoft.AspNetCore.Components.Services;
 
 namespace MyLibraryOverview.Client.Pages
 {
@@ -42,6 +43,8 @@ namespace MyLibraryOverview.Client.Pages
 
         //protected string SearchTerm { get; set; } = "";
         protected string SearchInput { get; set; } = "";
+
+        protected Book NewBook { get; set; } = new Book(); 
         #endregion
 
 
@@ -66,18 +69,23 @@ namespace MyLibraryOverview.Client.Pages
             }
         }
 
-        protected void SearchBook()
-        {
-            Console.WriteLine("Search called");
-        }
+        #region Fulltext Search
+
         protected void SearchBook(string SearchTerm)
         {
-            //var SearchTerm = e.Value;
-            //Console.WriteLine(SearchTerm.ToString());
-            if (IsDataLoaded)
+            if (IsDataLoaded && !String.IsNullOrEmpty(SearchTerm))
             {
                 SearchInput = SearchTerm;
-                var find = Books.Where(bk =>
+                var find = Books.FindAll(bk =>
+                            (
+                                bk.Name.ToUpper().Contains(SearchTerm.ToUpper())
+                                || bk.AuthorName.ToUpper().Contains(SearchTerm.ToUpper())
+                                || bk.About.ToUpper().Contains(SearchTerm.ToUpper())
+                                || bk.AuthorAbout.ToUpper().Contains(SearchTerm.ToUpper())
+                                || bk.Note.ToUpper().Contains(SearchTerm.ToUpper())
+                                || bk.Place.ToUpper().Contains(SearchTerm.ToUpper())
+                            ));
+                /*var find = Books.Where(bk =>
                             (
                                 bk.Name.ToUpper().Contains(SearchTerm.ToUpper())
                                 || bk.AuthorName.ToUpper().Contains(SearchTerm.ToUpper())
@@ -86,8 +94,8 @@ namespace MyLibraryOverview.Client.Pages
                                 || bk.Note.ToUpper().Contains(SearchTerm.ToUpper())
                                 || bk.Place.ToUpper().Contains(SearchTerm.ToUpper())
                             )
-                        );
-                if(find != null)
+                        ); */
+                if(find.Any())
                 {
                     BookSearchR = find.ToList<Book>();
                 }
@@ -95,8 +103,10 @@ namespace MyLibraryOverview.Client.Pages
                 {
                     BookSearchR = new List<Book>();
                 }
-                    //.ToList<Book>();
-                //StateHasChanged(); 
+            }
+            else
+            {
+                BookSearchR = new List<Book>();
             }
 
         }
@@ -105,8 +115,10 @@ namespace MyLibraryOverview.Client.Pages
         {
             Books = Books.Where(bk => bk.Bookid == bookId).ToList();
             SearchInput = (Books.Where(bk => bk.Bookid == bookId).Single()).Name;
+            BookSearchR = new List<Book>();
         }
-
+        
+        #endregion
 
         protected async Task RefreshBookList()
         {
@@ -126,33 +138,6 @@ namespace MyLibraryOverview.Client.Pages
             IsError = false;
         }
 
-        protected void HandleEditBtn(int bookId)
-        {
-            Console.WriteLine("Edit clicked. Bookid: " + bookId.ToString());
-        }
-
-
-        protected void HandleDeleteBtn(int bookId)
-        {
-            Console.WriteLine("Delete clicked. Bookid: " + bookId.ToString());
-        }
-
-        /*
-        protected void UpdateItem(GridCommandEventArgs args)
-        {
-            Book book = args.Item as Book;
-            if (book.Bookid == 0)//one way to tell inserted item in this scenario
-            {
-                var result = string.Format("You added the book {0} {1}.", book.Name, book.Author.Name);
-            }
-            else
-            {
-                var result = string.Format("Book now has name {0} and author {1}", book.Name, book.Author.Name);
-            }
-            StateHasChanged();
-        }
-        */
-
 
         #region Grid Actions
         public void EditHandler(GridCommandEventArgs args)
@@ -169,12 +154,21 @@ namespace MyLibraryOverview.Client.Pages
             Console.WriteLine("Edit event is fired. Book: " + EditBook.Name);
         }
 
-        public void UpdateHandler(GridCommandEventArgs args)
+        public void UpdateHandlerAsync(GridCommandEventArgs args)
         {
             Book item = (Book)args.Item;
 
-            //bool isInsert = args.IsNew;//insert or update operation
+            bool isInsert = args.IsNew;//insert or update operation
 
+            if(isInsert)
+            {
+                var some = Http.PostJsonAsync<List<Book>>("api/book/add", item);
+            }
+            else
+            {
+                var some = Http.PostJsonAsync<List<Book>>("api/book/update", item);
+            }
+            
             //perform actual data source operations here
             //if you have a context added through an @inject statement, you could call its SaveChanges() method
             //myContext.SaveChanges();
@@ -196,6 +190,9 @@ namespace MyLibraryOverview.Client.Pages
         public void CreateHandler(GridCommandEventArgs args)
         {
             Console.WriteLine("Create event is fired.");
+
+            //Book item = (Book)args.Item;
+            //var some = Http.PostJsonAsync<List<Book>>("api/book/add", item);
             //there is no Item associated with this event handler
         }
 
@@ -221,6 +218,21 @@ namespace MyLibraryOverview.Client.Pages
                 str = str.Substring(0, maxLenght-3) + "...";
             }
             return str;
+        }
+
+
+
+
+        public Telerik.Blazor.Components.Window.TelerikWindow myFirstWindow;
+
+        public void OpenWindow()
+        {
+            myFirstWindow.Open();
+        }
+
+        public void CloseWindow()
+        {
+            myFirstWindow.Close();
         }
 
     }

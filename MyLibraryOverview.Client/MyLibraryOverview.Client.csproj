@@ -9,6 +9,7 @@
     </RestoreAdditionalProjectSources>
     <LangVersion>7.3</LangVersion>
     <BlazorLinkOnBuild>false</BlazorLinkOnBuild>
+    <RazorLangVersion>3.0</RazorLangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,7 +18,7 @@
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.0-preview4.19120.4" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
-    <PackageReference Include="Telerik.UI.for.Blazor" Version="0.3.0" />
+    <PackageReference Include="Telerik.UI.for.Blazor" Version="0.4.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,7 +27,6 @@
 
   <ItemGroup>
     <Folder Include="Pages\logic\" />
-    <Folder Include="Pages\template\" />
   </ItemGroup>
 
 </Project>

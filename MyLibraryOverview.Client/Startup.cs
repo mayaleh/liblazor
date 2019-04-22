@@ -7,7 +7,7 @@ namespace MyLibraryOverview.Client
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddKendoBlazor(); 
+            services.AddTelerikBlazor(); 
             services.AddSingleton<AppState>();
         }
 

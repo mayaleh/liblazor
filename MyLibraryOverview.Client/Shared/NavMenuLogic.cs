@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using System.Linq;
 using MyLibraryOverview.Shared;
 using Microsoft.JSInterop;
 using Microsoft.AspNetCore.Components.Layouts;
@@ -110,6 +107,7 @@ namespace MyLibraryOverview.Client.Shared
             await State.Logout();
             IsAvailableLogin = true;
             StateHasChanged();
+            UriHelper.NavigateTo("/");
         }
 
         // I hope, one day this javascript will be pleasantly forgotten and never used...

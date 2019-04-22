@@ -1,0 +1,64 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@typeparam Item
+
+<div class="row">
+    <form class="col-md-4 py-2">
+        <h5>Search:</h5>
+        <div class="input-group">
+            <input type="text" bind="@SearchInput" class="form-control typeahead border-primary" oninput="@((UIChangeEventArgs e) => FilterHandler(e.Value.ToString()))" name="query" id="query" placeholder="Start typing something to search..." data-provide="typeahead" autocomplete="off" />
+            @if (!FiltredCollection.Any())
+            {
+
+            }
+            else
+            {
+
+                <ul class="typeahead dropdown-menu" role="listbox" style="top: 38px; left: 0px; display:block;">
+                    @foreach (var it in FiltredCollection)
+                    {
+                        <li>
+                            <a class="dropdown-item" onclick="@(() => SetGridRow(Bookid(it)))" role="option">@Name(it) - @AuthorName(it)</a>
+                        </li>
+                    }
+                </ul>
+            }
+            <div class="input-group-append">
+                <button onclick="@FilterGrid" class="btn btn-outline-primary">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+@functions{
+    [Parameter]
+    List<Item> CollectionItems { get; set; }
+
+    List<Item> FiltredCollection { get; set; }
+
+    [Parameter]
+    RenderFragment<Item> Bookid { get; set; }
+    RenderFragment<Item> Name { get; set; }
+    RenderFragment<Item> AuthorName { get; set; }
+
+    string SearchInput { get; set; }
+
+    void FilterHandler(string text)
+    {
+
+    }
+
+    void SetGridRow(RenderFragment id)
+    {
+
+    }
+
+    void FilterGrid()
+    {
+
+    }
+
+}

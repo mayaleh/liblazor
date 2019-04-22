@@ -1,0 +1,162 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@page "/private/my-books"
+
+
+
+@inherits MyBooksLogic
+    <div class="container-fluid">
+        @if (IsError)
+        {
+            <p>@ErrorMessage</p>
+        }
+
+        @if (IsDataLoaded)
+        {
+
+            <h2>My books</h2>
+            <p></p>
+            <h3>Data Grid:</h3>
+            <div class="row">
+                <div class="col-md-3 py-2">
+                    <h5>Search:</h5>
+                    <div class="input-group">
+                        <input type="text" bind="@SearchInput" class="form-control typeahead border-primary" oninput="@((UIChangeEventArgs e) => SearchBook(e.Value.ToString()))" name="query" id="query" placeholder="Start typing something to search..." data-provide="typeahead" autocomplete="off" />
+                        @if (!BookSearchR.Any())
+                        {
+                            @if (!String.IsNullOrEmpty(SearchInput))
+                            {
+                                <ul class="typeahead dropdown-menu" role="listbox" style="top: 38px; left: 0px; display:block;">
+                                    <li>
+                                        <span class="dropdown-item" role="option">-- Nothing found --</span>
+                                    </li>
+                                </ul>
+                            }
+                        }
+                        else
+                        {
+
+                            <ul class="typeahead dropdown-menu" role="listbox" style="top: 38px; left: 0px; display:block;">
+                                @foreach (var it in BookSearchR)
+                                {
+                                    <li>
+                                        <a class="dropdown-item" onclick="@(() => SetGridRow(it.Bookid))" role="option">Book: @it.Name - Auhtor: @it.AuthorName</a>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-primary">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @*<TelerikButton Icon="add" OnClick="@OpenWindow">Add New</TelerikButton>*@
+
+            <TelerikWindow Centered="true" ref="myFirstWindow">
+                <TelerikWindowTitle>
+                    <strong>Create new book</strong>
+                </TelerikWindowTitle>
+                <TelerikWindowContent>
+                    <p>Fill this window form to add <strong>new book</strong>.</p>
+
+                    <p><TelerikTextBox bind-Value="@NewBook.Name" Label="Book name" Id="bookname" MaxLength="120"></TelerikTextBox></p>
+
+                    <p><TelerikTextBox bind-Value="@NewBook.AuthorName" Label="Author name" Id="authorname" MaxLength="120"></TelerikTextBox></p>
+                    <p><TelerikTextBox bind-Value="@NewBook.About" Label="About the book" Id="aboutbook" MaxLength="120"></TelerikTextBox></p>
+                    <p><TelerikTextBox bind-Value="@NewBook.AuthorAbout" Label="About the author" Id="aboutauthor" MaxLength="120"></TelerikTextBox></p>
+                    <p>
+                        <TelerikNumericTextBox Min="0" Max="100" Decimals="0" bind-Value="@NewBook.Rate" Text="Rate" ></TelerikNumericTextBox>
+
+
+                        @*<span class="k-textbox-container k-state-empty">
+        <input placeholder="Rate" type="number" name="rate" bind="@NewBook.Rate" min="0" max="100" id="rate" class="k-textbox " />
+        <label  for="rate" class="k-label">Rate</label>
+                        </span> *@
+
+
+                    </p>
+                    <p><TelerikTextBox bind-Value="@NewBook.Place" Label="Place in library" Id="place" MaxLength="120"></TelerikTextBox></p>
+                    <p>
+                        <TelerikButton Icon="add" OnClick="@CloseWindow">Save</TelerikButton>
+                        <TelerikButton Icon="close" OnClick="@CloseWindow">Close</TelerikButton>
+                    </p>
+                </TelerikWindowContent>
+            </TelerikWindow>
+
+
+            <TelerikGrid Data=@Books EditMode="popup" Sortable=true Pageable=true PageSize="20">
+
+                <TelerikGridEvents>
+                    <EventsManager OnUpdate="@(UpdateHandlerAsync)" OnEdit="@EditHandler" OnDelete="@DeleteHandler" OnCreate="@CreateHandler" OnCancel="@CancelHandler">
+                        
+                    </EventsManager>
+                </TelerikGridEvents>
+                @**@
+            <TelerikGridToolBar>
+                <TelerikGridCommandButton Command="Create" Icon="add">Create New</TelerikGridCommandButton>
+                <TelerikButton OnClick="@OpenWindow" Icon="add">Add Book</TelerikButton>
+            </TelerikGridToolBar>
+
+                <TelerikGridColumns>
+                    <TelerikGridColumn Field=@nameof(Book.Bookid) Title="ID" Editable="false"></TelerikGridColumn>
+                    <TelerikGridColumn Field=@nameof(Book.Name) Title="Book" />
+                    <TelerikGridColumn Field=@nameof(Book.AuthorName) Title="Author" />
+                    <TelerikGridColumn Field=@nameof(Book.Place) Title="Place" />
+                    <TelerikGridColumn Field=@nameof(Book.Rate) Title="My Rate" />
+                    <TelerikGridColumn Field=@nameof(Book.Readdone) Title="I have read it">
+                        @*<EditorTemplate> Define only for inline editing
+                    @{
+                            var current = context as Book;
+                                        <div class="custom-control custom-switch">
+                                                                <label class="custom-control-label">
+                                                                    I have read it
+                                                                </label>
+                                            <input type="checkbox" bin="@current.Readdone" class="custom-control-input">
+                                        </div>
+                    }
+                </EditorTemplate>*@
+                        <Template>
+                            @{
+                                    var read = (context as Book).Readdone;
+                                    if (read)
+                                    {
+                                    <span>Yes</span>
+                                    }
+                                    else
+                                    {
+
+                                    <span>No</span>
+                                    }
+                            }
+                        </Template>
+                    </TelerikGridColumn>
+                    <TelerikGridColumn Field=@nameof(Book.Note) Title="Note">
+                        <Template>
+                            @(TurnicateString((context as Book).Note, 15))
+                        </Template>
+                    </TelerikGridColumn>
+
+                    <TelerikGridCommandColumn>
+                        <TelerikGridCommandButton Command="Update" Icon="save" ShowInEdit="true">Save</TelerikGridCommandButton>
+                        <TelerikGridCommandButton Command="Cancel" Icon="cancel" ShowInEdit="true">Cancel</TelerikGridCommandButton>
+
+                        <TelerikGridCommandButton Command="Edit" SpriteClass="btn-info" Icon="edit">Edit</TelerikGridCommandButton>
+                        <TelerikGridCommandButton Command="Delete" SpriteClass="btn-danger" Icon="delete">Delete</TelerikGridCommandButton>
+                    </TelerikGridCommandColumn>
+                </TelerikGridColumns>
+            </TelerikGrid>
+          
+
+        }
+        else
+        {
+            <LoadingSpinner />
+        }
+
+    </div>

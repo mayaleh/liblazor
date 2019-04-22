@@ -138,12 +138,20 @@ namespace MyLibraryOverview.Server
             app.UseCookiePolicy();
             app.UseAuthentication();
 
-            app.UseMvc(routes =>
+            //app.UseMvc(routes =>
+            //{
+            //    routes.MapRoute(name: "default", template: "{controller}/{action}/{id?}");
+            //});
+
+            app.UseRouting();
+
+            app.UseEndpoints(routes =>
             {
-                routes.MapRoute(name: "default", template: "{controller}/{action}/{id?}");
+                routes.MapDefaultControllerRoute();
             });
 
-            app.UseBlazor<Client.Startup>();
+            //app.UseBlazor<Client.Startup>();
+            
         }
     }
 }

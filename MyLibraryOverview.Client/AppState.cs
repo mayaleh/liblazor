@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Net.Http;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Services;
 using Newtonsoft.Json;
 using MyLibraryOverview.Shared;
+using Microsoft.AspNetCore.Components.Services;
 
 namespace MyLibraryOverview.Client
 {

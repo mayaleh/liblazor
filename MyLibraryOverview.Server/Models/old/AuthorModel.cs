@@ -97,6 +97,7 @@ namespace MyLibraryOverview.Server.Models
         public void DeleteAuthor(int id)
         {
             return;
+            /*
             try
             {
                 Book book = db.Book
@@ -109,6 +110,7 @@ namespace MyLibraryOverview.Server.Models
             {
                 throw;
             }
+            */
         }
     }
 }

@@ -1,0 +1,54 @@
+﻿@page "/public/books"
+@using PersonalLibrary.Shared
+
+
+
+
+@inherits BooksPublicLogic
+
+    <div class="container">
+        <h1>Available books</h1>
+        @if (IsError == false)
+        {
+            @if (IsDataLoaded == false)
+            {
+
+                <div class="spinner-grow text-primary" role="status">
+                    <span class="sr-only">.</span>
+                </div>
+                <div class="spinner-grow text-secondary" role="status">
+                    <span class="sr-only"></span>
+                </div>
+                <div class="spinner-grow text-success" role="status">
+                    <span class="sr-only"></span>
+                </div>
+                <div class="spinner-grow text-danger" role="status">
+                    <span class="sr-only"></span>
+                </div>
+                <div class="spinner-grow text-warning" role="status">
+                    <span class="sr-only"></span>
+                </div>
+                <div class="spinner-grow text-info" role="status">
+                    <span class="sr-only"></span>
+                </div>
+                <div class="spinner-grow text-dark" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            }
+            else
+            {
+                <TelerikGrid Data=@books Pageable=true PageSize=20 Sortable=true>
+                    <TelerikGridColumns>
+                        <TelerikGridColumn Field="Name" Title="Book" />
+                        <TelerikGridColumn Field="AuthorName" Title="Author" />
+                    </TelerikGridColumns>
+                </TelerikGrid>
+            }
+        }
+        else
+        {
+            <div class="alert alert-danger" role="alert">
+                @ErrMessage
+            </div>
+        }
+    </div>
