@@ -14,6 +14,7 @@ namespace MyLibraryOverview.Client
         public void Configure(IComponentsApplicationBuilder app)
         {
             app.AddComponent<App>("app");
+           
         }
     }
 }

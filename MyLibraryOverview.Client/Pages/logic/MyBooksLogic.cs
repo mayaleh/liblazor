@@ -5,10 +5,8 @@ using MyLibraryOverview.Shared;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Layouts;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Services;
 using System.Linq;
 using Telerik.Blazor.Components.Grid;
-using Microsoft.AspNetCore.Components.Services;
 
 namespace MyLibraryOverview.Client.Pages
 {

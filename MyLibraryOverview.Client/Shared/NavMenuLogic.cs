@@ -5,7 +5,6 @@ using MyLibraryOverview.Shared;
 using Microsoft.JSInterop;
 using Microsoft.AspNetCore.Components.Layouts;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Services;
 
 namespace MyLibraryOverview.Client.Shared
 {

@@ -1,14 +1,10 @@
-﻿using Microsoft.AspNetCore.Blazor.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using MyLibraryOverview.Shared;
-using Microsoft.AspNetCore.Blazor;
 using System.Threading.Tasks;
-using MyLibraryOverview.Client.Components;
 using Microsoft.AspNetCore.Components.Layouts;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Services;
 
 namespace MyLibraryOverview.Client.Pages
 {

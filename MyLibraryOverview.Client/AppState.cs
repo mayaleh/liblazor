@@ -4,7 +4,6 @@ using System.Net.Http;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using MyLibraryOverview.Shared;
-using Microsoft.AspNetCore.Components.Services;
 
 namespace MyLibraryOverview.Client
 {
