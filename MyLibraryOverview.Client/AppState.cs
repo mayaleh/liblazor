@@ -37,7 +37,7 @@ namespace MyLibraryOverview.Client
         public async Task CheckIsLoggedIn()
         {
 
-            var response = await _http.GetAsync("/api/sign/getUser");
+            var response = await _http.GetAsync("api/sign/getUser");
             if (response.IsSuccessStatusCode)
             {
                 SaveIdentityToLocal(JsonConvert.DeserializeObject<UserState>(await response.Content.ReadAsStringAsync()));
@@ -51,19 +51,23 @@ namespace MyLibraryOverview.Client
 
         public async Task Login(UserLogin loginDetails)
         {
-            var response = await _http.PostJsonAsync<UserState>("/api/sign/in", loginDetails);
+            var response = await _http.PostJsonAsync<UserState>("api/sign/in", loginDetails);
 
             if (response.IsLoggedIn)
             {
                 SaveIdentityToLocal(response);
                 IsLoggedIn = true;
             }
+            else
+            {
+                Console.WriteLine("User is not logged in!");
+            }
         }
 
         public async Task Logout()
         {
 
-            var response = await _http.PutJsonAsync<UserState>("/api/sign/out", _userState);
+            var response = await _http.PutJsonAsync<UserState>("api/sign/out", _userState);
             IsLoggedIn = response.IsLoggedIn;
             _userState = response;
 

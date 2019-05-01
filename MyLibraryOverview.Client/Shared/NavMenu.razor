@@ -60,7 +60,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" onclick="@SignIn" class="btn btn-primary">Sign in</button>
+                    <button type="button" onclick="@(async () => await SignIn())" class="btn btn-primary">Sign in</button>
+                    @*<button type="button" onclick="@SignIn" class="btn btn-primary">Sign in</button>*@
                 </div>
             </div>
         </div>

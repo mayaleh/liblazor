@@ -13,6 +13,9 @@ using Microsoft.AspNetCore.Identity;
 using MyLibraryOverview.Server.Models.Entities;
 using MyLibraryOverview.Server.Models.New;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using System.Buffers;
 
 namespace MyLibraryOverview.Server
 {
@@ -98,21 +101,21 @@ namespace MyLibraryOverview.Server
 
 
             
-            /*var ser = new JsonSerializerSettings
+            var ser = new JsonSerializerSettings
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
             };
-            NewtonsoftJsonOutputFormatter jsonOutputFormatter = new NewtonsoftJsonOutputFormatter(ser, ArrayPool<char>.Shared);*/
+            NewtonsoftJsonOutputFormatter jsonOutputFormatter = new NewtonsoftJsonOutputFormatter(ser, ArrayPool<char>.Shared);
 
 
 
             services.AddMvc(
-                /*
+                
                     options =>
                     {
                         options.OutputFormatters.Clear();
                         options.OutputFormatters.Insert(0, jsonOutputFormatter);
-                    }*/
+                    }
 
                 ).AddNewtonsoftJson();
 
@@ -137,6 +140,7 @@ namespace MyLibraryOverview.Server
 
 
             app.UseCookiePolicy();
+            app.UseAuthorization();
             app.UseAuthentication();
 
             //app.UseMvc(routes =>

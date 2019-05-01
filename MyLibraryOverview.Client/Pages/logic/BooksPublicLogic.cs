@@ -23,7 +23,8 @@ namespace MyLibraryOverview.Client.Pages
 
 
         #region Data properties
-        public List<Book> books = new List<Book>();
+        //public List<MyLibraryOverview.Shared.Book> books = new List<Book>();
+        public IEnumerable<Book> books;
 
         public List<Author> authorsBook = new List<Author>();
 
@@ -40,9 +41,10 @@ namespace MyLibraryOverview.Client.Pages
 
             try
             {
-                books = await Http.GetJsonAsync<List<Book>>("api/book/getAll");
+                books = await Http.GetJsonAsync<IEnumerable<Book>>("api/book/getAll");
                 IsDataLoaded = true;
                 Console.WriteLine("Data loaded");
+                Console.WriteLine(books);
             }
             catch (Exception e)
             {

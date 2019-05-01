@@ -47,20 +47,20 @@ namespace MyLibraryOverview.Server.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task<JsonResult> In([FromBody] UserLogin userLogin)
+        public async Task<JsonResult> In([FromBody] UserLogin userLogin) // userName is null
         {
-            var result = await signInManager.PasswordSignInAsync(userLogin.UserName, userLogin.Password, false, lockoutOnFailure: true);
+            var result = await signInManager.PasswordSignInAsync(userLogin.userName, userLogin.password, false, lockoutOnFailure: true);
             
             if (result.Succeeded)
             {
                 var identity = (ClaimsIdentity)User.Identity;
 
-                var userApp = userManager.FindByNameAsync(userLogin.UserName).Result;
+                var userApp = userManager.FindByNameAsync(userLogin.userName).Result;
                 
 
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, userLogin.UserName),
+                    new Claim(ClaimTypes.Name, userLogin.userName),
                     new Claim(ClaimTypes.Role, "Administrator"),
                     new Claim(ClaimTypes.Email, userApp.Email),
                     new Claim("RealName", userApp.RealName)

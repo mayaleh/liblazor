@@ -37,10 +37,10 @@
             }
             else
             {
-                <TelerikGrid Data=@books Pageable=true PageSize=20 Sortable=true>
+                <TelerikGrid Data="@books" Pageable=true PageSize=20 Sortable=true>
                     <TelerikGridColumns>
-                        <TelerikGridColumn Field="Name" Title="Book" />
-                        <TelerikGridColumn Field="AuthorName" Title="Author" />
+                        <TelerikGridColumn Field="Name" Title="Book"></TelerikGridColumn>
+                        <TelerikGridColumn Field="AuthorName" Title="Author"></TelerikGridColumn>
                     </TelerikGridColumns>
                 </TelerikGrid>
             }

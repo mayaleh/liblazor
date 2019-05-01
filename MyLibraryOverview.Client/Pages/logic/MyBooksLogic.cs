@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Components.Layouts;
 using Microsoft.AspNetCore.Components;
 using System.Linq;
 using Telerik.Blazor.Components.Grid;
+using Telerik.Blazor.Components.NumericTextBox;
+using Telerik.Blazor.Components.Button;
+using Telerik.Blazor.Components.Window;
 
 namespace MyLibraryOverview.Client.Pages
 {
@@ -54,7 +57,6 @@ namespace MyLibraryOverview.Client.Pages
             {
                 Books = await Http.GetJsonAsync<List<Book>>("api/book/getUserBooks");
                 IsDataLoaded = true;
-                Console.WriteLine("Data is loaded");
             }
             catch (Exception e)
             {

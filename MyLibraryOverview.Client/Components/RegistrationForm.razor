@@ -133,7 +133,7 @@
         {
 
             ShowFillMessage = false;
-            var result = await Http.SendJsonAsync<RegistrationResult>(HttpMethod.Post, "/api/registration/newUser", userReg);
+            var result = await Http.SendJsonAsync<RegistrationResult>(HttpMethod.Post, "api/registration/newUser", userReg);
             if (result.Code == "Success")
             {
                 IsResultFail = false;

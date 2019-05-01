@@ -72,15 +72,17 @@ namespace MyLibraryOverview.Client.Shared
        
         protected async Task SignIn()
         {
-            
+            Console.WriteLine("Sing in called");
             if (!string.IsNullOrEmpty(UserName) && !string.IsNullOrEmpty(Password))
             {
                 ShowFillMessage = false;
                 UserLogin userLogin = new UserLogin
                 {
-                    UserName = UserName,
-                    Password = Password
+                    userName = this.UserName,
+                    password = this.Password
                 };
+                Console.WriteLine(userLogin.userName);
+                Console.WriteLine(userLogin.password);
                 await State.Login(userLogin);
                 // is realy signed in?
                 if (State.IsLoggedIn)
