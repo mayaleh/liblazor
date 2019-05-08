@@ -71,12 +71,10 @@ public string Password = "";
         isProcessing = true;
         UserLogin userForm = new UserLogin
         {
-            userName = Email,
-            password = Password
+            UserName = Email,
+            Password = Password
         };
         //Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "Your Oauth token");
-        Console.WriteLine(userForm.userName);
-        Console.WriteLine(userForm.password);
         await State.Login(userForm);
         if (State.IsLoggedIn)
         {

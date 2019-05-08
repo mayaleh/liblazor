@@ -1,9 +1,7 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using MyLibraryOverview.Server.Models.Entities;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using MyLibraryOverview.Server.Models.Entities;
 
 namespace MyLibraryOverview.Server.Models.New
 {

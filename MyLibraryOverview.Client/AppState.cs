@@ -1,9 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Net.Http;
-using Microsoft.AspNetCore.Components;
-using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Components;
 using MyLibraryOverview.Shared;
+using Newtonsoft.Json;
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace MyLibraryOverview.Client
 {

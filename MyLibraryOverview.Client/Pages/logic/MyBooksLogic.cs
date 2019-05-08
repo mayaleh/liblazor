@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using MyLibraryOverview.Shared;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Layouts;
-using Microsoft.AspNetCore.Components;
+using MyLibraryOverview.Shared;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Telerik.Blazor.Components.Grid;
-using Telerik.Blazor.Components.NumericTextBox;
-using Telerik.Blazor.Components.Button;
-using Telerik.Blazor.Components.Window;
 
 namespace MyLibraryOverview.Client.Pages
 {
+    using importerBookResult = MyLibraryOverview.Shared.Library.Rop.Result<Book, Exception>;
     public class MyBooksLogic : LayoutComponentBase
     {
         #region Injected properties
@@ -45,7 +43,7 @@ namespace MyLibraryOverview.Client.Pages
         //protected string SearchTerm { get; set; } = "";
         protected string SearchInput { get; set; } = "";
 
-        protected Book NewBook { get; set; } = new Book(); 
+        protected Book NewBook { get; set; } = new Book();
         #endregion
 
 
@@ -60,7 +58,7 @@ namespace MyLibraryOverview.Client.Pages
             }
             catch (Exception e)
             {
-                this._showErrorMessage(e.Message);
+                this.ShowErrorMessage(e.Message);
                 throw;
             }
             finally
@@ -95,7 +93,7 @@ namespace MyLibraryOverview.Client.Pages
                                 || bk.Place.ToUpper().Contains(SearchTerm.ToUpper())
                             )
                         ); */
-                if(find.Any())
+                if (find.Any())
                 {
                     BookSearchR = find.ToList<Book>();
                 }
@@ -110,14 +108,14 @@ namespace MyLibraryOverview.Client.Pages
             }
 
         }
-    
+
         protected void SetGridRow(int bookId)
         {
             Books = Books.Where(bk => bk.Bookid == bookId).ToList();
             SearchInput = (Books.Where(bk => bk.Bookid == bookId).Single()).Name;
             BookSearchR = new List<Book>();
         }
-        
+
         #endregion
 
         protected async Task RefreshBookList()
@@ -125,7 +123,7 @@ namespace MyLibraryOverview.Client.Pages
             await this.OnInitAsync();
         }
 
-        private void _showErrorMessage(string errMessage = "Ups! Something went wrong...")
+        private void ShowErrorMessage(string errMessage = "Ups! Something went wrong...")
         {
             ErrorMessage = errMessage;
             IsError = true;
@@ -160,7 +158,7 @@ namespace MyLibraryOverview.Client.Pages
 
             bool isInsert = args.IsNew;//insert or update operation
 
-            if(isInsert)
+            if (isInsert)
             {
                 var some = Http.PostJsonAsync<List<Book>>("api/book/add", item);
             }
@@ -168,7 +166,7 @@ namespace MyLibraryOverview.Client.Pages
             {
                 var some = Http.PostJsonAsync<List<Book>>("api/book/update", item);
             }
-            
+
             //perform actual data source operations here
             //if you have a context added through an @inject statement, you could call its SaveChanges() method
             //myContext.SaveChanges();
@@ -215,7 +213,7 @@ namespace MyLibraryOverview.Client.Pages
         {
             if (str.Length > maxLenght)
             {
-                str = str.Substring(0, maxLenght-3) + "...";
+                str = str.Substring(0, maxLenght - 3) + "...";
             }
             return str;
         }
@@ -230,6 +228,22 @@ namespace MyLibraryOverview.Client.Pages
             myFirstWindow.Open();
         }
 
+        public async Task SaveWindow()
+        {
+            //var result = await Http.PostJsonAsync<Tuple<Book, Exception>>("api/book/addBook", NewBook); 
+            Console.WriteLine("Create new api call");
+            Console.WriteLine(NewBook.Name + " - " + NewBook.AuthorName);
+            var result = await Http.PostJsonAsync<importerBookResult>("api/book/addBook", NewBook);
+            if (result.IsSuccess)
+            {
+                Console.WriteLine(result.Success.Bookid);
+                myFirstWindow.Close();
+            }
+            else
+            {
+                Console.WriteLine(result.Failure.Message);
+            }
+        }
         public void CloseWindow()
         {
             myFirstWindow.Close();

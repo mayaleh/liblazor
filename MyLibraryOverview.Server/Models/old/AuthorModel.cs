@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyLibraryOverview.Shared;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace MyLibraryOverview.Server.Models
 {
@@ -50,7 +48,7 @@ namespace MyLibraryOverview.Server.Models
         {
             try
             {
-               
+
                 if (author.Authorid != 0)
                 { //edit
                     db.Entry(author).State = EntityState.Modified;

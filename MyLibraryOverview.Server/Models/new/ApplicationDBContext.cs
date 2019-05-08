@@ -2,10 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using MyLibraryOverview.Server.Models.Entities;
 //using MyLibraryOverview.Shared;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MyLibraryOverview.Server.Models
 {
@@ -24,7 +20,7 @@ namespace MyLibraryOverview.Server.Models
 
         public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options) : base(options)
         {
-           
+
         }
         /*
         protected override void OnModelCreating(ModelBuilder modelBuilder)

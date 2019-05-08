@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Priv = MyLibraryOverview.Server.Models.Entities;
+﻿using Priv = MyLibraryOverview.Server.Models.Entities;
 using Publ = MyLibraryOverview.Shared;
 
 namespace MyLibraryOverview.Server.Services

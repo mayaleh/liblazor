@@ -1,21 +1,20 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Linq;
-using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using MyLibraryOverview.Server.Services;
 using MyLibraryOverview.Server.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 using MyLibraryOverview.Server.Models.Entities;
 using MyLibraryOverview.Server.Models.New;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Mvc.Formatters;
-using System.Buffers;
+using MyLibraryOverview.Server.Services;
+using Newtonsoft.Json.Serialization;
+using System;
+using System.Linq;
 
 namespace MyLibraryOverview.Server
 {
@@ -99,25 +98,30 @@ namespace MyLibraryOverview.Server
             services.Configure<AuthMessageSenderOptions>(Configuration);
             #endregion
 
-
-            
+            //DefaultContractResolver contractResolver = new DefaultContractResolver { NamingStrategy = new PascalCaseNamingStrategy() };
+            /*
             var ser = new JsonSerializerSettings
             {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            };
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                ContractResolver = contractResolver,
+                Formatting = Formatting.Indented
+            }; 
             NewtonsoftJsonOutputFormatter jsonOutputFormatter = new NewtonsoftJsonOutputFormatter(ser, ArrayPool<char>.Shared);
+            */
 
 
+            services.AddMvc().AddNewtonsoftJson(
+              /*options =>
+              {
+                  //options.SerializerSettings.ContractResolver = contractResolver;
+                  //options.SerializerSettings.ContractResolver = contractResolver;
+                  //options.SerializerSettings.Formatting = Formatting.None;
+                  //options.SerializerSettings.;
+              }*/
+              );
 
-            services.AddMvc(
-                
-                    options =>
-                    {
-                        options.OutputFormatters.Clear();
-                        options.OutputFormatters.Insert(0, jsonOutputFormatter);
-                    }
+            //services.AddMvc().AddNewtonsoftJson();
 
-                ).AddNewtonsoftJson();
 
             services.AddResponseCompression(opts =>
             {
@@ -156,7 +160,23 @@ namespace MyLibraryOverview.Server
             });
 
             app.UseBlazor<Client.Startup>();
-            
+
+        }
+
+        static string ToPascalCase(string text)
+        {
+            var chars = text.ToCharArray();
+
+            return String.Concat(Char.ToUpperInvariant(chars[0]), text.Substring(1));
+        }
+
+        // Not used
+        public class PascalCaseNamingStrategy : NamingStrategy
+        {
+            protected override string ResolvePropertyName(string name)
+            {
+                return ToPascalCase(name);
+            }
         }
     }
 }

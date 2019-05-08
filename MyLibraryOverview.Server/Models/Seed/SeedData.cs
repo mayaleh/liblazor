@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using MyLibraryOverview.Server.Models.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace MyLibraryOverview.Server.Models.Seed
@@ -33,7 +30,7 @@ namespace MyLibraryOverview.Server.Models.Seed
                 }
                 ; //could be extended to my User
 
-                await roleManager.CreateAsync(roleAdmin); 
+                await roleManager.CreateAsync(roleAdmin);
                 await roleManager.CreateAsync(roleUser);
 
                 var roles = new[] { roleAdmin.Name, roleUser.Name };

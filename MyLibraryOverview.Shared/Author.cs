@@ -1,7 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Text;
-using System.ComponentModel.DataAnnotations;
 
 namespace MyLibraryOverview.Shared
 {
@@ -13,11 +11,18 @@ namespace MyLibraryOverview.Shared
             Book = new HashSet<Book>();
         }
 
+        [JsonProperty("authorid")]
         public int Authorid { get; set; }
-        [Required]
+        //[Required]
+
+        [JsonProperty("name")]
         public string Name { get; set; }
+
+
+        [JsonProperty("about")]
         public string About { get; set; }
 
+        [JsonProperty("book")]
         public ICollection<Book> Book { get; set; }
         //public List<Book> Book { get; set; }
     }

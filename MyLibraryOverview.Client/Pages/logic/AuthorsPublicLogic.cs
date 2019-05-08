@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Layouts;
+using MyLibraryOverview.Shared;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using MyLibraryOverview.Shared;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components.Layouts;
-using Microsoft.AspNetCore.Components;
 
 namespace MyLibraryOverview.Client.Pages
 {
@@ -25,7 +25,7 @@ namespace MyLibraryOverview.Client.Pages
 
         #region Data properties
         public List<Author> authors = new List<Author>();
-    
+
         #endregion
 
 

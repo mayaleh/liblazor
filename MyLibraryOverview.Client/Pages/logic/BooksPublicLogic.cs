@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Layouts;
+using MyLibraryOverview.Shared;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using MyLibraryOverview.Shared;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components.Layouts;
-using Microsoft.AspNetCore.Components;
 
 namespace MyLibraryOverview.Client.Pages
 {
@@ -48,7 +48,7 @@ namespace MyLibraryOverview.Client.Pages
             }
             catch (Exception e)
             {
-                ErrMessage = "Ups! Something went wrong. Error: " + e.Message; 
+                ErrMessage = "Ups! Something went wrong. Error: " + e.Message;
                 //throw;
             }
             finally
@@ -58,7 +58,7 @@ namespace MyLibraryOverview.Client.Pages
 
 
         }
-       
+
 
     }
 }

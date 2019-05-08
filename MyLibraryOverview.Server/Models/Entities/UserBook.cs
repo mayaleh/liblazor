@@ -1,8 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
-
-namespace MyLibraryOverview.Server.Models.Entities
+﻿namespace MyLibraryOverview.Server.Models.Entities
 {
     public partial class UserBook
     {

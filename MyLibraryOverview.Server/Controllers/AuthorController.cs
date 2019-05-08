@@ -1,14 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MyLibraryOverview.Server.Models;
 using MyLibraryOverview.Shared;
+using System.Collections.Generic;
 
 
 namespace MyLibraryOverview.Server.Controllers
 {
-    
+
     [Route("api/[controller]")]
     [ApiController]
     public class AuthorController : ControllerBase

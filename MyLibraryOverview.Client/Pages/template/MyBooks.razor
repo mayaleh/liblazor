@@ -63,64 +63,73 @@
                     <strong>Create new book</strong>
                 </TelerikWindowTitle>
                 <TelerikWindowContent>
-                    <p>Fill this window form to add <strong>new book</strong>.</p>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <p>Fill this window form to add <strong>new book</strong>.</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <TelerikTextBox bind-Value="@NewBook.Name" Label="Book name" Id="bookname" MaxLength="120"></TelerikTextBox>
+                            </div>
+                            <div class="col">
+                                <TelerikTextBox bind-Value="@NewBook.AuthorName" Label="Author name" Id="authorname" MaxLength="120"></TelerikTextBox>
+                            </div>
+                        </div>
 
-                    <p><TelerikTextBox bind-Value="@NewBook.Name" Label="Book name" Id="bookname" MaxLength="120"></TelerikTextBox></p>
 
-                    <p><TelerikTextBox bind-Value="@NewBook.AuthorName" Label="Author name" Id="authorname" MaxLength="120"></TelerikTextBox></p>
-                    <p><TelerikTextBox bind-Value="@NewBook.About" Label="About the book" Id="aboutbook" MaxLength="120"></TelerikTextBox></p>
-                    <p><TelerikTextBox bind-Value="@NewBook.AuthorAbout" Label="About the author" Id="aboutauthor" MaxLength="120"></TelerikTextBox></p>
-                    <p>
-                        @*<TelerikNumericTextBox Min="0" Max="100" Decimals="0" bind-Value="@NewBook.Rate" Text="Rate" ></TelerikNumericTextBox>*@
-                        Rate TODO
-
-                        @*<span class="k-textbox-container k-state-empty">
-        <input placeholder="Rate" type="number" name="rate" bind="@NewBook.Rate" min="0" max="100" id="rate" class="k-textbox " />
-        <label  for="rate" class="k-label">Rate</label>
-                        </span> *@
-
-
-                    </p>
-                    <p><TelerikTextBox bind-Value="@NewBook.Place" Label="Place in library" Id="place" MaxLength="120"></TelerikTextBox></p>
-                    <p>
-                        <TelerikButton Icon="add" OnClick="@CloseWindow">Save</TelerikButton>
-                        <TelerikButton Icon="close" OnClick="@CloseWindow">Close</TelerikButton>
-                    </p>
+                        <div class="row">
+                            <div class="col">
+                                <TelerikTextBox bind-Value="@NewBook.About" Label="About the book" Id="aboutbook" MaxLength="120"></TelerikTextBox>
+                            </div>
+                            <div class="col">
+                                <TelerikTextBox bind-Value="@NewBook.AuthorAbout" Label="About the author" Id="aboutauthor" MaxLength="120"></TelerikTextBox>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label>
+                                    Book rate:
+                                    <TelerikNumericTextBox Decimals="0" Max="100" Min="0" bind-Value="@NewBook.Rate"></TelerikNumericTextBox>
+                                </label>
+                            </div>
+                            <div class="col">
+                                <TelerikTextBox bind-Value="@NewBook.Place" Label="Place in library" Id="place" MaxLength="120"></TelerikTextBox>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <TelerikButton Icon="add" OnClick="@( () => SaveWindow() )">Save</TelerikButton>
+                            </div>
+                            <div class="col">
+                                <TelerikButton Icon="close" OnClick="@CloseWindow">Close</TelerikButton>
+                            </div>
+                        </div>
+                    </div>
                 </TelerikWindowContent>
             </TelerikWindow>
 
-
-            <TelerikGrid Data=@Books EditMode="popup" Sortable=true Pageable=true PageSize="20">
+            @* Grid data *@
+            <TelerikGrid Data=@Books EditMode="popup" Sortable=true /*Filterable="true"*/ Pageable=true PageSize="20">
 
                 <TelerikGridEvents>
                     <EventsManager OnUpdate="@(UpdateHandlerAsync)" OnEdit="@EditHandler" OnDelete="@DeleteHandler" OnCreate="@CreateHandler" OnCancel="@CancelHandler">
-                        
+
                     </EventsManager>
                 </TelerikGridEvents>
                 @**@
-            <TelerikGridToolBar>
-                <TelerikGridCommandButton Command="Create" Icon="add">Create New</TelerikGridCommandButton>
-                <TelerikButton OnClick="@OpenWindow" Icon="add">Add Book</TelerikButton>
-            </TelerikGridToolBar>
+                <TelerikGridToolBar>
+                    <TelerikButton OnClick="@OpenWindow" Icon="add">Add Book</TelerikButton>
+                </TelerikGridToolBar>
 
                 <TelerikGridColumns>
-                    <TelerikGridColumn Field=@nameof(Book.Bookid) Title="ID" Editable="false"></TelerikGridColumn>
+                    <TelerikGridColumn Field=@nameof(Book.Bookid) Title="ID"  Editable="false"></TelerikGridColumn>
                     <TelerikGridColumn Field=@nameof(Book.Name) Title="Book" />
                     <TelerikGridColumn Field=@nameof(Book.AuthorName) Title="Author" />
                     <TelerikGridColumn Field=@nameof(Book.Place) Title="Place" />
                     <TelerikGridColumn Field=@nameof(Book.Rate) Title="My Rate" />
                     <TelerikGridColumn Field=@nameof(Book.Readdone) Title="I have read it">
-                        @*<EditorTemplate> Define only for inline editing
-                    @{
-                            var current = context as Book;
-                                        <div class="custom-control custom-switch">
-                                                                <label class="custom-control-label">
-                                                                    I have read it
-                                                                </label>
-                                            <input type="checkbox" bin="@current.Readdone" class="custom-control-input">
-                                        </div>
-                    }
-                </EditorTemplate>*@
                         <Template>
                             @{
                                     var read = (context as Book).Readdone;
@@ -151,7 +160,7 @@
                     </TelerikGridCommandColumn>
                 </TelerikGridColumns>
             </TelerikGrid>
-          
+            @* 1 Grid data *@
 
         }
         else

@@ -1,8 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
-using System.Text;
-using Microsoft.AspNetCore.Identity;
-using MyLibraryOverview.Shared;
 
 namespace MyLibraryOverview.Server.Models.Entities
 {

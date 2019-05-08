@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyLibraryOverview.Server.Models;
 using MyLibraryOverview.Shared;
-using Microsoft.AspNetCore.Authorization;
+using System.Collections.Generic;
 
 namespace MyLibraryOverview.Server.Controllers
 {
@@ -101,7 +95,7 @@ namespace MyLibraryOverview.Server.Controllers
             if (ModelState.IsValid)
                 _book.DeleteBook(book.Bookid);
         }
-        
+
         #endregion
     }
 }

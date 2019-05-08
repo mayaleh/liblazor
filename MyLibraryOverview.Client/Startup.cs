@@ -7,14 +7,14 @@ namespace MyLibraryOverview.Client
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTelerikBlazor(); 
+            services.AddTelerikBlazor();
             services.AddSingleton<AppState>();
         }
 
         public void Configure(IComponentsApplicationBuilder app)
         {
             app.AddComponent<App>("app");
-           
+
         }
     }
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using MyLibraryOverview.Shared;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace MyLibraryOverview.Server.Models
 {

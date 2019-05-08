@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 
 namespace MyLibraryOverview.Shared
@@ -22,7 +19,7 @@ namespace MyLibraryOverview.Shared
         public string Note { get; set; }
         public bool? Readdone { get; set; }
         public string Place { get; set; }
-        
+
         public Book Book { get; set; }
     }
 }

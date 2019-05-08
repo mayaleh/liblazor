@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MyLibraryOverview.Library.Rop
+namespace MyLibraryOverview.Shared.Library.Rop
 {
     public static class ResultExtensions
     {

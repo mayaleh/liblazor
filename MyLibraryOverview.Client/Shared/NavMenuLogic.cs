@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Layouts;
+using Microsoft.JSInterop;
+using MyLibraryOverview.Shared;
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using MyLibraryOverview.Shared;
-using Microsoft.JSInterop;
-using Microsoft.AspNetCore.Components.Layouts;
-using Microsoft.AspNetCore.Components;
 
 namespace MyLibraryOverview.Client.Shared
 {
@@ -16,7 +16,7 @@ namespace MyLibraryOverview.Client.Shared
 
         [Inject]
         protected IUriHelper UriHelper { get; set; }
-        
+
         [Inject]
         protected IJSRuntime JSRuntime { get; set; }
 
@@ -63,13 +63,13 @@ namespace MyLibraryOverview.Client.Shared
         protected override async Task OnInitAsync()
         {
             await State.CheckIsLoggedIn();
-            if(State.IsLoggedIn)
+            if (State.IsLoggedIn)
             {
                 IsAvailableLogin = false;
             }
         }
 
-       
+
         protected async Task SignIn()
         {
             Console.WriteLine("Sing in called");
@@ -78,11 +78,9 @@ namespace MyLibraryOverview.Client.Shared
                 ShowFillMessage = false;
                 UserLogin userLogin = new UserLogin
                 {
-                    userName = this.UserName,
-                    password = this.Password
+                    UserName = this.UserName,
+                    Password = this.Password
                 };
-                Console.WriteLine(userLogin.userName);
-                Console.WriteLine(userLogin.password);
                 await State.Login(userLogin);
                 // is realy signed in?
                 if (State.IsLoggedIn)
@@ -116,7 +114,7 @@ namespace MyLibraryOverview.Client.Shared
         {
 
             // If modal hidden, then remove the code
-            if(await JSRuntime.InvokeAsync<bool>("DestroyModal"))
+            if (await JSRuntime.InvokeAsync<bool>("DestroyModal"))
             {
                 IsAvailableLogin = false;
                 StateHasChanged();

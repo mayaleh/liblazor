@@ -1,20 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using MyLibraryOverview.Server.Models;
-using MyLibraryOverview.Server.Models.Entities;
-using Shared = MyLibraryOverview.Shared;
-using Model = MyLibraryOverview.Server.Models.New;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using MyLibraryOverview.Server.Models.Entities;
 using MyLibraryOverview.Server.Services;
 using System;
+using System.Collections.Generic;
+using Model = MyLibraryOverview.Server.Models.New;
 
 namespace MyLibraryOverview.Server.Controllers
 {
-    using importerResult = Library.Rop.Result<object, Exception>;
+    using importerResult = MyLibraryOverview.Shared.Library.Rop.Result<object, Exception>;
     //using importerErrorResult = Library.Rop.Result<string, Exception>;
 
     [Route("api/[controller]")]
@@ -114,8 +109,7 @@ namespace MyLibraryOverview.Server.Controllers
 
                 var operationResult = bookModel.SaveBook(userBook);
                 if (operationResult.IsFailure) return importerResult.Failed(operationResult.Failure);
-
-                return importerResult.Succeeded(book);
+                return importerResult.Succeeded(etranslator.ToClientBook(userBook.Book));
             }
 
             return importerResult.Failed(new Exception("Model is invalid!"));

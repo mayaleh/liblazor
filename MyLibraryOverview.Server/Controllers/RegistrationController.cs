@@ -1,24 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using MyLibraryOverview.Server.Models;
-using MyLibraryOverview.Shared;
-using Microsoft.AspNetCore.Authorization;
-using MyLibraryOverview.Server.Services;
-using System.Net.Http.Headers;
-using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
-using MyLibraryOverview.Server.Models.Entities;
-using System.Text.Encodings.Web;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Mvc;
+using MyLibraryOverview.Server.Models.Entities;
 using MyLibraryOverview.Server.Models.New;
+using MyLibraryOverview.Shared;
+using System.Linq;
+using System.Text.Encodings.Web;
+using System.Threading.Tasks;
 
 namespace MyLibraryOverview.Server.Controllers
 {
@@ -39,9 +27,9 @@ namespace MyLibraryOverview.Server.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task<IActionResult>  NewUser([FromBody] UserRegistration Input)
+        public async Task<IActionResult> NewUser([FromBody] UserRegistration Input)
         {
-           // returnUrl = returnUrl ?? Url.Content("~/");
+            // returnUrl = returnUrl ?? Url.Content("~/");
             if (ModelState.IsValid)
             {
                 var user = new UserAppIdentity
@@ -54,16 +42,16 @@ namespace MyLibraryOverview.Server.Controllers
                 if (result.Succeeded)
                 {
                     // _logger.LogInformation("User created a new account with password.");
-                    
-                     var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
-                     var callbackUrl = Url.Page(
-                         "/Account/ConfirmEmail",
-                         pageHandler: null,
-                         values: new { UserId = user.Id, Code = code },
-                         protocol: Request.Scheme);
-                     await emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                         $"<p>Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.</p>");
-                         
+
+                    var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
+                    var callbackUrl = Url.Page(
+                        "/Account/ConfirmEmail",
+                        pageHandler: null,
+                        values: new { UserId = user.Id, Code = code },
+                        protocol: Request.Scheme);
+                    await emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                        $"<p>Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.</p>");
+
 
                     //await SignInManager.SignInAsync(user, isPersistent: false);
                     //return LocalRedirect(returnUrl);
@@ -103,7 +91,7 @@ namespace MyLibraryOverview.Server.Controllers
                 //var user = UserManager.
                 var user = UserManager.FindByIdAsync(data.UserId).Result;
                 var identityResult = await UserManager.ConfirmEmailAsync(user, data.Code); // TODO 
-                if(identityResult.Succeeded)
+                if (identityResult.Succeeded)
                 {
                     return Ok("Success");
                 }

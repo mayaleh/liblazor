@@ -1,9 +1,7 @@
-﻿using MyLibraryOverview.Shared;
-using System;
+﻿using Microsoft.EntityFrameworkCore;
+using MyLibraryOverview.Shared;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
 namespace MyLibraryOverview.Server.Models
 {
@@ -22,9 +20,9 @@ namespace MyLibraryOverview.Server.Models
                 return db.Book
                     .Include(d => d.Author) // works  - error on Client site
                     .OrderBy(d => d.Name)
-                    .ToList<Book>(); 
-                    
-                    //.ToList(); // neni nutne
+                    .ToList<Book>();
+
+                //.ToList(); // neni nutne
             }
             catch
             {
@@ -46,7 +44,7 @@ namespace MyLibraryOverview.Server.Models
                 throw;
             }
         }
-        
+
         //Get the one Book by ID    
         public Book GetBook(int bookId)
         {
@@ -56,8 +54,8 @@ namespace MyLibraryOverview.Server.Models
                     .Where(b => b.Bookid == bookId)
                     .Include(d => d.Author)
                     .Single(); // Expect exactly one row. Better use SingleOrDefaut for accept null result
-                    //.Find(bookId);
-                    //.Include(d => d.Author);
+                               //.Find(bookId);
+                               //.Include(d => d.Author);
                 return book;
             }
             catch
@@ -104,7 +102,7 @@ namespace MyLibraryOverview.Server.Models
                     Book newRecord = this._addNewBook(book);
                     //this._addReferenceUserBook();
                 }
-                    
+
             }
             catch
             {
