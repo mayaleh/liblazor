@@ -100,6 +100,11 @@
                         </div>
                         <div class="row">
                             <div class="col">
+                                <TelerikTextBox bind-Value="@NewBook.Note" Label="My book Note" Id="note" MaxLength="120"></TelerikTextBox>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
                                 <TelerikButton Icon="add" OnClick="@( () => SaveWindow() )">Save</TelerikButton>
                             </div>
                             <div class="col">
@@ -110,8 +115,8 @@
                 </TelerikWindowContent>
             </TelerikWindow>
 
-            @* Grid data *@
-            <TelerikGrid Data=@Books EditMode="popup" Sortable=true /*Filterable="true"*/ Pageable=true PageSize="20">
+            @* Grid data Filterable="true" *@
+            <TelerikGrid Data=@Books EditMode="popup" Sortable=true  Pageable=true PageSize="20">
 
                 <TelerikGridEvents>
                     <EventsManager OnUpdate="@(UpdateHandlerAsync)" OnEdit="@EditHandler" OnDelete="@DeleteHandler" OnCreate="@CreateHandler" OnCancel="@CancelHandler">
@@ -147,7 +152,8 @@
                     </TelerikGridColumn>
                     <TelerikGridColumn Field=@nameof(Book.Note) Title="Note">
                         <Template>
-                            @(TurnicateString((context as Book).Note, 15))
+                            @(context as Book).Note
+                            @* @( () => { this.TurnicateString((context as Book).Note, 15); })*@
                         </Template>
                     </TelerikGridColumn>
 

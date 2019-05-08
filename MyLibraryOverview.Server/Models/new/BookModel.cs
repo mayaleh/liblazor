@@ -126,7 +126,7 @@ namespace MyLibraryOverview.Server.Models.New
         public importResult SaveBook(UserBook userBook)
         {
             //var book = userBook.Book;
-            var book = FindBook(userBook.Book) ?? _addNewBook(userBook.Book);
+            var book = FindBook(userBook.Book) ?? AddNewBook(userBook.Book);
             userBook.BookId = book.Bookid;
             var author = book.Author;
 
@@ -160,7 +160,7 @@ namespace MyLibraryOverview.Server.Models.New
         /// Add new record to table Book.
         /// If Author doesnt exist, add new record to table Author and get reference for Book table
         /// </summary>
-        private Book _addNewBook(Book book)
+        private Book AddNewBook(Book book)
         {
             int? _authorId = null;
             if (!string.IsNullOrEmpty(book.Author.Name))
