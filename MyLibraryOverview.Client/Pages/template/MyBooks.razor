@@ -116,10 +116,10 @@
             </TelerikWindow>
 
             @* Grid data Filterable="true" *@
-            <TelerikGrid Data=@Books EditMode="popup" Sortable=true  Pageable=true PageSize="20">
+            <TelerikGrid Data=@Books ref="BookGridRef" EditMode="popup" Sortable=true  Pageable=true PageSize="20" Page="@BookGridPage">
 
                 <TelerikGridEvents>
-                    <EventsManager OnUpdate="@(UpdateHandlerAsync)" OnEdit="@EditHandler" OnDelete="@DeleteHandler" OnCreate="@CreateHandler" OnCancel="@CancelHandler">
+                    <EventsManager OnUpdate="@(async (GridCommandEventArgs args) => await UpdateHandlerAsync(args))" OnEdit="@EditHandler" OnDelete="@(async (GridCommandEventArgs args) => await DeleteHandlerAsync(args))" OnCreate="@CreateHandler" OnCancel="@CancelHandler">
 
                     </EventsManager>
                 </TelerikGridEvents>
@@ -130,8 +130,8 @@
 
                 <TelerikGridColumns>
                     <TelerikGridColumn Field=@nameof(Book.Bookid) Title="ID"  Editable="false"></TelerikGridColumn>
-                    <TelerikGridColumn Field=@nameof(Book.Name) Title="Book" />
-                    <TelerikGridColumn Field=@nameof(Book.AuthorName) Title="Author" />
+                    <TelerikGridColumn Field=@nameof(Book.Name) Title="Book" Editable="false" />
+                    <TelerikGridColumn Field=@nameof(Book.AuthorName) Title="Author" Editable="false" />
                     <TelerikGridColumn Field=@nameof(Book.Place) Title="Place" />
                     <TelerikGridColumn Field=@nameof(Book.Rate) Title="My Rate" />
                     <TelerikGridColumn Field=@nameof(Book.Readdone) Title="I have read it">

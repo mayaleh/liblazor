@@ -10,7 +10,6 @@ using Model = MyLibraryOverview.Server.Models.New;
 namespace MyLibraryOverview.Server.Controllers
 {
     using importerResult = MyLibraryOverview.Shared.Library.Rop.Result<object, Exception>;
-    //using importerErrorResult = Library.Rop.Result<string, Exception>;
 
     [Route("api/[controller]")]
     [ApiController]
@@ -20,7 +19,6 @@ namespace MyLibraryOverview.Server.Controllers
         private readonly Model.AuthorModel authorModel;
         private readonly EntitiyTranslator etranslator;
 
-        //private BookModel _book = new BookModel();
 
         public BookController
             (
@@ -35,8 +33,6 @@ namespace MyLibraryOverview.Server.Controllers
             this.authorModel = authorModel;
             this.etranslator = etranslator;
         }
-
-
 
 
         #region Public API methods
@@ -92,7 +88,7 @@ namespace MyLibraryOverview.Server.Controllers
 
         [Authorize]
         [HttpPost("[action]")]
-        public /*Shared.Book*/ object AddBook([FromBody] Shared.Book book)
+        public object AddBook([FromBody] Shared.Book book)
         {
             if (ModelState.IsValid)
             {
@@ -116,7 +112,42 @@ namespace MyLibraryOverview.Server.Controllers
         }
 
 
+        [Authorize]
+        [HttpPost("[action]")]
+        public object EditBook([FromBody] Shared.Book book)
+        {
+            if (ModelState.IsValid)
+            {
+                var userBook = etranslator.ToServerUserBook(book);
+                userBook.UserId = GetUserId().Result;
+                var serverBook = userBook.Book;
+                userBook.Book = serverBook;
 
+                var operationResult = bookModel.SaveBook(userBook);
+                if (operationResult.IsFailure) return importerResult.Failed(operationResult.Failure);
+                return importerResult.Succeeded(etranslator.ToClientBook(userBook.Book));
+            }
+
+            return importerResult.Failed(new Exception("Model is invalid!"));
+        }
+
+
+        [Authorize]
+        [HttpPost("[action]")]
+        public object DeleteBook([FromBody] Shared.Book book)
+        {
+            if (ModelState.IsValid)
+            {
+                var userBook = etranslator.ToServerUserBook(book);
+                userBook.UserId = GetUserId().Result;
+
+                var operationResult = bookModel.DeleteBook(userBook);
+                if (operationResult.IsFailure) return importerResult.Failed(operationResult.Failure);
+                return importerResult.Succeeded(book);
+            }
+
+            return importerResult.Failed(new Exception("Model is invalid!"));
+        }
 
 
         #endregion

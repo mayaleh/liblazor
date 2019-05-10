@@ -137,11 +137,15 @@ namespace MyLibraryOverview.Server.Models.New
                 {
                     if (ubExist == null)
                     {
-                        return this._addReferenceUserBook(userBook);
+                        return this.AddReferenceUserBook(userBook);
                     }
                     else
                     {
-                        return this._updateReferenceUserBook(userBook);
+                        ubExist.Readdone = userBook.Readdone;
+                        ubExist.Note = userBook.Note;
+                        ubExist.Place = userBook.Place;
+                        ubExist.Rate = userBook.Rate;
+                        return this.UpdateReferenceUserBook(ubExist);
                     }
                 }
                 else
@@ -201,7 +205,7 @@ namespace MyLibraryOverview.Server.Models.New
         /// <summary>
         /// Add new record to table usersbook if Book record exist. (references table [user <=> book] many has many).
         /// </summary>
-        private importResult _addReferenceUserBook(UserBook userbook)
+        private importResult AddReferenceUserBook(UserBook userbook)
         {
             if (userbook.BookId != 0 && !string.IsNullOrEmpty(userbook.UserId))
             {
@@ -216,7 +220,7 @@ namespace MyLibraryOverview.Server.Models.New
         /// <summary>
         /// Update record to table usersbook if reference UserBook record exist. (references table [user <=> book] many has many).
         /// </summary>
-        private importResult _updateReferenceUserBook(UserBook userBook)
+        private importResult UpdateReferenceUserBook(UserBook userBook)
         {
             try
             {
@@ -237,25 +241,30 @@ namespace MyLibraryOverview.Server.Models.New
                 return importResult.Failed(ex);
             }
         }
-        #endregion
 
-        //To Delete book  
-        /*
-        public void DeleteBook(int id)
+
+
+        /// <summary>
+        /// Delete record from table usersbook if reference UserBook record exist.
+        /// </summary>
+        public importResult DeleteBook(UserBook userBook)
         {
             try
             {
-                Book book = db.Book
-                    .Where(b => b.Bookid == id)
+                UserBook uBook = DBContext.UserBook
+                    .Where(b => b.UserId == userBook.UserId && b.BookId == userBook.BookId)
                     .Single(); // db.Book.Find(id);
-                db.Book.Remove(book);
-                db.SaveChanges();
+                DBContext.UserBook.Remove(uBook);
+                DBContext.SaveChanges();
+                return importResult.Succeeded(1);
             }
-            catch
+            catch (Exception e)
             {
-                throw;
+                return importResult.Failed(e);
             }
         }
-        */
+        #endregion
+
+
     }
 }

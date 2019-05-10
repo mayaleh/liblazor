@@ -31,6 +31,8 @@ namespace MyLibraryOverview.Client.Pages
         protected bool IsEdit { get; set; } = false;
         protected Book EditBook { get; set; }
 
+        protected int BookGridPage { get; set; } = 1;
+
         #endregion
 
         #region Data properties
@@ -44,6 +46,9 @@ namespace MyLibraryOverview.Client.Pages
         protected string SearchInput { get; set; } = "";
 
         protected Book NewBook { get; set; } = new Book();
+
+
+        protected TelerikGrid<Book> BookGridRef;
         #endregion
 
 
@@ -152,7 +157,7 @@ namespace MyLibraryOverview.Client.Pages
             Console.WriteLine("Edit event is fired. Book: " + EditBook.Name);
         }
 
-        public void UpdateHandlerAsync(GridCommandEventArgs args)
+        public async Task UpdateHandlerAsync(GridCommandEventArgs args)
         {
             Book item = (Book)args.Item;
 
@@ -160,20 +165,37 @@ namespace MyLibraryOverview.Client.Pages
 
             if (isInsert)
             {
-                var some = Http.PostJsonAsync<List<Book>>("api/book/add", item);
+                //var some = Http.PostJsonAsync<List<Book>>("api/book/add", item);
             }
             else
             {
-                var some = Http.PostJsonAsync<List<Book>>("api/book/update", item);
+                importerBookResult result;
+                try
+                {
+                    BookGridPage = BookGridRef.Page; // to return to the current page... Filter and sort lost...
+                    result = await Http.PostJsonAsync<importerBookResult>("api/book/editBook", item);
+                    if (result.IsSuccess)
+                    {
+                        Console.WriteLine(result.Success.Bookid);
+
+                        await this.OnInitAsync();
+                    }
+                    else
+                    {
+                        Console.WriteLine(result.Failure.Message);
+                        this.ShowErrorMessage("Failed update item, please try it again or contact us...");
+                    }
+                }
+                catch (Exception)
+                {
+                    this.ShowErrorMessage("Failed update item, please try it again or contact us...");
+                }
             }
 
-            //perform actual data source operations here
-            //if you have a context added through an @inject statement, you could call its SaveChanges() method
-            //myContext.SaveChanges();
             Console.WriteLine("Update event is fired.");
         }
 
-        public void DeleteHandler(GridCommandEventArgs args)
+        public async Task DeleteHandlerAsync(GridCommandEventArgs args)
         {
             Book item = (Book)args.Item;
 
@@ -181,6 +203,25 @@ namespace MyLibraryOverview.Client.Pages
 
             //if you have a context added through an @inject statement, you could call its SaveChanges() method
             //myContext.SaveChanges();
+            importerBookResult result;
+            try
+            {
+                result = await Http.PostJsonAsync<importerBookResult>("api/book/deleteBook", item);
+                if (result.IsSuccess)
+                {
+                    Console.WriteLine(result.Success.Bookid);
+                }
+                else
+                {
+                    Console.WriteLine(result.Failure.Message);
+                    this.ShowErrorMessage("Failed update item, please try it again or contact us...");
+                }
+            }
+            finally
+            {
+                //refresh grid
+                await this.OnInitAsync();
+            }
             Console.WriteLine("Delete event is fired.");
         }
 
@@ -189,21 +230,12 @@ namespace MyLibraryOverview.Client.Pages
         {
             Console.WriteLine("Create event is fired.");
 
-            //Book item = (Book)args.Item;
-            //var some = Http.PostJsonAsync<List<Book>>("api/book/add", item);
-            //there is no Item associated with this event handler
         }
 
         public void CancelHandler(GridCommandEventArgs args)
         {
             Book item = (Book)args.Item;
 
-            //perform actual data source operation here (like cancel changes on a context)
-            //if you have a context added through an @inject statement, you could use something like this to abort changes
-            //foreach (var entry in myContext.ChangeTracker.Entries().Where(entry => entry.State == EntityState.Modified))
-            //{
-            //  entry.State = EntityState.Unchanged;
-            //}
             Console.WriteLine("Create event is fired.");
         }
         #endregion
@@ -237,6 +269,7 @@ namespace MyLibraryOverview.Client.Pages
             if (result.IsSuccess)
             {
                 Console.WriteLine(result.Success.Bookid);
+                await this.OnInitAsync();
                 myFirstWindow.Close();
             }
             else
