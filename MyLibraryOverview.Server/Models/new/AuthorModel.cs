@@ -60,14 +60,14 @@ namespace MyLibraryOverview.Server.Models.New
                 }
                 else
                 {
-                    return this._createAuthor(author);
+                    return this.CreateAuthor(author);
                 }
 
             }
         }
 
 
-        private Author _createAuthor(Author author)
+        private Author CreateAuthor(Author author)
         {
             DBContext.Author.Add(author);
             DBContext.SaveChanges();
@@ -75,9 +75,8 @@ namespace MyLibraryOverview.Server.Models.New
             return GetAuthorById(_authorId);
         }
 
-        private Author _updateAuthor(Author author)
+        private Author UpdateAuthor(Author author)
         {
-            //TODO
             DBContext.Entry(author).State = EntityState.Modified;
             DBContext.SaveChanges();
             return author;

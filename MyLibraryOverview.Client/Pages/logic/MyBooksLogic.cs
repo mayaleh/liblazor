@@ -33,6 +33,11 @@ namespace MyLibraryOverview.Client.Pages
 
         protected int BookGridPage { get; set; } = 1;
 
+        enum MessageTypes { danger = 0, success, info, warning, primary };
+        protected bool IsMessageBoxShown { get; set; } = false;
+        protected int MessageBoxType { get; set; }
+        protected string MessageBoxMessage { get; set; }
+
         #endregion
 
         #region Data properties
@@ -49,13 +54,20 @@ namespace MyLibraryOverview.Client.Pages
 
 
         protected TelerikGrid<Book> BookGridRef;
+
+        protected Telerik.Blazor.Components.Window.TelerikWindow AddFormWindow;
         #endregion
 
 
         protected override async Task OnInitAsync()
         {
-            IsDataLoaded = false;
             await State.CheckIsLoggedIn();
+            await this.ReloadGridData();
+        }
+
+        private async Task ReloadGridData()
+        {
+            IsDataLoaded = false;
             try
             {
                 Books = await Http.GetJsonAsync<List<Book>>("api/book/getUserBooks");
@@ -70,6 +82,27 @@ namespace MyLibraryOverview.Client.Pages
             {
                 this.StateHasChanged();
             }
+        }
+
+        protected void OperationDoneWithMessage(bool isSuccess, string message)
+        {
+            // Show message
+            MessageBoxMessage = message;
+            if (isSuccess)
+            {
+                MessageBoxType = (int)MessageTypes.success;
+                this.ReloadGridData().Wait();
+            }
+            else
+            {
+                MessageBoxType = (int)MessageTypes.danger;
+            }
+            IsMessageBoxShown = true;
+        }
+
+        public void OnMessageStatusClose()
+        {
+            IsMessageBoxShown = false;
         }
 
         #region Fulltext Search
@@ -135,7 +168,7 @@ namespace MyLibraryOverview.Client.Pages
             StateHasChanged();
         }
 
-        private void _hiddeErroreMessage()
+        private void HiddeErroreMessage()
         {
             ErrorMessage = "";
             IsError = false;
@@ -178,16 +211,18 @@ namespace MyLibraryOverview.Client.Pages
                     {
                         Console.WriteLine(result.Success.Bookid);
 
-                        await this.OnInitAsync();
+                        this.OperationDoneWithMessage(result.IsSuccess, "Item updated successfully");
                     }
                     else
                     {
                         Console.WriteLine(result.Failure.Message);
-                        this.ShowErrorMessage("Failed update item, please try it again or contact us...");
+
+                        this.OperationDoneWithMessage(result.IsSuccess, "Failled update item");
                     }
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    Console.WriteLine(e.Message);
                     this.ShowErrorMessage("Failed update item, please try it again or contact us...");
                 }
             }
@@ -251,35 +286,28 @@ namespace MyLibraryOverview.Client.Pages
         }
 
 
-
-
-        public Telerik.Blazor.Components.Window.TelerikWindow myFirstWindow;
-
         public void OpenWindow()
         {
-            myFirstWindow.Open();
+            AddFormWindow.Open();
         }
 
         public async Task SaveWindow()
         {
-            //var result = await Http.PostJsonAsync<Tuple<Book, Exception>>("api/book/addBook", NewBook); 
-            Console.WriteLine("Create new api call");
-            Console.WriteLine(NewBook.Name + " - " + NewBook.AuthorName);
             var result = await Http.PostJsonAsync<importerBookResult>("api/book/addBook", NewBook);
             if (result.IsSuccess)
             {
-                Console.WriteLine(result.Success.Bookid);
-                await this.OnInitAsync();
-                myFirstWindow.Close();
+                this.OperationDoneWithMessage(result.IsSuccess, "New book added successfully.");
+                //AddFormWindow.Close();
             }
             else
             {
-                Console.WriteLine(result.Failure.Message);
+                this.OperationDoneWithMessage(result.IsSuccess, "Failled to create new book.");
             }
         }
+
         public void CloseWindow()
         {
-            myFirstWindow.Close();
+            AddFormWindow.Close();
         }
 
     }

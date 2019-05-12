@@ -1,0 +1,34 @@
+﻿@if (IsShown)
+{
+    <div class="alert alert-@(Enum.GetName(typeof(MessageTypes), MessageType)) alert-dismissible fade show" role="alert">
+        @Message
+        <button onclick="@OnCloseClick" type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
+
+
+@functions{
+
+    enum MessageTypes { danger = 0, success, info, warning, primary };
+
+    /// <summary>
+    /// Message type, available: enum MessageTypes { danger = 0, success, info, warning, primary }
+    /// </summary>
+    [Parameter]
+    int MessageType { get; set; }
+
+    [Parameter]
+    bool IsShown { get; set; }
+
+    [Parameter]
+    string Message { get; set; }
+
+    [Parameter]
+    private EventCallback<UIMouseEventArgs> OnCloseClick { get; set; }
+
+    //public bool IsShownComponent { get; private set; } = false;
+
+}

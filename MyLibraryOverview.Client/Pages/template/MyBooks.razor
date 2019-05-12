@@ -13,6 +13,8 @@
             <p>@ErrorMessage</p>
         }
 
+        <MessageStatus IsShown="@IsMessageBoxShown" MessageType="@MessageBoxType" Message="@MessageBoxMessage" OnCloseClick="@OnMessageStatusClose" />
+
         @if (IsDataLoaded)
         {
 
@@ -58,7 +60,7 @@
 
             @*<TelerikButton Icon="add" OnClick="@OpenWindow">Add New</TelerikButton>*@
 
-            <TelerikWindow Centered="true" ref="myFirstWindow">
+            <TelerikWindow Centered="true" ref="AddFormWindow">
                 <TelerikWindowTitle>
                     <strong>Create new book</strong>
                 </TelerikWindowTitle>
@@ -105,7 +107,7 @@
                         </div>
                         <div class="row">
                             <div class="col">
-                                <TelerikButton Icon="add" OnClick="@( () => SaveWindow() )">Save</TelerikButton>
+                                <TelerikButton Icon="add" OnClick="@( async () => await SaveWindow() )">Save</TelerikButton>
                             </div>
                             <div class="col">
                                 <TelerikButton Icon="close" OnClick="@CloseWindow">Close</TelerikButton>
@@ -116,7 +118,7 @@
             </TelerikWindow>
 
             @* Grid data Filterable="true" *@
-            <TelerikGrid Data=@Books ref="BookGridRef" EditMode="popup" Sortable=true  Pageable=true PageSize="20" Page="@BookGridPage">
+            <TelerikGrid Data=@Books ref="BookGridRef" EditMode="popup" Sortable=true Filterable="true"  Pageable=true PageSize="20" Page="@BookGridPage">
 
                 <TelerikGridEvents>
                     <EventsManager OnUpdate="@(async (GridCommandEventArgs args) => await UpdateHandlerAsync(args))" OnEdit="@EditHandler" OnDelete="@(async (GridCommandEventArgs args) => await DeleteHandlerAsync(args))" OnCreate="@CreateHandler" OnCancel="@CancelHandler">
@@ -129,12 +131,12 @@
                 </TelerikGridToolBar>
 
                 <TelerikGridColumns>
-                    <TelerikGridColumn Field=@nameof(Book.Bookid) Title="ID"  Editable="false"></TelerikGridColumn>
+                    <TelerikGridColumn Field=@nameof(Book.Bookid) Title="ID"  Filterable="false" Editable="false"></TelerikGridColumn>
                     <TelerikGridColumn Field=@nameof(Book.Name) Title="Book" Editable="false" />
                     <TelerikGridColumn Field=@nameof(Book.AuthorName) Title="Author" Editable="false" />
                     <TelerikGridColumn Field=@nameof(Book.Place) Title="Place" />
-                    <TelerikGridColumn Field=@nameof(Book.Rate) Title="My Rate" />
-                    <TelerikGridColumn Field=@nameof(Book.Readdone) Title="I have read it">
+                    <TelerikGridColumn Field=@nameof(Book.Rate) Title="My Rate" Filterable="false" />
+                    <TelerikGridColumn Field=@nameof(Book.Readdone) Title="I have read it" Filterable="false">
                         <Template>
                             @{
                                     var read = (context as Book).Readdone;
@@ -151,10 +153,6 @@
                         </Template>
                     </TelerikGridColumn>
                     <TelerikGridColumn Field=@nameof(Book.Note) Title="Note">
-                        <Template>
-                            @(context as Book).Note
-                            @* @( () => { this.TurnicateString((context as Book).Note, 15); })*@
-                        </Template>
                     </TelerikGridColumn>
 
                     <TelerikGridCommandColumn>

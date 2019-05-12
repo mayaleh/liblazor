@@ -101,6 +101,8 @@ namespace MyLibraryOverview.Server.Controllers
                 var updatedAuthor = authorModel.SaveAuthor(author);
                 serverBook.Authorid = updatedAuthor.Authorid;
                 serverBook.Author = updatedAuthor;
+                //todo check book exist
+
                 userBook.Book = serverBook;
 
                 var operationResult = bookModel.SaveBook(userBook);
